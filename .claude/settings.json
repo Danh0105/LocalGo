@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tasklist)",
+      "Bash(taskkill //PID 12568 //F)",
+      "Bash(taskkill //PID 2672 //F)",
+      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --disable-gpu --no-sandbox --hide-scrollbars --window-size=600,1400 --screenshot=/c/Users/Danh/AppData/Local/Temp/claude/f--LocalGo/25f53ca3-6044-4514-b033-6ab89e7bbfd1/scratchpad/before_wide.png http://localhost:5199/)",
+      "Bash(node -e ' *)",
+      "Bash(python3 -c \"print\\('check python'\\)\")",
+      "Bash(which python *)",
+      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --disable-gpu --no-sandbox --hide-scrollbars --force-device-scale-factor=2 --window-size=430,340 --screenshot=/c/Users/Danh/AppData/Local/Temp/claude/f--LocalGo/25f53ca3-6044-4514-b033-6ab89e7bbfd1/scratchpad/hero_zoom.png http://localhost:5199/)",
+      "Bash(where.exe magick *)",
+      "Bash(where.exe convert *)",
+      "Bash(node -e \"console.log\\(require\\('fs'\\).existsSync\\('f:/LocalGo/node_modules/sharp'\\)\\)\")",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\Danh\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\f--LocalGo\\\\25f53ca3-6044-4514-b033-6ab89e7bbfd1\\\\scratchpad\\\\detect.ps1\")",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\Danh\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\f--LocalGo\\\\25f53ca3-6044-4514-b033-6ab89e7bbfd1\\\\scratchpad\\\\crop.ps1\")",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\Danh\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\f--LocalGo\\\\25f53ca3-6044-4514-b033-6ab89e7bbfd1\\\\scratchpad\\\\sample.ps1\")",
+      "Bash(cp \"f:/LocalGo/src/static/icon-06.png\" \"/c/Users/Danh/AppData/Local/Temp/claude/f--LocalGo/25f53ca3-6044-4514-b033-6ab89e7bbfd1/scratchpad/icon-06-original-backup.png\" *)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\Danh\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\f--LocalGo\\\\25f53ca3-6044-4514-b033-6ab89e7bbfd1\\\\scratchpad\\\\fix.ps1\")",
+      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --disable-gpu --no-sandbox --hide-scrollbars --force-device-scale-factor=2 --window-size=430,340 --disk-cache-dir=none --screenshot=/c/Users/Danh/AppData/Local/Temp/claude/f--LocalGo/25f53ca3-6044-4514-b033-6ab89e7bbfd1/scratchpad/hero_zoom2.png http://localhost:5199/?t=2)",
+      "Bash(taskkill //PID 22432 //F)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\Danh\\AppData\\Local\\Temp\\claude\\f--LocalGo\\25f53ca3-6044-4514-b033-6ab89e7bbfd1\\scratchpad"
+    ]
+  }
+}
