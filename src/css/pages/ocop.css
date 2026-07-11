@@ -1,0 +1,354 @@
+.ocop-page {
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 0 !important;
+  background: #fff8ed;
+}
+
+.ocop-header {
+  display: flex;
+  min-height: 80px;
+  padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
+  color: #fff;
+  background: linear-gradient(125deg, #f27a10 0%, #ffc531 100%);
+  align-items: center;
+  gap: 13px;
+}
+
+.ocop-header span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  opacity: 0.92;
+  text-transform: uppercase;
+}
+
+.ocop-header h1 {
+  margin: 2px 0 0;
+  font-size: 23px;
+  font-weight: 950;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.ocop-back {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  color: #bd5a08;
+  background: rgb(255 255 255 / 94%);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgb(162 74 0 / 22%);
+  flex: 0 0 auto;
+  place-items: center;
+}
+
+.ocop-content {
+  padding: 16px 16px 40px;
+}
+
+.ocop-intro {
+  margin-bottom: 14px;
+  padding: 15px;
+  color: #79430a;
+  background: linear-gradient(135deg, #ffffff 0%, #fff0cd 100%);
+  border: 1px solid #ffe0a2;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgb(196 102 14 / 8%);
+}
+
+.ocop-intro span {
+  display: inline-block;
+  margin-bottom: 5px;
+  color: #f27a10;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.ocop-intro p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.ocop-filters {
+  display: flex;
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+  overflow-x: auto;
+  gap: 8px;
+}
+
+.ocop-filter {
+  padding: 8px 15px;
+  color: #9b5209;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  background: #fff;
+  border: 1px solid #ffdda2;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.ocop-filter--active {
+  color: #fff;
+  background: linear-gradient(125deg, #f27a10 0%, #ffc531 100%);
+  border-color: transparent;
+  box-shadow: 0 4px 10px rgb(242 122 16 / 24%);
+}
+
+.ocop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ocop-card {
+  display: flex;
+  width: 100%;
+  padding: 13px;
+  color: #1d150c;
+  text-align: left;
+  background: #fff;
+  border: 0;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgb(120 67 12 / 8%);
+  align-items: center;
+  gap: 12px;
+}
+
+.ocop-card__image {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  background: #fff3d7;
+  border-radius: 15px;
+  flex: 0 0 auto;
+  place-items: center;
+}
+
+.ocop-card__image img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.ocop-card__body {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.ocop-card__topline {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ocop-card__category {
+  display: inline-block;
+  padding: 3px 9px;
+  color: #a95708;
+  font-size: 10px;
+  font-weight: 850;
+  background: #ffebc2;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.ocop-stars {
+  display: inline-flex;
+  color: #d7c9ae;
+  font-size: 11px;
+  gap: 1px;
+}
+
+.ocop-stars__star--active {
+  color: #ffb000;
+}
+
+.ocop-card h2 {
+  margin: 6px 0 4px;
+  color: #19140f;
+  font-size: 16px;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.ocop-card__producer {
+  display: flex;
+  margin: 0 0 5px;
+  color: #7e6b52;
+  font-size: 12px;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.ocop-card__producer .zaui-icon {
+  margin-top: 1px;
+  font-size: 14px;
+  flex: 0 0 auto;
+}
+
+.ocop-card__summary {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #5f5548;
+  font-size: 13px;
+  line-height: 1.42;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.ocop-card__arrow {
+  color: #e4b764;
+  font-size: 19px;
+  flex: 0 0 auto;
+}
+
+.ocop-status {
+  margin: 28px 0;
+  color: #786a58;
+  font-size: 14px;
+  text-align: center;
+}
+
+.ocop-status--error {
+  color: #b42318;
+}
+
+.ocop-detail__hero {
+  position: relative;
+  display: grid;
+  height: calc(220px + env(safe-area-inset-top));
+  margin-top: calc(env(safe-area-inset-top) * -1);
+  background:
+    radial-gradient(circle at 72% 22%, rgb(255 255 255 / 45%), transparent 28%),
+    linear-gradient(150deg, #fff1be 0%, #ffb41f 100%);
+  place-items: center;
+}
+
+.ocop-detail__hero img {
+  width: 132px;
+  height: 132px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgb(162 74 0 / 24%));
+}
+
+.ocop-detail__back {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 14px);
+  left: 16px;
+}
+
+.ocop-detail__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  margin-top: -24px;
+  padding: 20px 16px 40px;
+  background: #fff8ed;
+  border-radius: 28px 28px 0 0;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ocop-detail__card {
+  padding: 18px 16px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgb(120 67 12 / 8%);
+}
+
+.ocop-detail__card h1 {
+  margin: 8px 0 8px;
+  color: #19140f;
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 1.18;
+}
+
+.ocop-detail__card h2 {
+  margin: 0 0 11px;
+  color: #b55c08;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.ocop-detail__stars {
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.ocop-detail__meta {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ocop-detail__meta li {
+  display: flex;
+  color: #665849;
+  font-size: 14px;
+  align-items: center;
+  gap: 8px;
+}
+
+.ocop-detail__meta .zaui-icon {
+  color: #f27a10;
+  font-size: 18px;
+}
+
+.ocop-detail__paragraph {
+  margin: 0 0 10px;
+  color: #4f463d;
+  font-size: 14px;
+  line-height: 1.58;
+}
+
+.ocop-detail__paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.ocop-detail__highlights {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ocop-detail__highlights li {
+  display: flex;
+  color: #4f463d;
+  font-size: 14px;
+  align-items: center;
+  gap: 8px;
+}
+
+.ocop-detail__highlights .zaui-icon {
+  color: #f27a10;
+  font-size: 18px;
+}
+
+.ocop-detail__note {
+  background: #fff0d2;
+  border: 1px solid #ffdf9d;
+}
+
+@media (min-width: 520px) {
+  .ocop-page {
+    max-width: 430px;
+    margin: 0 auto;
+  }
+}

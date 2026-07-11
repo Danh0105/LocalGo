@@ -1,0 +1,322 @@
+.craft-villages-page {
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 0 !important;
+  background: #fff7f0;
+}
+
+.craft-villages-header {
+  display: flex;
+  min-height: 80px;
+  padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
+  color: #fff;
+  background: linear-gradient(125deg, #9b4f1f 0%, #e49546 100%);
+  align-items: center;
+  gap: 13px;
+}
+
+.craft-villages-header span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  opacity: 0.92;
+  text-transform: uppercase;
+}
+
+.craft-villages-header h1 {
+  margin: 2px 0 0;
+  font-size: 22px;
+  font-weight: 950;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.craft-villages-back {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  color: #87431b;
+  background: rgb(255 255 255 / 94%);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgb(117 56 19 / 22%);
+  flex: 0 0 auto;
+  place-items: center;
+}
+
+.craft-villages-content {
+  padding: 16px 16px 40px;
+}
+
+.craft-villages-intro {
+  margin-bottom: 14px;
+  padding: 15px;
+  color: #70431f;
+  background: linear-gradient(135deg, #ffffff 0%, #ffe9d4 100%);
+  border: 1px solid #f2d1b2;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgb(117 56 19 / 8%);
+}
+
+.craft-villages-intro p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.craft-villages-filters {
+  display: flex;
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+  overflow-x: auto;
+  gap: 8px;
+}
+
+.craft-villages-filter {
+  padding: 8px 15px;
+  color: #87431b;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  background: #fff;
+  border: 1px solid #f1d0b1;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.craft-villages-filter--active {
+  color: #fff;
+  background: linear-gradient(125deg, #9b4f1f 0%, #e49546 100%);
+  border-color: transparent;
+  box-shadow: 0 4px 10px rgb(155 79 31 / 24%);
+}
+
+.craft-villages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.craft-village-card {
+  display: flex;
+  width: 100%;
+  padding: 13px;
+  color: #1d140f;
+  text-align: left;
+  background: #fff;
+  border: 0;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgb(117 56 19 / 8%);
+  align-items: center;
+  gap: 12px;
+}
+
+.craft-village-card__image {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  background: #fff0e1;
+  border-radius: 15px;
+  flex: 0 0 auto;
+  place-items: center;
+}
+
+.craft-village-card__image img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.craft-village-card__body {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.craft-village-card__category {
+  display: inline-block;
+  padding: 3px 9px;
+  color: #8a4319;
+  font-size: 10px;
+  font-weight: 850;
+  background: #ffe2c7;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.craft-village-card h2 {
+  margin: 6px 0 4px;
+  color: #1b130e;
+  font-size: 16px;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.craft-village-card__address {
+  display: flex;
+  margin: 0 0 5px;
+  color: #7a6554;
+  font-size: 12px;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.craft-village-card__address .zaui-icon {
+  margin-top: 1px;
+  font-size: 14px;
+  flex: 0 0 auto;
+}
+
+.craft-village-card__summary {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #5b5049;
+  font-size: 13px;
+  line-height: 1.42;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.craft-village-card__arrow {
+  color: #d7ad85;
+  font-size: 19px;
+  flex: 0 0 auto;
+}
+
+.craft-villages-status {
+  margin: 28px 0;
+  color: #756354;
+  font-size: 14px;
+  text-align: center;
+}
+
+.craft-villages-status--error {
+  color: #b42318;
+}
+
+.craft-village-detail__hero {
+  position: relative;
+  display: grid;
+  height: calc(220px + env(safe-area-inset-top));
+  margin-top: calc(env(safe-area-inset-top) * -1);
+  background:
+    radial-gradient(circle at 72% 22%, rgb(255 255 255 / 42%), transparent 28%),
+    linear-gradient(150deg, #ffe4c6 0%, #c97832 100%);
+  place-items: center;
+}
+
+.craft-village-detail__hero img {
+  width: 132px;
+  height: 132px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgb(117 56 19 / 24%));
+}
+
+.craft-village-detail__back {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 14px);
+  left: 16px;
+}
+
+.craft-village-detail__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  margin-top: -24px;
+  padding: 20px 16px 40px;
+  background: #fff7f0;
+  border-radius: 28px 28px 0 0;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.craft-village-detail__card {
+  padding: 18px 16px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgb(117 56 19 / 8%);
+}
+
+.craft-village-detail__card h1 {
+  margin: 8px 0 13px;
+  color: #1b130e;
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 1.18;
+}
+
+.craft-village-detail__card h2 {
+  margin: 0 0 11px;
+  color: #8a4319;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.craft-village-detail__meta {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.craft-village-detail__meta li {
+  display: flex;
+  color: #66564a;
+  font-size: 14px;
+  align-items: center;
+  gap: 8px;
+}
+
+.craft-village-detail__meta .zaui-icon {
+  color: #b86123;
+  font-size: 18px;
+}
+
+.craft-village-detail__paragraph {
+  margin: 0 0 10px;
+  color: #4f463f;
+  font-size: 14px;
+  line-height: 1.58;
+}
+
+.craft-village-detail__paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.craft-village-detail__highlights {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.craft-village-detail__highlights li {
+  display: flex;
+  color: #4f463f;
+  font-size: 14px;
+  align-items: center;
+  gap: 8px;
+}
+
+.craft-village-detail__highlights .zaui-icon {
+  color: #b86123;
+  font-size: 18px;
+}
+
+.craft-village-detail__note {
+  background: #fff0e2;
+  border: 1px solid #f2d1b2;
+}
+
+@media (min-width: 520px) {
+  .craft-villages-page {
+    max-width: 430px;
+    margin: 0 auto;
+  }
+}

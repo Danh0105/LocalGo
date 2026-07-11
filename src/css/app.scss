@@ -80,10 +80,13 @@ button {
 }
 
 .video-card {
+  position: relative;
   display: grid;
   width: 100%;
   min-height: 191px;
   margin-top: -38px;
+  margin-left: 0;
+  overflow: hidden;
   place-items: center;
   color: #050505;
   font-size: 43px;
@@ -93,6 +96,33 @@ button {
   border: 0;
   border-radius: 29px;
   box-shadow: 0 5px 14px rgba(0, 0, 0, 0.18);
+}
+
+.video-card__preview {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-card__label {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  left: 16px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.video-card__label span {
+  padding: 6px 13px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.46);
+  border-radius: 999px;
 }
 
 .section-heading-row {

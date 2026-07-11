@@ -1,0 +1,381 @@
+.home-page {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #fff;
+}
+
+/* ================================
+   HERO
+================================ */
+
+.village-hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background: #dcffb5;
+}
+
+.village-hero__background {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transform: scale(1.1);
+}
+
+.village-hero__title-card {
+  position: absolute;
+  bottom: 38px;
+  left: 20px;
+  z-index: 2;
+  padding: 13px 20px 11px;
+  border-radius: 12px;
+  background: rgb(255 255 255 / 96%);
+  box-shadow:
+    0 8px 20px rgb(0 0 0 / 10%),
+    0 2px 6px rgb(0 0 0 / 4%);
+
+  h1 {
+    margin: 0;
+    color: #4fc53c;
+    font-size: 25px;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.7px;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 0 rgb(0 0 0 / 5%);
+  }
+}
+
+/* ================================
+   MAIN CONTENT
+================================ */
+
+.home-content {
+  position: relative;
+  z-index: 3;
+  padding: 0 16px 28px;
+  background: #fff;
+}
+
+/* ================================
+   VIDEO
+================================ */
+
+.video-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 210px;
+  margin-top: -24px;
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  border-radius: 32px;
+  background: #fff;
+  box-shadow:
+    0 8px 28px rgb(0 0 0 / 8%),
+    0 2px 8px rgb(0 0 0 / 5%);
+}
+
+.video-card__preview {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  background:
+    linear-gradient(
+      135deg,
+      rgb(239 255 232 / 85%),
+      rgb(255 255 255 / 95%)
+    );
+  align-items: center;
+  justify-content: center;
+
+  .zaui-icon {
+    display: flex;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    color: #fff;
+    background: linear-gradient(135deg, #4bd63c, #9dff00);
+    box-shadow: 0 10px 24px rgb(91 214 52 / 28%);
+    font-size: 30px;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.video-card__label {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  left: 16px;
+  display: flex;
+  justify-content: center;
+
+  span {
+    padding: 6px 13px;
+    border-radius: 999px;
+    color: #fff;
+    background: rgb(0 0 0 / 46%);
+    backdrop-filter: blur(8px);
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
+/* ================================
+   SECTION HEADING
+================================ */
+
+.section-heading-row {
+  display: flex;
+  margin-top: 26px;
+  margin-bottom: 18px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.section-title {
+  display: flex;
+  margin: 0;
+  color: #101010;
+  font-size: 28px;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: -1px;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.section-title__line {
+  width: 5px;
+  height: 31px;
+  border-radius: 99px;
+  background: linear-gradient(
+    180deg,
+    #bcff00 0%,
+    #42d934 100%
+  );
+}
+
+/* ================================
+   SEARCH
+================================ */
+
+.search-pill {
+  display: flex;
+  width: 46%;
+  max-width: 185px;
+  height: 48px;
+  padding: 0 15px 0 18px;
+  border: none;
+  border-radius: 22px;
+  color: #fff;
+  background: linear-gradient(
+    100deg,
+    #43c541 0%,
+    #54e928 48%,
+    #a7ff00 100%
+  );
+  box-shadow: 0 5px 12px rgb(80 210 50 / 22%);
+  align-items: center;
+  justify-content: space-between;
+
+  span {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .zaui-icon {
+    font-size: 25px;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+/* ================================
+   FEATURED CARDS
+================================ */
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.feature-card {
+  display: flex;
+  min-width: 0;
+  height: 135px;
+  padding: 12px 5px 10px;
+  overflow: hidden;
+  border: none;
+  border-radius: 13px;
+  box-shadow:
+    0 5px 15px rgb(0 0 0 / 7%),
+    inset 0 1px 0 rgb(255 255 255 / 50%);
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  span {
+    display: flex;
+    min-height: 36px;
+    color: #111;
+    font-size: 11px;
+    font-weight: 750;
+    line-height: 1.25;
+    text-align: center;
+    white-space: pre-line;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.feature-card__image {
+  display: flex;
+  height: 76px;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+  }
+}
+
+.feature-card--green {
+  background: linear-gradient(
+    160deg,
+    #eeffd5 0%,
+    #bfff85 100%
+  );
+}
+
+.feature-card--cyan {
+  background: linear-gradient(
+    160deg,
+    #e3fdff 0%,
+    #a9edff 100%
+  );
+}
+
+.feature-card--yellow {
+  background: linear-gradient(
+    160deg,
+    #fff82c 0%,
+    #ffc910 100%
+  );
+}
+
+.feature-card--pink {
+  background: linear-gradient(
+    160deg,
+    #ffe8f2 0%,
+    #fda8cd 100%
+  );
+}
+
+/* ================================
+   MENU PANEL
+================================ */
+
+.menu-panel {
+  display: grid;
+  margin-top: 16px;
+  padding: 24px 10px 22px;
+  border: 1px solid #ededed;
+  border-radius: 34px;
+  background: #fff;
+  box-shadow:
+    0 8px 25px rgb(0 0 0 / 6%),
+    0 2px 8px rgb(0 0 0 / 4%);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  row-gap: 25px;
+}
+
+.menu-item {
+  display: flex;
+  min-width: 0;
+  padding: 0 3px;
+  border: none;
+  color: #111;
+  background: transparent;
+  flex-direction: column;
+  align-items: center;
+
+  &:active {
+    opacity: 0.65;
+    transform: scale(0.92);
+  }
+
+  span {
+    margin-top: 7px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.15;
+    text-align: center;
+    white-space: pre-line;
+  }
+}
+
+.menu-item__image {
+  display: flex;
+  width: 58px;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    max-width: 54px;
+    max-height: 50px;
+    object-fit: contain;
+  }
+}
+
+/* ================================
+   SMALL SCREEN
+================================ */
+
+@media (max-width: 360px) {
+  .village-hero {
+    height: 270px;
+  }
+
+  .video-card {
+    height: 190px;
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .search-pill {
+    height: 44px;
+  }
+
+  .featured-grid {
+    gap: 7px;
+  }
+
+  .feature-card {
+    height: 125px;
+  }
+
+  .feature-card__image img {
+    width: 56px;
+    height: 56px;
+  }
+}
