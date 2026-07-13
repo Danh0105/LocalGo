@@ -2,7 +2,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   padding: 0 !important;
-  background: #f7f8f2;
+  background: #f2f6f8;
 }
 
 .historical-sites-header {
@@ -10,7 +10,7 @@
   min-height: 78px;
   padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
   color: #fff;
-  background: linear-gradient(120deg, #9c5b26, #dc922f);
+  background: linear-gradient(120deg, #1478c8 0%, #35c3ef 100%);
   align-items: center;
   gap: 13px;
 }
@@ -36,7 +36,7 @@
   width: 38px;
   height: 38px;
   padding: 0;
-  color: #7c431b;
+  color: #1b5a7c;
   background: rgb(255 255 255 / 94%);
   border: 0;
   border-radius: 50%;
@@ -59,19 +59,19 @@
 
 .historical-sites-filter {
   padding: 8px 15px;
-  color: #72451f;
+  color: #1f5572;
   font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
   background: #fff;
-  border: 1px solid #ead5bc;
+  border: 1px solid #bcdaea;
   border-radius: 999px;
   flex: 0 0 auto;
 }
 
 .historical-sites-filter--active {
   color: #fff;
-  background: linear-gradient(120deg, #9c5b26, #dc922f);
+  background: linear-gradient(120deg, #1478c8 0%, #35c3ef 100%);
   border-color: transparent;
   box-shadow: 0 4px 10px rgb(156 91 38 / 24%);
 }
@@ -86,7 +86,7 @@
   display: flex;
   width: 100%;
   padding: 13px;
-  color: #17130f;
+  color: #0f1417;
   text-align: left;
   background: #fff;
   border: 0;
@@ -100,7 +100,7 @@
   display: grid;
   width: 68px;
   height: 68px;
-  background: #fff3df;
+  background: #dff4ff;
   border-radius: 15px;
   flex: 0 0 auto;
   place-items: center;
@@ -120,10 +120,10 @@
 .historical-site-card__rank {
   display: inline-block;
   padding: 3px 9px;
-  color: #8a4e1e;
+  color: #1e648a;
   font-size: 10px;
   font-weight: 800;
-  background: #ffe7c2;
+  background: #c2eaff;
   border-radius: 999px;
   text-transform: uppercase;
 }
@@ -138,7 +138,7 @@
 .historical-site-card__address {
   display: flex;
   margin: 0 0 5px;
-  color: #856e5d;
+  color: #5d7785;
   font-size: 12px;
   align-items: flex-start;
   gap: 4px;
@@ -162,14 +162,14 @@
 }
 
 .historical-site-card__arrow {
-  color: #c9a98d;
+  color: #8db4c9;
   font-size: 19px;
   flex: 0 0 auto;
 }
 
 .historical-sites-status {
   margin: 28px 0;
-  color: #78695e;
+  color: #5e6f78;
   font-size: 14px;
   text-align: center;
 }
@@ -183,7 +183,7 @@
   display: grid;
   height: calc(220px + env(safe-area-inset-top));
   margin-top: calc(env(safe-area-inset-top) * -1);
-  background: linear-gradient(150deg, #ffe7c2, #e9bd79);
+  background: linear-gradient(150deg, #c2eaff, #79c2e9);
   place-items: center;
 }
 
@@ -206,7 +206,7 @@
   display: flex;
   margin-top: -24px;
   padding: 20px 16px 40px;
-  background: #f7f8f2;
+  background: #f2f6f8;
   border-radius: 28px 28px 0 0;
   flex-direction: column;
   gap: 14px;
@@ -221,14 +221,14 @@
 
 .historical-site-detail__card h1 {
   margin: 8px 0 13px;
-  color: #17130f;
+  color: #0f1417;
   font-size: 23px;
   font-weight: 900;
 }
 
 .historical-site-detail__card h2 {
   margin: 0 0 11px;
-  color: #6e3b16;
+  color: #164f6e;
   font-size: 17px;
   font-weight: 900;
 }
@@ -236,14 +236,14 @@
 .historical-site-detail__meta {
   display: flex;
   margin: 7px 0 0;
-  color: #68584d;
+  color: #4d5f68;
   font-size: 14px;
   align-items: center;
   gap: 8px;
 }
 
 .historical-site-detail__meta .zaui-icon {
-  color: #c8782b;
+  color: #2b91c8;
   font-size: 18px;
 }
 
@@ -276,7 +276,7 @@
 }
 
 .historical-site-detail__highlights .zaui-icon {
-  color: #c8782b;
+  color: #2b91c8;
   font-size: 18px;
 }
 

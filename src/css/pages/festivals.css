@@ -2,7 +2,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   padding: 0 !important;
-  background: #fff7f8;
+  background: #f7fcff;
 }
 
 .festivals-header {
@@ -10,7 +10,7 @@
   min-height: 80px;
   padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
   color: #fff;
-  background: linear-gradient(125deg, #c51f45 0%, #ff8a2a 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   align-items: center;
   gap: 13px;
 }
@@ -36,7 +36,7 @@
   width: 38px;
   height: 38px;
   padding: 0;
-  color: #af1739;
+  color: #177aaf;
   background: rgb(255 255 255 / 94%);
   border: 0;
   border-radius: 50%;
@@ -52,9 +52,9 @@
 .festivals-intro {
   margin-bottom: 14px;
   padding: 15px;
-  color: #763145;
-  background: linear-gradient(135deg, #ffffff 0%, #ffe5e9 100%);
-  border: 1px solid #ffcbd4;
+  color: #315e76;
+  background: linear-gradient(135deg, #ffffff 0%, #e5f6ff 100%);
+  border: 1px solid #cbedff;
   border-radius: 18px;
   box-shadow: 0 4px 14px rgb(151 27 55 / 8%);
 }
@@ -76,19 +76,19 @@
 
 .festivals-filter {
   padding: 8px 15px;
-  color: #a91d3d;
+  color: #1d78a9;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
   background: #fff;
-  border: 1px solid #ffc7d1;
+  border: 1px solid #c7ebff;
   border-radius: 999px;
   flex: 0 0 auto;
 }
 
 .festivals-filter--active {
   color: #fff;
-  background: linear-gradient(125deg, #c51f45 0%, #ff8a2a 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   border-color: transparent;
   box-shadow: 0 4px 10px rgb(197 31 69 / 24%);
 }
@@ -103,7 +103,7 @@
   display: flex;
   width: 100%;
   padding: 13px;
-  color: #1f1115;
+  color: #111a1f;
   text-align: left;
   background: #fff;
   border: 0;
@@ -117,7 +117,7 @@
   display: grid;
   width: 68px;
   height: 68px;
-  background: #ffe6ea;
+  background: #e6f6ff;
   border-radius: 15px;
   flex: 0 0 auto;
   place-items: center;
@@ -137,17 +137,17 @@
 .festival-card__category {
   display: inline-block;
   padding: 3px 9px;
-  color: #af1739;
+  color: #177aaf;
   font-size: 10px;
   font-weight: 850;
-  background: #ffdce3;
+  background: #dcf3ff;
   border-radius: 999px;
   text-transform: uppercase;
 }
 
 .festival-card h2 {
   margin: 6px 0 4px;
-  color: #1f1115;
+  color: #111a1f;
   font-size: 16px;
   font-weight: 850;
   line-height: 1.25;
@@ -156,7 +156,7 @@
 .festival-card__time {
   display: flex;
   margin: 0 0 5px;
-  color: #826169;
+  color: #617682;
   font-size: 12px;
   align-items: flex-start;
   gap: 4px;
@@ -180,14 +180,14 @@
 }
 
 .festival-card__arrow {
-  color: #df91a3;
+  color: #91c4df;
   font-size: 19px;
   flex: 0 0 auto;
 }
 
 .festivals-status {
   margin: 28px 0;
-  color: #786169;
+  color: #617078;
   font-size: 14px;
   text-align: center;
 }
@@ -203,7 +203,7 @@
   margin-top: calc(env(safe-area-inset-top) * -1);
   background:
     radial-gradient(circle at 72% 22%, rgb(255 255 255 / 42%), transparent 28%),
-    linear-gradient(150deg, #ffdbe2 0%, #f05a39 100%);
+    linear-gradient(150deg, #dbf2ff 0%, #39b0f0 100%);
   place-items: center;
 }
 
@@ -226,7 +226,7 @@
   display: flex;
   margin-top: -24px;
   padding: 20px 16px 40px;
-  background: #fff7f8;
+  background: #f7fcff;
   border-radius: 28px 28px 0 0;
   flex-direction: column;
   gap: 14px;
@@ -241,7 +241,7 @@
 
 .festival-detail__card h1 {
   margin: 8px 0 13px;
-  color: #1f1115;
+  color: #111a1f;
   font-size: 23px;
   font-weight: 900;
   line-height: 1.18;
@@ -249,7 +249,7 @@
 
 .festival-detail__card h2 {
   margin: 0 0 11px;
-  color: #af1739;
+  color: #177aaf;
   font-size: 17px;
   font-weight: 900;
 }
@@ -267,7 +267,7 @@
 .festival-detail__meta li,
 .festival-detail__activities li {
   display: flex;
-  color: #56464b;
+  color: #465056;
   font-size: 14px;
   align-items: center;
   gap: 8px;
@@ -275,7 +275,7 @@
 
 .festival-detail__meta .zaui-icon,
 .festival-detail__activities .zaui-icon {
-  color: #c51f45;
+  color: #1f8bc5;
   font-size: 18px;
 }
 
@@ -291,8 +291,8 @@
 }
 
 .festival-detail__note {
-  background: #ffe9ed;
-  border: 1px solid #ffcbd4;
+  background: #e9f7ff;
+  border: 1px solid #cbedff;
 }
 
 @media (min-width: 520px) {

@@ -1,7 +1,7 @@
 .attractions-page {
   min-height: 100vh;
   overflow-x: hidden;
-  background: #fffdf0;
+  background: #f0faff;
   padding: 0 !important;
 }
 
@@ -11,12 +11,12 @@
   align-items: center;
   gap: 12px;
   padding: calc(env(safe-area-inset-top) + 14px) 16px 14px;
-  background: linear-gradient(90deg, #ffd31c 0%, #fff51f 100%);
+  background: linear-gradient(90deg, #1478c8 0%, #35c3ef 100%);
 }
 
 .attractions-header h1 {
   margin: 0;
-  color: #6b4d00;
+  color: #00466b;
   font-size: 20px;
   font-weight: 900;
   text-transform: uppercase;
@@ -28,12 +28,12 @@
   width: 38px;
   height: 38px;
   place-items: center;
-  color: #6b4d00;
+  color: #00466b;
   font-size: 22px;
   background: rgba(255, 255, 255, 0.92);
   border: 0;
   border-radius: 999px;
-  box-shadow: 0 4px 10px rgba(122, 91, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 79, 122, 0.2);
 }
 
 .attractions-content {
@@ -51,19 +51,19 @@
 .attractions-filter {
   flex: 0 0 auto;
   padding: 8px 18px;
-  color: #6b4d00;
+  color: #00466b;
   font-size: 14px;
   font-weight: 700;
   background: #ffffff;
-  border: 1px solid #ffe98a;
+  border: 1px solid #8ad6ff;
   border-radius: 999px;
 }
 
 .attractions-filter--active {
-  color: #6b4d00;
-  background: linear-gradient(90deg, #ffd31c 0%, #fff51f 100%);
+  color: #00466b;
+  background: linear-gradient(90deg, #1478c8 0%, #35c3ef 100%);
   border-color: transparent;
-  box-shadow: 0 4px 8px rgba(214, 165, 0, 0.35);
+  box-shadow: 0 4px 8px rgba(0, 139, 214, 0.35);
 }
 
 .attractions-list {
@@ -90,7 +90,7 @@
   width: 64px;
   height: 64px;
   place-items: center;
-  background: #fff8d6;
+  background: #d6f1ff;
   border-radius: 14px;
 }
 
@@ -108,11 +108,11 @@
 .attraction-card__category {
   display: inline-block;
   padding: 2px 10px;
-  color: #6b4d00;
+  color: #00466b;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
-  background: #ffe98a;
+  background: #8ad6ff;
   border-radius: 999px;
 }
 
@@ -128,7 +128,7 @@
   gap: 4px;
   align-items: center;
   margin: 0 0 4px;
-  color: #8a7a4d;
+  color: #4d758a;
   font-size: 12px;
 }
 
@@ -149,7 +149,7 @@
 
 .attraction-card__arrow {
   flex: 0 0 auto;
-  color: #e0c86a;
+  color: #6ab7e0;
   font-size: 20px;
 }
 
@@ -161,14 +161,14 @@
   height: calc(220px + env(safe-area-inset-top));
   margin-top: calc(env(safe-area-inset-top) * -1);
   place-items: center;
-  background: linear-gradient(180deg, #fff51f 0%, #ffe98a 100%);
+  background: linear-gradient(180deg, #1fb1ff 0%, #8ad6ff 100%);
 }
 
 .attraction-detail__hero img {
   width: 128px;
   height: 128px;
   object-fit: contain;
-  filter: drop-shadow(0 8px 16px rgba(122, 91, 0, 0.25));
+  filter: drop-shadow(0 8px 16px rgba(0, 79, 122, 0.25));
 }
 
 .attraction-detail__back {
@@ -184,7 +184,7 @@
   flex-direction: column;
   gap: 14px;
   margin-top: -24px;
-  background: #fffdf0;
+  background: #f0faff;
   border-radius: 28px 28px 0 0;
   padding-top: 20px;
 }
@@ -216,12 +216,12 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  color: #6b5d33;
+  color: #33576b;
   font-size: 14px;
 }
 
 .attraction-detail__info .zaui-icon {
-  color: #e6b800;
+  color: #0095e6;
   font-size: 18px;
 }
 
@@ -237,7 +237,7 @@
 .attraction-detail__section-title span {
   width: 4px;
   height: 16px;
-  background: #ffd31c;
+  background: #1cb0ff;
   border-radius: 999px;
 }
 
@@ -270,17 +270,17 @@
 }
 
 .attraction-detail__highlights .zaui-icon {
-  color: #52ce25;
+  color: #1e8fd5;
   font-size: 18px;
 }
 
 .attraction-detail__tip {
-  background: #fff8d6;
+  background: #d6f1ff;
 }
 
 .attraction-detail__empty {
   margin: 24px 0;
-  color: #8a7a4d;
+  color: #4d758a;
   font-size: 15px;
   text-align: center;
 }

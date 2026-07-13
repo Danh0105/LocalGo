@@ -2,7 +2,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   padding: 0 !important;
-  background: #fff7f0;
+  background: #f0faff;
 }
 
 .craft-villages-header {
@@ -10,7 +10,7 @@
   min-height: 80px;
   padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
   color: #fff;
-  background: linear-gradient(125deg, #9b4f1f 0%, #e49546 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   align-items: center;
   gap: 13px;
 }
@@ -36,7 +36,7 @@
   width: 38px;
   height: 38px;
   padding: 0;
-  color: #87431b;
+  color: #1b6187;
   background: rgb(255 255 255 / 94%);
   border: 0;
   border-radius: 50%;
@@ -52,9 +52,9 @@
 .craft-villages-intro {
   margin-bottom: 14px;
   padding: 15px;
-  color: #70431f;
-  background: linear-gradient(135deg, #ffffff 0%, #ffe9d4 100%);
-  border: 1px solid #f2d1b2;
+  color: #1f5470;
+  background: linear-gradient(135deg, #ffffff 0%, #d4f0ff 100%);
+  border: 1px solid #b2dcf2;
   border-radius: 18px;
   box-shadow: 0 4px 14px rgb(117 56 19 / 8%);
 }
@@ -76,19 +76,19 @@
 
 .craft-villages-filter {
   padding: 8px 15px;
-  color: #87431b;
+  color: #1b6187;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
   background: #fff;
-  border: 1px solid #f1d0b1;
+  border: 1px solid #b1dbf1;
   border-radius: 999px;
   flex: 0 0 auto;
 }
 
 .craft-villages-filter--active {
   color: #fff;
-  background: linear-gradient(125deg, #9b4f1f 0%, #e49546 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   border-color: transparent;
   box-shadow: 0 4px 10px rgb(155 79 31 / 24%);
 }
@@ -103,7 +103,7 @@
   display: flex;
   width: 100%;
   padding: 13px;
-  color: #1d140f;
+  color: #0f181d;
   text-align: left;
   background: #fff;
   border: 0;
@@ -117,7 +117,7 @@
   display: grid;
   width: 68px;
   height: 68px;
-  background: #fff0e1;
+  background: #e1f4ff;
   border-radius: 15px;
   flex: 0 0 auto;
   place-items: center;
@@ -137,17 +137,17 @@
 .craft-village-card__category {
   display: inline-block;
   padding: 3px 9px;
-  color: #8a4319;
+  color: #19628a;
   font-size: 10px;
   font-weight: 850;
-  background: #ffe2c7;
+  background: #c7ebff;
   border-radius: 999px;
   text-transform: uppercase;
 }
 
 .craft-village-card h2 {
   margin: 6px 0 4px;
-  color: #1b130e;
+  color: #0e161b;
   font-size: 16px;
   font-weight: 850;
   line-height: 1.25;
@@ -156,7 +156,7 @@
 .craft-village-card__address {
   display: flex;
   margin: 0 0 5px;
-  color: #7a6554;
+  color: #546d7a;
   font-size: 12px;
   align-items: flex-start;
   gap: 4px;
@@ -172,7 +172,7 @@
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: #5b5049;
+  color: #49555b;
   font-size: 13px;
   line-height: 1.42;
   -webkit-box-orient: vertical;
@@ -180,14 +180,14 @@
 }
 
 .craft-village-card__arrow {
-  color: #d7ad85;
+  color: #85bad7;
   font-size: 19px;
   flex: 0 0 auto;
 }
 
 .craft-villages-status {
   margin: 28px 0;
-  color: #756354;
+  color: #546975;
   font-size: 14px;
   text-align: center;
 }
@@ -203,7 +203,7 @@
   margin-top: calc(env(safe-area-inset-top) * -1);
   background:
     radial-gradient(circle at 72% 22%, rgb(255 255 255 / 42%), transparent 28%),
-    linear-gradient(150deg, #ffe4c6 0%, #c97832 100%);
+    linear-gradient(150deg, #c6ebff 0%, #3294c9 100%);
   place-items: center;
 }
 
@@ -226,7 +226,7 @@
   display: flex;
   margin-top: -24px;
   padding: 20px 16px 40px;
-  background: #fff7f0;
+  background: #f0faff;
   border-radius: 28px 28px 0 0;
   flex-direction: column;
   gap: 14px;
@@ -241,7 +241,7 @@
 
 .craft-village-detail__card h1 {
   margin: 8px 0 13px;
-  color: #1b130e;
+  color: #0e161b;
   font-size: 23px;
   font-weight: 900;
   line-height: 1.18;
@@ -249,7 +249,7 @@
 
 .craft-village-detail__card h2 {
   margin: 0 0 11px;
-  color: #8a4319;
+  color: #19628a;
   font-size: 17px;
   font-weight: 900;
 }
@@ -265,20 +265,20 @@
 
 .craft-village-detail__meta li {
   display: flex;
-  color: #66564a;
+  color: #4a5c66;
   font-size: 14px;
   align-items: center;
   gap: 8px;
 }
 
 .craft-village-detail__meta .zaui-icon {
-  color: #b86123;
+  color: #2384b8;
   font-size: 18px;
 }
 
 .craft-village-detail__paragraph {
   margin: 0 0 10px;
-  color: #4f463f;
+  color: #3f494f;
   font-size: 14px;
   line-height: 1.58;
 }
@@ -298,20 +298,20 @@
 
 .craft-village-detail__highlights li {
   display: flex;
-  color: #4f463f;
+  color: #3f494f;
   font-size: 14px;
   align-items: center;
   gap: 8px;
 }
 
 .craft-village-detail__highlights .zaui-icon {
-  color: #b86123;
+  color: #2384b8;
   font-size: 18px;
 }
 
 .craft-village-detail__note {
-  background: #fff0e2;
-  border: 1px solid #f2d1b2;
+  background: #e2f5ff;
+  border: 1px solid #b2dcf2;
 }
 
 @media (min-width: 520px) {

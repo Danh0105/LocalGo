@@ -1,6 +1,12 @@
+import type { CSSProperties } from "react";
+import { useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
+import SearchPopup from "@/components/search-popup";
+
 import bg from "@/static/icon-06.png";
+import mascot from "@/static/mascot.png";
+import emblem from "@/static/emblem.png";
 import customerService from "@/static/customer-service.png";
 import dragonBoat from "@/static/dragon-boat.png";
 import friedRice from "@/static/fried-rice.png";
@@ -18,34 +24,30 @@ import temple from "@/static/temple.png";
 import tractor from "@/static/tractor.png";
 import "../css/pages/home.css";
 import "../css/pages/about.css";
+
 const featuredItems: {
   label: string;
   image: string;
-  className: string;
   path?: string;
 }[] = [
   {
     label: "Giới thiệu",
     image: chart,
-    className: "feature-card--green",
     path: "/about",
   },
   {
     label: "Đền\nChùa - Miếu",
     image: temple,
-    className: "feature-card--cyan",
     path: "/temples",
   },
   {
     label: "Điểm du lịch",
     image: tourism,
-    className: "feature-card--yellow",
     path: "/attractions",
   },
   {
     label: "Đặc sản",
     image: restaurant,
-    className: "feature-card--pink",
     path: "/specialties",
   },
 ];
@@ -114,6 +116,7 @@ const menuItems = [
 
 function HomePage() {
   const navigate = useNavigate();
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <Page className="home-page">
@@ -125,21 +128,24 @@ function HomePage() {
           alt="Xã Truông Mít"
         />
 
-        <div className="village-hero__title-card">
+        {/* Đường cong sóng trắng */}
+        <svg
+          className="village-hero__wave"
+          viewBox="0 0 375 70"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M0,70 L0,48 Q187.5,-28 375,48 L375,70 Z"
+            fill="#ffffff"
+          />
+        </svg>
+
+        <div className="village-hero__brand">
+          <img className="village-hero__mascot" src={mascot} alt="" />
           <h1>XÃ TRUÔNG MÍT</h1>
         </div>
       </section>
-
-      {/* VIDEO */}
-      <button className="video-card" type="button">
-        <div className="video-card__preview">
-          <Icon icon="zi-play-solid" />
-        </div>
-
-        <div className="video-card__label">
-          <span>Video giới thiệu</span>
-        </div>
-      </button>
 
       <main className="home-content">
         {/* TIÊU ĐỀ + TÌM KIẾM */}
@@ -149,7 +155,12 @@ function HomePage() {
             Mini App
           </h2>
 
-          <button className="search-pill" type="button" aria-label="Tìm kiếm">
+          <button
+            className="search-pill"
+            type="button"
+            aria-label="Tìm kiếm"
+            onClick={() => setSearchOpen(true)}
+          >
             <span>Tìm kiếm</span>
             <Icon icon="zi-search" />
           </button>
@@ -159,7 +170,7 @@ function HomePage() {
         <section className="featured-grid">
           {featuredItems.map((item) => (
             <button
-              className={`feature-card ${item.className}`}
+              className="feature-card"
               key={item.label}
               type="button"
               onClick={() => item.path && navigate(item.path)}
@@ -174,7 +185,10 @@ function HomePage() {
         </section>
 
         {/* MENU */}
-        <section className="menu-panel">
+        <section
+          className="menu-panel"
+          style={{ "--menu-watermark": `url(${emblem})` } as CSSProperties}
+        >
           {menuItems.map((item) => (
             <button
               className="menu-item"
@@ -191,6 +205,8 @@ function HomePage() {
           ))}
         </section>
       </main>
+
+      <SearchPopup open={searchOpen} onClose={() => setSearchOpen(false)} />
     </Page>
   );
 }

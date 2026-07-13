@@ -2,7 +2,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   padding: 0 !important;
-  background: #fff8ed;
+  background: #edf9ff;
 }
 
 .ocop-header {
@@ -10,7 +10,7 @@
   min-height: 80px;
   padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
   color: #fff;
-  background: linear-gradient(125deg, #f27a10 0%, #ffc531 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   align-items: center;
   gap: 13px;
 }
@@ -36,7 +36,7 @@
   width: 38px;
   height: 38px;
   padding: 0;
-  color: #bd5a08;
+  color: #087ebd;
   background: rgb(255 255 255 / 94%);
   border: 0;
   border-radius: 50%;
@@ -52,9 +52,9 @@
 .ocop-intro {
   margin-bottom: 14px;
   padding: 15px;
-  color: #79430a;
-  background: linear-gradient(135deg, #ffffff 0%, #fff0cd 100%);
-  border: 1px solid #ffe0a2;
+  color: #0a5279;
+  background: linear-gradient(135deg, #ffffff 0%, #cdedff 100%);
+  border: 1px solid #a2deff;
   border-radius: 18px;
   box-shadow: 0 4px 14px rgb(196 102 14 / 8%);
 }
@@ -62,7 +62,7 @@
 .ocop-intro span {
   display: inline-block;
   margin-bottom: 5px;
-  color: #f27a10;
+  color: #10a3f2;
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.4px;
@@ -86,19 +86,19 @@
 
 .ocop-filter {
   padding: 8px 15px;
-  color: #9b5209;
+  color: #09689b;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
   background: #fff;
-  border: 1px solid #ffdda2;
+  border: 1px solid #a2deff;
   border-radius: 999px;
   flex: 0 0 auto;
 }
 
 .ocop-filter--active {
   color: #fff;
-  background: linear-gradient(125deg, #f27a10 0%, #ffc531 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   border-color: transparent;
   box-shadow: 0 4px 10px rgb(242 122 16 / 24%);
 }
@@ -113,7 +113,7 @@
   display: flex;
   width: 100%;
   padding: 13px;
-  color: #1d150c;
+  color: #0c171d;
   text-align: left;
   background: #fff;
   border: 0;
@@ -127,7 +127,7 @@
   display: grid;
   width: 68px;
   height: 68px;
-  background: #fff3d7;
+  background: #d7f1ff;
   border-radius: 15px;
   flex: 0 0 auto;
   place-items: center;
@@ -153,28 +153,28 @@
 .ocop-card__category {
   display: inline-block;
   padding: 3px 9px;
-  color: #a95708;
+  color: #0871a9;
   font-size: 10px;
   font-weight: 850;
-  background: #ffebc2;
+  background: #c2eaff;
   border-radius: 999px;
   text-transform: uppercase;
 }
 
 .ocop-stars {
   display: inline-flex;
-  color: #d7c9ae;
+  color: #aec9d7;
   font-size: 11px;
   gap: 1px;
 }
 
 .ocop-stars__star--active {
-  color: #ffb000;
+  color: #00a6ff;
 }
 
 .ocop-card h2 {
   margin: 6px 0 4px;
-  color: #19140f;
+  color: #0f1519;
   font-size: 16px;
   font-weight: 850;
   line-height: 1.25;
@@ -183,7 +183,7 @@
 .ocop-card__producer {
   display: flex;
   margin: 0 0 5px;
-  color: #7e6b52;
+  color: #526f7e;
   font-size: 12px;
   align-items: flex-start;
   gap: 4px;
@@ -199,7 +199,7 @@
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: #5f5548;
+  color: #48575f;
   font-size: 13px;
   line-height: 1.42;
   -webkit-box-orient: vertical;
@@ -207,14 +207,14 @@
 }
 
 .ocop-card__arrow {
-  color: #e4b764;
+  color: #64b7e4;
   font-size: 19px;
   flex: 0 0 auto;
 }
 
 .ocop-status {
   margin: 28px 0;
-  color: #786a58;
+  color: #586d78;
   font-size: 14px;
   text-align: center;
 }
@@ -230,7 +230,7 @@
   margin-top: calc(env(safe-area-inset-top) * -1);
   background:
     radial-gradient(circle at 72% 22%, rgb(255 255 255 / 45%), transparent 28%),
-    linear-gradient(150deg, #fff1be 0%, #ffb41f 100%);
+    linear-gradient(150deg, #bee8ff 0%, #1fb1ff 100%);
   place-items: center;
 }
 
@@ -253,7 +253,7 @@
   display: flex;
   margin-top: -24px;
   padding: 20px 16px 40px;
-  background: #fff8ed;
+  background: #edf9ff;
   border-radius: 28px 28px 0 0;
   flex-direction: column;
   gap: 14px;
@@ -268,7 +268,7 @@
 
 .ocop-detail__card h1 {
   margin: 8px 0 8px;
-  color: #19140f;
+  color: #0f1519;
   font-size: 23px;
   font-weight: 900;
   line-height: 1.18;
@@ -276,7 +276,7 @@
 
 .ocop-detail__card h2 {
   margin: 0 0 11px;
-  color: #b55c08;
+  color: #0878b5;
   font-size: 17px;
   font-weight: 900;
 }
@@ -297,20 +297,20 @@
 
 .ocop-detail__meta li {
   display: flex;
-  color: #665849;
+  color: #495c66;
   font-size: 14px;
   align-items: center;
   gap: 8px;
 }
 
 .ocop-detail__meta .zaui-icon {
-  color: #f27a10;
+  color: #10a3f2;
   font-size: 18px;
 }
 
 .ocop-detail__paragraph {
   margin: 0 0 10px;
-  color: #4f463d;
+  color: #3d494f;
   font-size: 14px;
   line-height: 1.58;
 }
@@ -330,20 +330,20 @@
 
 .ocop-detail__highlights li {
   display: flex;
-  color: #4f463d;
+  color: #3d494f;
   font-size: 14px;
   align-items: center;
   gap: 8px;
 }
 
 .ocop-detail__highlights .zaui-icon {
-  color: #f27a10;
+  color: #10a3f2;
   font-size: 18px;
 }
 
 .ocop-detail__note {
-  background: #fff0d2;
-  border: 1px solid #ffdf9d;
+  background: #d2efff;
+  border: 1px solid #9dddff;
 }
 
 @media (min-width: 520px) {

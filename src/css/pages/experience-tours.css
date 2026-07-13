@@ -2,7 +2,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   padding: 0 !important;
-  background: #f0fbff;
+  background: #f0faff;
 }
 
 .experience-tours-header {
@@ -10,7 +10,7 @@
   min-height: 80px;
   padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
   color: #fff;
-  background: linear-gradient(125deg, #0479b8 0%, #20c7da 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   align-items: center;
   gap: 13px;
 }
@@ -36,7 +36,7 @@
   width: 38px;
   height: 38px;
   padding: 0;
-  color: #086c9d;
+  color: #08699d;
   background: rgb(255 255 255 / 94%);
   border: 0;
   border-radius: 50%;
@@ -52,9 +52,9 @@
 .experience-tours-intro {
   margin-bottom: 14px;
   padding: 15px;
-  color: #1e6075;
-  background: linear-gradient(135deg, #ffffff 0%, #dff8ff 100%);
-  border: 1px solid #baeaf4;
+  color: #1e5775;
+  background: linear-gradient(135deg, #ffffff 0%, #dff4ff 100%);
+  border: 1px solid #bae0f4;
   border-radius: 18px;
   box-shadow: 0 4px 14px rgb(6 102 148 / 8%);
 }
@@ -76,19 +76,19 @@
 
 .experience-tours-filter {
   padding: 8px 15px;
-  color: #086c9d;
+  color: #08699d;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
   background: #fff;
-  border: 1px solid #bde8f2;
+  border: 1px solid #bddff2;
   border-radius: 999px;
   flex: 0 0 auto;
 }
 
 .experience-tours-filter--active {
   color: #fff;
-  background: linear-gradient(125deg, #0479b8 0%, #20c7da 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   border-color: transparent;
   box-shadow: 0 4px 10px rgb(4 121 184 / 24%);
 }
@@ -103,7 +103,7 @@
   display: flex;
   width: 100%;
   padding: 13px;
-  color: #0d1a1e;
+  color: #0d181e;
   text-align: left;
   background: #fff;
   border: 0;
@@ -117,7 +117,7 @@
   display: grid;
   width: 68px;
   height: 68px;
-  background: #dbf7ff;
+  background: #dbf2ff;
   border-radius: 15px;
   flex: 0 0 auto;
   place-items: center;
@@ -137,17 +137,17 @@
 .experience-tour-card__category {
   display: inline-block;
   padding: 3px 9px;
-  color: #086c9d;
+  color: #08699d;
   font-size: 10px;
   font-weight: 850;
-  background: #d5f4fb;
+  background: #d5eefb;
   border-radius: 999px;
   text-transform: uppercase;
 }
 
 .experience-tour-card h2 {
   margin: 6px 0 4px;
-  color: #101b1f;
+  color: #101a1f;
   font-size: 16px;
   font-weight: 850;
   line-height: 1.25;
@@ -156,7 +156,7 @@
 .experience-tour-card__duration {
   display: flex;
   margin: 0 0 5px;
-  color: #5d7680;
+  color: #5d7480;
   font-size: 12px;
   align-items: flex-start;
   gap: 4px;
@@ -172,7 +172,7 @@
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: #4c5d63;
+  color: #4c5b63;
   font-size: 13px;
   line-height: 1.42;
   -webkit-box-orient: vertical;
@@ -180,14 +180,14 @@
 }
 
 .experience-tour-card__arrow {
-  color: #7fcad9;
+  color: #7fbad9;
   font-size: 19px;
   flex: 0 0 auto;
 }
 
 .experience-tours-status {
   margin: 28px 0;
-  color: #5f747b;
+  color: #5f717b;
   font-size: 14px;
   text-align: center;
 }
@@ -203,7 +203,7 @@
   margin-top: calc(env(safe-area-inset-top) * -1);
   background:
     radial-gradient(circle at 72% 22%, rgb(255 255 255 / 42%), transparent 28%),
-    linear-gradient(150deg, #cdf5ff 0%, #1aa7d0 100%);
+    linear-gradient(150deg, #cdedff 0%, #1a90d0 100%);
   place-items: center;
 }
 
@@ -226,7 +226,7 @@
   display: flex;
   margin-top: -24px;
   padding: 20px 16px 40px;
-  background: #f0fbff;
+  background: #f0faff;
   border-radius: 28px 28px 0 0;
   flex-direction: column;
   gap: 14px;
@@ -241,7 +241,7 @@
 
 .experience-tour-detail__card h1 {
   margin: 8px 0 13px;
-  color: #101b1f;
+  color: #101a1f;
   font-size: 23px;
   font-weight: 900;
   line-height: 1.18;
@@ -249,7 +249,7 @@
 
 .experience-tour-detail__card h2 {
   margin: 0 0 11px;
-  color: #086c9d;
+  color: #08699d;
   font-size: 17px;
   font-weight: 900;
 }
@@ -267,7 +267,7 @@
 .experience-tour-detail__meta li,
 .experience-tour-detail__included li {
   display: flex;
-  color: #455961;
+  color: #455761;
   font-size: 14px;
   align-items: center;
   gap: 8px;
@@ -281,7 +281,7 @@
 
 .experience-tour-detail__paragraph {
   margin: 0 0 10px;
-  color: #44545a;
+  color: #44525a;
   font-size: 14px;
   line-height: 1.58;
 }
@@ -302,7 +302,7 @@
 
 .experience-tour-detail__timeline li {
   display: flex;
-  color: #44545a;
+  color: #44525a;
   font-size: 14px;
   align-items: flex-start;
   gap: 10px;
@@ -316,7 +316,7 @@
   color: #fff;
   font-size: 12px;
   font-weight: 900;
-  background: linear-gradient(125deg, #0479b8 0%, #20c7da 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   border-radius: 50%;
   flex: 0 0 auto;
   place-items: center;
@@ -332,8 +332,8 @@
 }
 
 .experience-tour-detail__note {
-  background: #dff8ff;
-  border: 1px solid #baeaf4;
+  background: #dff4ff;
+  border: 1px solid #bae0f4;
 }
 
 @media (min-width: 520px) {

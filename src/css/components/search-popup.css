@@ -1,0 +1,268 @@
+.search-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+.search-popup__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(8 40 64 / 45%);
+  animation: search-popup-fade 0.2s ease-out;
+}
+
+.search-popup__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  max-height: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #f2fafd;
+  flex-direction: column;
+  animation: search-popup-slide 0.25s ease-out;
+}
+
+@keyframes search-popup-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes search-popup-slide {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+   THANH TÌM KIẾM
+================================ */
+
+.search-popup__bar {
+  display: flex;
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px;
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
+  align-items: center;
+  gap: 10px;
+}
+
+.search-popup__input {
+  display: flex;
+  height: 44px;
+  padding: 0 10px 0 14px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgb(10 70 120 / 18%);
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+
+  > .zaui-icon {
+    color: #1e8fd5;
+    font-size: 20px;
+    flex: 0 0 auto;
+  }
+
+  input {
+    min-width: 0;
+    height: 100%;
+    border: none;
+    outline: none;
+    color: #14395c;
+    background: transparent;
+    font-size: 15px;
+    flex: 1 1 auto;
+
+    &::placeholder {
+      color: #8fb4c9;
+    }
+
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+}
+
+.search-popup__clear {
+  display: flex;
+  padding: 4px;
+  border: none;
+  color: #b1cddd;
+  background: transparent;
+  font-size: 18px;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.search-popup__cancel {
+  padding: 0 2px;
+  border: none;
+  color: #fff;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 700;
+  flex: 0 0 auto;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+/* ================================
+   NỘI DUNG
+================================ */
+
+.search-popup__body {
+  padding: 18px 16px calc(env(safe-area-inset-bottom, 0px) + 28px);
+  overflow-y: auto;
+  flex: 1 1 auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.search-popup__suggest {
+  p {
+    margin: 0 0 10px;
+    color: #33566b;
+    font-size: 14px;
+    font-weight: 700;
+  }
+}
+
+.search-popup__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  button {
+    padding: 8px 16px;
+    border: 1px solid #a8def2;
+    border-radius: 999px;
+    color: #0d4a73;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 600;
+
+    &:active {
+      color: #fff;
+      background: #1e8fd5;
+    }
+  }
+}
+
+.search-popup__empty {
+  margin: 32px 0;
+  color: #5d7680;
+  font-size: 15px;
+  text-align: center;
+}
+
+/* ================================
+   NHÓM KẾT QUẢ
+================================ */
+
+.search-popup__group {
+  margin-bottom: 18px;
+
+  h3 {
+    display: flex;
+    margin: 0 0 10px;
+    color: #14395c;
+    font-size: 16px;
+    font-weight: 900;
+    align-items: center;
+    gap: 8px;
+
+    span {
+      width: 4px;
+      height: 16px;
+      border-radius: 999px;
+      background: #1e8fd5;
+    }
+  }
+}
+
+.search-result {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 12px;
+  border: none;
+  border-radius: 16px;
+  text-align: left;
+  background: #fff;
+  box-shadow: 0 3px 10px rgb(15 90 150 / 7%);
+  align-items: center;
+  gap: 12px;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  > .zaui-icon {
+    color: #8fbfd8;
+    font-size: 18px;
+    flex: 0 0 auto;
+  }
+}
+
+.search-result__image {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: #e3f6fc;
+  place-items: center;
+  flex: 0 0 auto;
+
+  img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+  }
+}
+
+.search-result__body {
+  min-width: 0;
+  flex: 1 1 auto;
+
+  h4 {
+    margin: 0 0 3px;
+    overflow: hidden;
+    color: #101010;
+    font-size: 15px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  p {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: #5d7680;
+    font-size: 12.5px;
+    line-height: 1.4;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
+@media (min-width: 520px) {
+  .search-popup__panel {
+    max-width: 430px;
+    margin: 0 auto;
+  }
+}

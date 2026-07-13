@@ -2,7 +2,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   padding: 0 !important;
-  background: #fff7f3;
+  background: #f3fbff;
 }
 
 .cuisine-header {
@@ -10,7 +10,7 @@
   min-height: 80px;
   padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
   color: #fff;
-  background: linear-gradient(125deg, #d83c12 0%, #ff9c2f 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   align-items: center;
   gap: 13px;
 }
@@ -36,7 +36,7 @@
   width: 38px;
   height: 38px;
   padding: 0;
-  color: #b43110;
+  color: #107bb4;
   background: rgb(255 255 255 / 94%);
   border: 0;
   border-radius: 50%;
@@ -52,9 +52,9 @@
 .cuisine-intro {
   margin-bottom: 14px;
   padding: 15px;
-  color: #7c351f;
-  background: linear-gradient(135deg, #ffffff 0%, #ffe4d5 100%);
-  border: 1px solid #ffcdb7;
+  color: #1f5b7c;
+  background: linear-gradient(135deg, #ffffff 0%, #d5f0ff 100%);
+  border: 1px solid #b7e6ff;
   border-radius: 18px;
   box-shadow: 0 4px 14px rgb(156 45 12 / 8%);
 }
@@ -76,19 +76,19 @@
 
 .cuisine-filter {
   padding: 8px 15px;
-  color: #ad3c16;
+  color: #1678ad;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
   background: #fff;
-  border: 1px solid #ffc9b0;
+  border: 1px solid #b0e3ff;
   border-radius: 999px;
   flex: 0 0 auto;
 }
 
 .cuisine-filter--active {
   color: #fff;
-  background: linear-gradient(125deg, #d83c12 0%, #ff9c2f 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   border-color: transparent;
   box-shadow: 0 4px 10px rgb(216 60 18 / 24%);
 }
@@ -103,7 +103,7 @@
   display: flex;
   width: 100%;
   padding: 13px;
-  color: #1e130f;
+  color: #0f191e;
   text-align: left;
   background: #fff;
   border: 0;
@@ -117,7 +117,7 @@
   display: grid;
   width: 68px;
   height: 68px;
-  background: #ffe8dc;
+  background: #dcf3ff;
   border-radius: 15px;
   flex: 0 0 auto;
   place-items: center;
@@ -137,17 +137,17 @@
 .cuisine-card__category {
   display: inline-block;
   padding: 3px 9px;
-  color: #b43712;
+  color: #127bb4;
   font-size: 10px;
   font-weight: 850;
-  background: #ffdccc;
+  background: #ccedff;
   border-radius: 999px;
   text-transform: uppercase;
 }
 
 .cuisine-card h2 {
   margin: 6px 0 4px;
-  color: #1d130f;
+  color: #0f181d;
   font-size: 16px;
   font-weight: 850;
   line-height: 1.25;
@@ -156,7 +156,7 @@
 .cuisine-card__price {
   display: flex;
   margin: 0 0 5px;
-  color: #806258;
+  color: #587280;
   font-size: 12px;
   align-items: flex-start;
   gap: 4px;
@@ -172,7 +172,7 @@
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: #5d504b;
+  color: #4b575d;
   font-size: 13px;
   line-height: 1.42;
   -webkit-box-orient: vertical;
@@ -180,14 +180,14 @@
 }
 
 .cuisine-card__arrow {
-  color: #df9b75;
+  color: #75badf;
   font-size: 19px;
   flex: 0 0 auto;
 }
 
 .cuisine-status {
   margin: 28px 0;
-  color: #765f57;
+  color: #576b76;
   font-size: 14px;
   text-align: center;
 }
@@ -203,7 +203,7 @@
   margin-top: calc(env(safe-area-inset-top) * -1);
   background:
     radial-gradient(circle at 72% 22%, rgb(255 255 255 / 42%), transparent 28%),
-    linear-gradient(150deg, #ffe0cf 0%, #ff7931 100%);
+    linear-gradient(150deg, #cfeeff 0%, #31b7ff 100%);
   place-items: center;
 }
 
@@ -226,7 +226,7 @@
   display: flex;
   margin-top: -24px;
   padding: 20px 16px 40px;
-  background: #fff7f3;
+  background: #f3fbff;
   border-radius: 28px 28px 0 0;
   flex-direction: column;
   gap: 14px;
@@ -241,7 +241,7 @@
 
 .cuisine-detail__card h1 {
   margin: 8px 0 13px;
-  color: #1d130f;
+  color: #0f181d;
   font-size: 23px;
   font-weight: 900;
   line-height: 1.18;
@@ -249,7 +249,7 @@
 
 .cuisine-detail__card h2 {
   margin: 0 0 11px;
-  color: #b43712;
+  color: #127bb4;
   font-size: 17px;
   font-weight: 900;
 }
@@ -269,7 +269,7 @@
 .cuisine-detail__highlights li,
 .cuisine-detail__places li {
   display: flex;
-  color: #544842;
+  color: #424e54;
   font-size: 14px;
   align-items: center;
   gap: 8px;
@@ -278,7 +278,7 @@
 .cuisine-detail__meta .zaui-icon,
 .cuisine-detail__highlights .zaui-icon,
 .cuisine-detail__places .zaui-icon {
-  color: #d83c12;
+  color: #1293d8;
   font-size: 18px;
 }
 
@@ -294,8 +294,8 @@
 }
 
 .cuisine-detail__tip {
-  background: #ffe9dc;
-  border: 1px solid #ffcdb7;
+  background: #dcf3ff;
+  border: 1px solid #b7e6ff;
 }
 
 @media (min-width: 520px) {

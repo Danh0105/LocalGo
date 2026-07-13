@@ -2,7 +2,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   padding: 0 !important;
-  background: #f4fbf7;
+  background: #f4f9fb;
 }
 
 .map-places-header {
@@ -10,7 +10,7 @@
   min-height: 80px;
   padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
   color: #fff;
-  background: linear-gradient(125deg, #0b8c79 0%, #45d16f 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   align-items: center;
   gap: 13px;
 }
@@ -36,7 +36,7 @@
   width: 38px;
   height: 38px;
   padding: 0;
-  color: #087867;
+  color: #085178;
   background: rgb(255 255 255 / 94%);
   border: 0;
   border-radius: 50%;
@@ -52,9 +52,9 @@
 .map-places-preview {
   margin-bottom: 14px;
   padding: 14px;
-  color: #1f6258;
-  background: linear-gradient(135deg, #ffffff 0%, #e1fff1 100%);
-  border: 1px solid #c6efd9;
+  color: #1f4b62;
+  background: linear-gradient(135deg, #ffffff 0%, #e1f4ff 100%);
+  border: 1px solid #c6e1ef;
   border-radius: 18px;
   box-shadow: 0 4px 14px rgb(6 115 98 / 8%);
 }
@@ -66,8 +66,8 @@
   background:
     linear-gradient(90deg, rgb(11 140 121 / 10%) 1px, transparent 1px),
     linear-gradient(0deg, rgb(11 140 121 / 10%) 1px, transparent 1px),
-    radial-gradient(circle at 70% 28%, #b8ffd0 0 14%, transparent 15%),
-    linear-gradient(135deg, #dff8ff 0%, #e8ffe9 100%);
+    radial-gradient(circle at 70% 28%, #b8e6ff 0 14%, transparent 15%),
+    linear-gradient(135deg, #dff4ff 0%, #e8f7ff 100%);
   background-size:
     34px 34px,
     34px 34px,
@@ -135,19 +135,19 @@
 
 .map-places-filter {
   padding: 8px 15px;
-  color: #087867;
+  color: #085178;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
   background: #fff;
-  border: 1px solid #bee8d4;
+  border: 1px solid #bed9e8;
   border-radius: 999px;
   flex: 0 0 auto;
 }
 
 .map-places-filter--active {
   color: #fff;
-  background: linear-gradient(125deg, #0b8c79 0%, #45d16f 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   border-color: transparent;
   box-shadow: 0 4px 10px rgb(11 140 121 / 24%);
 }
@@ -162,7 +162,7 @@
   display: flex;
   width: 100%;
   padding: 13px;
-  color: #0e1c18;
+  color: #0e171c;
   text-align: left;
   background: #fff;
   border: 0;
@@ -176,7 +176,7 @@
   display: grid;
   width: 68px;
   height: 68px;
-  background: #dcfbea;
+  background: #dcf0fb;
   border-radius: 15px;
   flex: 0 0 auto;
   place-items: center;
@@ -196,17 +196,17 @@
 .map-place-card__category {
   display: inline-block;
   padding: 3px 9px;
-  color: #087867;
+  color: #085178;
   font-size: 10px;
   font-weight: 850;
-  background: #d2f5e4;
+  background: #d2e9f5;
   border-radius: 999px;
   text-transform: uppercase;
 }
 
 .map-place-card h2 {
   margin: 6px 0 4px;
-  color: #101b18;
+  color: #10171b;
   font-size: 16px;
   font-weight: 850;
   line-height: 1.25;
@@ -215,7 +215,7 @@
 .map-place-card__address {
   display: flex;
   margin: 0 0 5px;
-  color: #5e756c;
+  color: #5e6d75;
   font-size: 12px;
   align-items: flex-start;
   gap: 4px;
@@ -239,7 +239,7 @@
 }
 
 .map-place-card__arrow {
-  color: #83cdb1;
+  color: #83b3cd;
   font-size: 19px;
   flex: 0 0 auto;
 }
@@ -262,7 +262,7 @@
   margin-top: calc(env(safe-area-inset-top) * -1);
   background:
     radial-gradient(circle at 72% 22%, rgb(255 255 255 / 42%), transparent 28%),
-    linear-gradient(150deg, #d4ffe5 0%, #21b78b 100%);
+    linear-gradient(150deg, #d4f0ff 0%, #2182b7 100%);
   place-items: center;
 }
 
@@ -285,7 +285,7 @@
   display: flex;
   margin-top: -24px;
   padding: 20px 16px 40px;
-  background: #f4fbf7;
+  background: #f4f9fb;
   border-radius: 28px 28px 0 0;
   flex-direction: column;
   gap: 14px;
@@ -300,7 +300,7 @@
 
 .map-place-detail__card h1 {
   margin: 8px 0 13px;
-  color: #101b18;
+  color: #10171b;
   font-size: 23px;
   font-weight: 900;
   line-height: 1.18;
@@ -308,7 +308,7 @@
 
 .map-place-detail__card h2 {
   margin: 0 0 11px;
-  color: #087867;
+  color: #085178;
   font-size: 17px;
   font-weight: 900;
 }
@@ -326,7 +326,7 @@
 .map-place-detail__meta li,
 .map-place-detail__highlights li {
   display: flex;
-  color: #465b53;
+  color: #46545b;
   font-size: 14px;
   align-items: center;
   gap: 8px;
@@ -334,13 +334,13 @@
 
 .map-place-detail__meta .zaui-icon,
 .map-place-detail__highlights .zaui-icon {
-  color: #0b8c79;
+  color: #0b5f8c;
   font-size: 18px;
 }
 
 .map-place-detail__paragraph {
   margin: 0 0 10px;
-  color: #44544e;
+  color: #444e54;
   font-size: 14px;
   line-height: 1.58;
 }
@@ -350,13 +350,13 @@
 }
 
 .map-place-detail__coords {
-  background: #e1fff1;
-  border: 1px solid #c6efd9;
+  background: #e1f4ff;
+  border: 1px solid #c6e1ef;
 }
 
 .map-place-detail__coords div {
   display: flex;
-  color: #1f6258;
+  color: #1f4b62;
   font-size: 14px;
   font-weight: 800;
   flex-wrap: wrap;
@@ -370,8 +370,8 @@
 }
 
 .map-place-detail__note {
-  background: #e1fff1;
-  border: 1px solid #c6efd9;
+  background: #e1f4ff;
+  border: 1px solid #c6e1ef;
 }
 
 @media (min-width: 520px) {

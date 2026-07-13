@@ -10,7 +10,7 @@
   min-height: 80px;
   padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
   color: #fff;
-  background: linear-gradient(125deg, #1762d0 0%, #28c4c8 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   align-items: center;
   gap: 13px;
 }
@@ -36,7 +36,7 @@
   width: 38px;
   height: 38px;
   padding: 0;
-  color: #1558b7;
+  color: #157eb7;
   background: rgb(255 255 255 / 94%);
   border: 0;
   border-radius: 50%;
@@ -52,9 +52,9 @@
 .contacts-intro {
   margin-bottom: 14px;
   padding: 15px;
-  color: #245677;
-  background: linear-gradient(135deg, #ffffff 0%, #dff6ff 100%);
-  border: 1px solid #c6e7f4;
+  color: #245a77;
+  background: linear-gradient(135deg, #ffffff 0%, #dff4ff 100%);
+  border: 1px solid #c6e4f4;
   border-radius: 18px;
   box-shadow: 0 4px 14px rgb(23 98 208 / 8%);
 }
@@ -76,19 +76,19 @@
 
 .contacts-filter {
   padding: 8px 15px;
-  color: #1558b7;
+  color: #157eb7;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
   background: #fff;
-  border: 1px solid #c7def8;
+  border: 1px solid #c7e7f8;
   border-radius: 999px;
   flex: 0 0 auto;
 }
 
 .contacts-filter--active {
   color: #fff;
-  background: linear-gradient(125deg, #1762d0 0%, #28c4c8 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   border-color: transparent;
   box-shadow: 0 4px 10px rgb(23 98 208 / 24%);
 }
@@ -103,7 +103,7 @@
   display: flex;
   width: 100%;
   padding: 13px;
-  color: #101922;
+  color: #101c22;
   text-align: left;
   background: #fff;
   border: 0;
@@ -137,17 +137,17 @@
 .contact-card__category {
   display: inline-block;
   padding: 3px 9px;
-  color: #1558b7;
+  color: #157eb7;
   font-size: 10px;
   font-weight: 850;
-  background: #ddecff;
+  background: #ddf3ff;
   border-radius: 999px;
   text-transform: uppercase;
 }
 
 .contact-card h2 {
   margin: 6px 0 4px;
-  color: #101922;
+  color: #101c22;
   font-size: 16px;
   font-weight: 850;
   line-height: 1.25;
@@ -156,7 +156,7 @@
 .contact-card__phone {
   display: flex;
   margin: 0 0 5px;
-  color: #607385;
+  color: #607885;
   font-size: 12px;
   align-items: flex-start;
   gap: 4px;
@@ -172,7 +172,7 @@
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: #4f5d69;
+  color: #4f6069;
   font-size: 13px;
   line-height: 1.42;
   -webkit-box-orient: vertical;
@@ -180,14 +180,14 @@
 }
 
 .contact-card__arrow {
-  color: #86b6df;
+  color: #86c0df;
   font-size: 19px;
   flex: 0 0 auto;
 }
 
 .contacts-status {
   margin: 28px 0;
-  color: #657686;
+  color: #657a86;
   font-size: 14px;
   text-align: center;
 }
@@ -203,7 +203,7 @@
   margin-top: calc(env(safe-area-inset-top) * -1);
   background:
     radial-gradient(circle at 72% 22%, rgb(255 255 255 / 42%), transparent 28%),
-    linear-gradient(150deg, #d9f5ff 0%, #2698dd 100%);
+    linear-gradient(150deg, #d9f2ff 0%, #269ddd 100%);
   place-items: center;
 }
 
@@ -241,7 +241,7 @@
 
 .contact-detail__card h1 {
   margin: 8px 0 8px;
-  color: #101922;
+  color: #101c22;
   font-size: 23px;
   font-weight: 900;
   line-height: 1.18;
@@ -249,14 +249,14 @@
 
 .contact-detail__card h2 {
   margin: 0 0 11px;
-  color: #1558b7;
+  color: #157eb7;
   font-size: 17px;
   font-weight: 900;
 }
 
 .contact-detail__role {
   margin: 0 0 13px;
-  color: #4f5d69;
+  color: #4f6069;
   font-size: 14px;
   font-weight: 650;
   line-height: 1.45;
@@ -275,7 +275,7 @@
 .contact-detail__meta li,
 .contact-detail__topics li {
   display: flex;
-  color: #465968;
+  color: #465c68;
   font-size: 14px;
   align-items: center;
   gap: 8px;
@@ -283,7 +283,7 @@
 
 .contact-detail__meta .zaui-icon,
 .contact-detail__topics .zaui-icon {
-  color: #1762d0;
+  color: #178fd0;
   font-size: 18px;
 }
 
@@ -300,7 +300,7 @@
   font-size: 14px;
   font-weight: 850;
   text-decoration: none;
-  background: linear-gradient(125deg, #1762d0 0%, #28c4c8 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   border-radius: 16px;
   align-items: center;
   justify-content: center;
@@ -314,7 +314,7 @@
 
 .contact-detail__paragraph {
   margin: 0 0 10px;
-  color: #445462;
+  color: #445862;
   font-size: 14px;
   line-height: 1.58;
 }
@@ -324,8 +324,8 @@
 }
 
 .contact-detail__note {
-  background: #dff6ff;
-  border: 1px solid #c6e7f4;
+  background: #dff4ff;
+  border: 1px solid #c6e4f4;
 }
 
 @media (min-width: 520px) {

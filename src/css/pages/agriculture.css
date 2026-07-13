@@ -2,7 +2,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   padding: 0 !important;
-  background: #f4fbef;
+  background: #f2fafd;
 }
 
 .agriculture-header {
@@ -10,7 +10,7 @@
   min-height: 80px;
   padding: calc(env(safe-area-inset-top) + 14px) 18px 16px;
   color: #fff;
-  background: linear-gradient(125deg, #24953f 0%, #6ed21e 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   align-items: center;
   gap: 13px;
 }
@@ -36,7 +36,7 @@
   width: 38px;
   height: 38px;
   padding: 0;
-  color: #237a27;
+  color: #235c7a;
   background: rgb(255 255 255 / 94%);
   border: 0;
   border-radius: 50%;
@@ -52,9 +52,9 @@
 .agriculture-intro {
   margin-bottom: 14px;
   padding: 14px 15px;
-  color: #335b2f;
-  background: linear-gradient(135deg, #ffffff 0%, #ebffdd 100%);
-  border: 1px solid #d6f1c4;
+  color: #2f4c5b;
+  background: linear-gradient(135deg, #ffffff 0%, #ddf3ff 100%);
+  border: 1px solid #c4e1f1;
   border-radius: 18px;
   box-shadow: 0 4px 14px rgb(52 138 44 / 8%);
 }
@@ -76,19 +76,19 @@
 
 .agriculture-filter {
   padding: 8px 15px;
-  color: #2e7430;
+  color: #2e5b74;
   font-size: 13px;
   font-weight: 800;
   white-space: nowrap;
   background: #fff;
-  border: 1px solid #cfebc6;
+  border: 1px solid #c6deeb;
   border-radius: 999px;
   flex: 0 0 auto;
 }
 
 .agriculture-filter--active {
   color: #fff;
-  background: linear-gradient(125deg, #24953f 0%, #6ed21e 100%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   border-color: transparent;
   box-shadow: 0 4px 10px rgb(36 149 63 / 24%);
 }
@@ -103,7 +103,7 @@
   display: flex;
   width: 100%;
   padding: 13px;
-  color: #111b10;
+  color: #10171b;
   text-align: left;
   background: #fff;
   border: 0;
@@ -117,7 +117,7 @@
   display: grid;
   width: 68px;
   height: 68px;
-  background: #eaffdf;
+  background: #dff4ff;
   border-radius: 15px;
   flex: 0 0 auto;
   place-items: center;
@@ -137,17 +137,17 @@
 .agriculture-card__category {
   display: inline-block;
   padding: 3px 9px;
-  color: #22742b;
+  color: #225774;
   font-size: 10px;
   font-weight: 850;
-  background: #dfffce;
+  background: #ceeeff;
   border-radius: 999px;
   text-transform: uppercase;
 }
 
 .agriculture-card h2 {
   margin: 6px 0 4px;
-  color: #101810;
+  color: #101518;
   font-size: 16px;
   font-weight: 850;
   line-height: 1.25;
@@ -156,7 +156,7 @@
 .agriculture-card__location {
   display: flex;
   margin: 0 0 5px;
-  color: #647760;
+  color: #606f77;
   font-size: 12px;
   align-items: flex-start;
   gap: 4px;
@@ -172,7 +172,7 @@
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: #4d5c49;
+  color: #49555c;
   font-size: 13px;
   line-height: 1.42;
   -webkit-box-orient: vertical;
@@ -180,7 +180,7 @@
 }
 
 .agriculture-card__arrow {
-  color: #9fcc8a;
+  color: #8ab5cc;
   font-size: 19px;
   flex: 0 0 auto;
 }
@@ -203,7 +203,7 @@
   margin-top: calc(env(safe-area-inset-top) * -1);
   background:
     radial-gradient(circle at 75% 22%, rgb(255 255 255 / 40%), transparent 28%),
-    linear-gradient(150deg, #daffc6 0%, #65cf2b 100%);
+    linear-gradient(150deg, #c6ebff 0%, #2b96cf 100%);
   place-items: center;
 }
 
@@ -226,7 +226,7 @@
   display: flex;
   margin-top: -24px;
   padding: 20px 16px 40px;
-  background: #f4fbef;
+  background: #f2fafd;
   border-radius: 28px 28px 0 0;
   flex-direction: column;
   gap: 14px;
@@ -241,7 +241,7 @@
 
 .agriculture-detail__card h1 {
   margin: 8px 0 13px;
-  color: #101810;
+  color: #101518;
   font-size: 23px;
   font-weight: 900;
   line-height: 1.18;
@@ -249,7 +249,7 @@
 
 .agriculture-detail__card h2 {
   margin: 0 0 11px;
-  color: #22742b;
+  color: #225774;
   font-size: 17px;
   font-weight: 900;
 }
@@ -265,20 +265,20 @@
 
 .agriculture-detail__meta li {
   display: flex;
-  color: #52684d;
+  color: #4d5f68;
   font-size: 14px;
   align-items: center;
   gap: 8px;
 }
 
 .agriculture-detail__meta .zaui-icon {
-  color: #3daf32;
+  color: #1e8fd5;
   font-size: 18px;
 }
 
 .agriculture-detail__paragraph {
   margin: 0 0 10px;
-  color: #465041;
+  color: #414b50;
   font-size: 14px;
   line-height: 1.58;
 }
@@ -298,20 +298,20 @@
 
 .agriculture-detail__highlights li {
   display: flex;
-  color: #465041;
+  color: #414b50;
   font-size: 14px;
   align-items: center;
   gap: 8px;
 }
 
 .agriculture-detail__highlights .zaui-icon {
-  color: #3daf32;
+  color: #1e8fd5;
   font-size: 18px;
 }
 
 .agriculture-detail__support {
-  background: #edffe3;
-  border: 1px solid #d0efc5;
+  background: #e3f5ff;
+  border: 1px solid #c5e0ef;
 }
 
 @media (min-width: 520px) {
