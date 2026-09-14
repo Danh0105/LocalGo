@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import PreviewableImage from "@/components/previewable-image";
 import { CraftVillage } from "@/data/craft-villages";
 import { getCraftVillageById } from "@/services/craft-villages";
 import "../css/pages/craft-villages.css";
@@ -10,27 +11,31 @@ function CraftVillageDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [village, setVillage] = useState<CraftVillage>();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<"not-found" | "request" | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
-    let isActive = true;
-
+    const controller = new AbortController();
     setIsLoading(true);
+    setError(null);
     if (!id) {
-      setVillage(undefined);
+      setError("not-found");
       setIsLoading(false);
-      return;
+      return () => controller.abort();
     }
-
-    getCraftVillageById(id).then((data) => {
-      if (!isActive) return;
-      setVillage(data);
-      setIsLoading(false);
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, [id]);
+    async function load(): Promise<void> {
+      try {
+        setVillage(await getCraftVillageById(id!, controller.signal));
+      } catch (requestError: unknown) {
+        if (requestError instanceof DOMException && requestError.name === "AbortError") return;
+        setError(requestError instanceof Error && requestError.message === "NOT_FOUND" ? "not-found" : "request");
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
+      }
+    }
+    void load();
+    return () => controller.abort();
+  }, [id, retryKey]);
 
   if (isLoading) {
     return (
@@ -40,7 +45,7 @@ function CraftVillageDetailPage() {
     );
   }
 
-  if (!village) {
+  if (!village || error) {
     return (
       <Page className="craft-villages-page">
         <header className="craft-villages-header">
@@ -52,8 +57,24 @@ function CraftVillageDetailPage() {
           >
             <Icon icon="zi-arrow-left" />
           </button>
-          <h1>Không tìm thấy làng nghề</h1>
+          <h1>{error === "request" ? "Không thể tải dữ liệu" : "Không tìm thấy làng nghề"}</h1>
         </header>
+        <main className="craft-villages-content">
+          <p className="craft-village-detail__empty">
+            {error === "request"
+              ? "Kết nối không thành công. Vui lòng thử lại."
+              : "Làng nghề này không tồn tại, đã bị ẩn hoặc đã bị xóa."}
+          </p>
+          {error === "request" && (
+            <button
+              className="craft-village-detail__retry"
+              type="button"
+              onClick={() => setRetryKey((value) => value + 1)}
+            >
+              Thử lại
+            </button>
+          )}
+        </main>
       </Page>
     );
   }
@@ -61,7 +82,11 @@ function CraftVillageDetailPage() {
   return (
     <Page className="craft-villages-page">
       <section className="craft-village-detail__hero">
-        <img src={village.image} alt="" />
+        <PreviewableImage
+          src={village.image}
+          alt={village.name}
+          previewTitle={village.name}
+        />
         <button
           className="craft-villages-back craft-village-detail__back"
           type="button"

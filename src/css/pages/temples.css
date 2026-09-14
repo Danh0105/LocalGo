@@ -287,6 +287,27 @@
   text-align: center;
 }
 
+.temples-status {
+  padding: 32px 16px;
+  color: #68707c;
+  text-align: center;
+}
+
+.temples-status--error {
+  color: #b42318;
+}
+
+.temples-status button,
+.temple-detail__retry {
+  margin-top: 10px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #1677ff;
+  color: #fff;
+  font-weight: 600;
+}
+
 @media (min-width: 520px) {
   .temples-page {
     max-width: 430px;

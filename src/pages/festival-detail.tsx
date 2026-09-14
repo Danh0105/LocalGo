@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import PreviewableImage from "@/components/previewable-image";
 import { Festival } from "@/data/festivals";
 import { getFestivalById } from "@/services/festivals";
 import "../css/pages/festivals.css";
@@ -10,27 +11,31 @@ function FestivalDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [festival, setFestival] = useState<Festival>();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<"not-found" | "request" | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
-    let isActive = true;
-
+    const controller = new AbortController();
     setIsLoading(true);
+    setError(null);
     if (!id) {
-      setFestival(undefined);
+      setError("not-found");
       setIsLoading(false);
-      return;
+      return () => controller.abort();
     }
-
-    getFestivalById(id).then((data) => {
-      if (!isActive) return;
-      setFestival(data);
-      setIsLoading(false);
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, [id]);
+    async function load(): Promise<void> {
+      try {
+        setFestival(await getFestivalById(id!, controller.signal));
+      } catch (requestError: unknown) {
+        if (requestError instanceof DOMException && requestError.name === "AbortError") return;
+        setError(requestError instanceof Error && requestError.message === "NOT_FOUND" ? "not-found" : "request");
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
+      }
+    }
+    void load();
+    return () => controller.abort();
+  }, [id, retryKey]);
 
   if (isLoading) {
     return (
@@ -40,7 +45,7 @@ function FestivalDetailPage() {
     );
   }
 
-  if (!festival) {
+  if (!festival || error) {
     return (
       <Page className="festivals-page">
         <header className="festivals-header">
@@ -52,8 +57,24 @@ function FestivalDetailPage() {
           >
             <Icon icon="zi-arrow-left" />
           </button>
-          <h1>Không tìm thấy lễ hội</h1>
+          <h1>{error === "request" ? "Không thể tải dữ liệu" : "Không tìm thấy lễ hội"}</h1>
         </header>
+        <main className="festivals-content">
+          <p className="festival-detail__empty">
+            {error === "request"
+              ? "Kết nối không thành công. Vui lòng thử lại."
+              : "Lễ hội này không tồn tại, đã bị ẩn hoặc đã bị xóa."}
+          </p>
+          {error === "request" && (
+            <button
+              className="festival-detail__retry"
+              type="button"
+              onClick={() => setRetryKey((value) => value + 1)}
+            >
+              Thử lại
+            </button>
+          )}
+        </main>
       </Page>
     );
   }
@@ -61,7 +82,11 @@ function FestivalDetailPage() {
   return (
     <Page className="festivals-page">
       <section className="festival-detail__hero">
-        <img src={festival.image} alt="" />
+        <PreviewableImage
+          src={festival.image}
+          alt={festival.name}
+          previewTitle={festival.name}
+        />
         <button
           className="festivals-back festival-detail__back"
           type="button"

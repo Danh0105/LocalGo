@@ -1,35 +1,42 @@
 .home-page {
   min-height: 100vh;
-  overflow-x: hidden;
-  background: #fff;
   padding: 0 !important;
+  overflow-x: hidden;
+  color: #0d0d0d;
+  background: #fff;
 }
 
 @media (min-width: 520px) {
   .home-page {
     max-width: 430px;
     margin: 0 auto;
+    box-shadow: 0 0 40px rgb(18 68 96 / 10%);
   }
 }
 
-/* ================================
-   HERO
-================================ */
-
+/* Hero */
 .village-hero {
   position: relative;
   width: 100%;
   padding-top: calc(env(safe-area-inset-top, 0px) + 44px);
   overflow: hidden;
-  background: #189fd9;
+  background: #079fd8;
+}
+
+.village-hero__back {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 22px);
+  left: max(16px, env(safe-area-inset-left, 0px));
+  z-index: 4;
 }
 
 .village-hero__background {
   display: block;
   width: 100%;
-  height: 340px;
-  object-fit: cover;
-  object-position: center top;
+  height: 320px;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
 }
 
 .village-hero__wave {
@@ -40,24 +47,30 @@
   z-index: 2;
   display: block;
   width: calc(100% + 4px);
-  height: 70px;
+  height: 74px;
 }
 
 .village-hero__brand {
   position: absolute;
   right: 0;
-  bottom: 4px;
+  bottom: 0;
   left: 0;
   z-index: 3;
   display: flex;
+  width: fit-content;
+  min-height: 40px;
+  margin: 0 auto;
+  padding: 1px 13px 0;
+  border-radius: 3px 3px 0 0;
+  background: #fff;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
 
   h1 {
     margin: 0;
-    color: #2b9cd8;
-    font-size: 24px;
+    color: #079fe0;
+    font-size: 19px;
     font-weight: 900;
     line-height: 1;
     letter-spacing: 0.2px;
@@ -66,41 +79,33 @@
 }
 
 .village-hero__mascot {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
 }
 
-/* ================================
-   MAIN CONTENT
-================================ */
-
+/* Main content */
 .home-content {
   position: relative;
   z-index: 3;
-  padding: 0 16px 28px;
+  padding: 0 22px 34px;
   background: #fff;
 }
 
-/* ================================
-   SECTION HEADING
-================================ */
-
 .section-heading-row {
   display: flex;
-  margin-top: 22px;
-  margin-bottom: 20px;
+  margin: 28px 0 25px;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 18px;
 }
 
 .section-title {
   display: flex;
   margin: 0;
-  color: #101010;
-  font-size: 30px;
-  font-weight: 850;
+  color: #050505;
+  font-size: 29px;
+  font-weight: 800;
   line-height: 1;
   letter-spacing: -1px;
   align-items: center;
@@ -109,88 +114,77 @@
 }
 
 .section-title__line {
-  width: 5px;
-  height: 32px;
-  border-radius: 99px;
-  background: #1e8fd5;
+  width: 4px;
+  height: 31px;
+  border-radius: 4px;
+  background: #08a4df;
 }
-
-/* ================================
-   SEARCH
-================================ */
 
 .search-pill {
   display: flex;
-  width: 48%;
-  max-width: 195px;
+  width: 51%;
+  max-width: 196px;
   height: 50px;
-  padding: 0 16px 0 20px;
-  border: none;
-  border-radius: 18px;
+  padding: 0 17px 0 20px;
+  border: 0;
+  border-radius: 20px;
   color: #fff;
-  background: linear-gradient(
-    100deg,
-    #1478c8 0%,
-    #1f9ada 55%,
-    #35c3ef 100%
-  );
-  box-shadow: 0 5px 14px rgb(30 150 215 / 30%);
+  background: #079fd8;
+  box-shadow: 0 5px 8px rgb(0 100 145 / 25%);
   align-items: center;
   justify-content: space-between;
+  transition: transform 150ms ease, box-shadow 150ms ease;
 
   span {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
   }
 
   .zaui-icon {
-    font-size: 25px;
+    font-size: 27px;
   }
 
   &:active {
+    box-shadow: 0 2px 5px rgb(0 100 145 / 20%);
     transform: scale(0.97);
   }
 }
 
-/* ================================
-   FEATURED CARDS
-================================ */
-
+/* Four highlighted cards */
 .featured-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  gap: 9px;
 }
 
 .feature-card {
   display: flex;
   min-width: 0;
-  height: 135px;
-  padding: 14px 5px 10px;
+  height: 136px;
+  padding: 13px 4px 12px;
   overflow: hidden;
-  border: none;
+  border: 1px solid rgb(8 145 195 / 7%);
   border-radius: 14px;
-  background: linear-gradient(
-    170deg,
-    #e3f6fc 0%,
-    #cdeef9 100%
-  );
-  box-shadow: 0 4px 12px rgb(20 120 190 / 8%);
+  color: #080808;
+  background: #dff8fc;
+  box-shadow: 0 3px 9px rgb(12 80 110 / 16%);
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  transition: transform 150ms ease, box-shadow 150ms ease;
 
   &:active {
+    box-shadow: 0 1px 5px rgb(12 80 110 / 14%);
     transform: scale(0.96);
   }
 
   span {
     display: flex;
-    min-height: 36px;
-    color: #14395c;
-    font-size: 11.5px;
+    min-height: 34px;
+    color: #080808;
+    font-size: 11px;
     font-weight: 750;
-    line-height: 1.25;
+    line-height: 1.16;
     text-align: center;
     white-space: pre-line;
     align-items: center;
@@ -200,47 +194,44 @@
 
 .feature-card__image {
   display: flex;
-  height: 72px;
+  height: 74px;
   align-items: center;
   justify-content: center;
 
   img {
-    width: 62px;
-    height: 62px;
+    width: 66px;
+    height: 66px;
     object-fit: contain;
   }
 }
 
-/* ================================
-   MENU PANEL
-================================ */
-
+/* Main utility menu */
 .menu-panel {
   position: relative;
   display: grid;
-  margin-top: 22px;
-  padding: 28px 10px 26px;
+  margin-top: 25px;
+  padding: 29px 12px 28px;
   overflow: hidden;
-  border: 1px solid #f0f0f0;
-  border-radius: 30px;
+  border: 1px solid #f1f1f1;
+  border-radius: 31px;
   background: #fff;
   box-shadow:
-    0 10px 30px rgb(15 90 150 / 7%),
-    0 2px 8px rgb(15 90 150 / 4%);
+    0 8px 23px rgb(32 55 65 / 10%),
+    0 2px 5px rgb(32 55 65 / 5%);
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  row-gap: 30px;
+  column-gap: 4px;
+  row-gap: 27px;
 
-  /* Quốc huy chìm */
   &::before {
     content: "";
     position: absolute;
-    top: 50%;
+    top: 51%;
     left: 50%;
     z-index: 0;
-    width: 280px;
-    height: 280px;
+    width: 300px;
+    height: 300px;
     background: var(--menu-watermark) center / contain no-repeat;
-    opacity: 0.06;
+    opacity: 1;
     transform: translate(-50%, -50%);
     pointer-events: none;
   }
@@ -251,23 +242,26 @@
   z-index: 1;
   display: flex;
   min-width: 0;
-  padding: 0 3px;
-  border: none;
-  color: #14395c;
+  min-height: 77px;
+  padding: 0 2px;
+  border: 0;
+  color: #080808;
   background: transparent;
   flex-direction: column;
   align-items: center;
+  transition: transform 140ms ease, opacity 140ms ease;
 
   &:active {
-    opacity: 0.65;
+    opacity: 0.7;
     transform: scale(0.92);
   }
 
   span {
-    margin-top: 8px;
+    margin-top: 7px;
+    color: #080808;
     font-size: 12px;
-    font-weight: 600;
-    line-height: 1.2;
+    font-weight: 500;
+    line-height: 1.12;
     text-align: center;
     white-space: pre-line;
   }
@@ -275,34 +269,26 @@
 
 .menu-item__image {
   display: flex;
-  width: 58px;
+  width: 57px;
   height: 52px;
   align-items: center;
   justify-content: center;
 
   img {
-    max-width: 54px;
-    max-height: 50px;
+    max-width: 55px;
+    max-height: 51px;
     object-fit: contain;
   }
 }
 
-/* ================================
-   SMALL SCREEN
-================================ */
-
-@media (max-width: 360px) {
-  .village-hero__background {
-    height: 300px;
+@media (max-width: 380px) {
+  .home-content {
+    padding-right: 15px;
+    padding-left: 15px;
   }
 
-  .village-hero__brand h1 {
-    font-size: 21px;
-  }
-
-  .village-hero__mascot {
-    width: 40px;
-    height: 40px;
+  .section-heading-row {
+    gap: 12px;
   }
 
   .section-title {
@@ -310,10 +296,10 @@
   }
 
   .search-pill {
-    height: 44px;
+    height: 46px;
 
     span {
-      font-size: 14px;
+      font-size: 15px;
     }
   }
 
@@ -322,11 +308,31 @@
   }
 
   .feature-card {
-    height: 125px;
+    height: 128px;
   }
 
   .feature-card__image img {
-    width: 54px;
-    height: 54px;
+    width: 58px;
+    height: 58px;
+  }
+
+  .menu-panel {
+    padding-right: 7px;
+    padding-left: 7px;
+  }
+}
+
+@media (max-width: 340px) {
+  .village-hero__background {
+    height: 300px;
+  }
+
+  .section-title {
+    font-size: 22px;
+  }
+
+  .feature-card span,
+  .menu-item span {
+    font-size: 10px;
   }
 }

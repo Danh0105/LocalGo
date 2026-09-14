@@ -2,27 +2,52 @@
   position: fixed;
   inset: 0;
   z-index: 100;
+  display: flex;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 10px 0;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .search-popup__backdrop {
   position: absolute;
   inset: 0;
-  background: rgb(8 40 64 / 45%);
+  background: rgb(8 35 54 / 52%);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   animation: search-popup-fade 0.2s ease-out;
 }
 
 .search-popup__panel {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
+  position: relative;
+  z-index: 1;
   display: flex;
-  max-height: 100%;
-  height: 100%;
+  width: min(100%, 430px);
+  height: min(78dvh, 680px);
+  max-height: calc(
+    100dvh - max(env(safe-area-inset-top, 0px), 24px) - 16px
+  );
   overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 64%);
+  border-bottom: 0;
+  border-radius: 28px 28px 0 0;
   background: #f2fafd;
+  box-shadow: 0 -10px 40px rgb(5 39 61 / 24%);
   flex-direction: column;
-  animation: search-popup-slide 0.25s ease-out;
+  animation: search-popup-slide 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.search-popup__panel::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  z-index: 2;
+  width: 38px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 62%);
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
 @keyframes search-popup-fade {
@@ -38,7 +63,7 @@
 @keyframes search-popup-slide {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(100%);
   }
 
   to {
@@ -53,7 +78,7 @@
 
 .search-popup__bar {
   display: flex;
-  padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px;
+  padding: 24px 16px 14px;
   background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   align-items: center;
   gap: 10px;
@@ -261,8 +286,20 @@
 }
 
 @media (min-width: 520px) {
+  .search-popup {
+    padding:
+      max(24px, env(safe-area-inset-top, 0px))
+      max(24px, env(safe-area-inset-right, 0px))
+      max(24px, env(safe-area-inset-bottom, 0px))
+      max(24px, env(safe-area-inset-left, 0px));
+    align-items: center;
+  }
+
   .search-popup__panel {
-    max-width: 430px;
-    margin: 0 auto;
+    height: min(72dvh, 680px);
+    max-height: 760px;
+    border-bottom: 1px solid rgb(255 255 255 / 64%);
+    border-radius: 28px;
+    box-shadow: 0 24px 70px rgb(5 39 61 / 30%);
   }
 }

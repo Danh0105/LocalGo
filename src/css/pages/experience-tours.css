@@ -196,6 +196,23 @@
   color: #b42318;
 }
 
+.experience-tour-detail__empty {
+  margin: 24px 0;
+  color: #5d7680;
+  font-size: 15px;
+  text-align: center;
+}
+
+.experience-tour-detail__retry {
+  margin-top: 10px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #1677ff;
+  color: #fff;
+  font-weight: 600;
+}
+
 .experience-tour-detail__hero {
   position: relative;
   display: grid;
@@ -277,6 +294,12 @@
 .experience-tour-detail__included .zaui-icon {
   color: #0479b8;
   font-size: 18px;
+}
+
+.experience-tour-detail__meta a {
+  color: inherit;
+  font-weight: 800;
+  text-decoration: none;
 }
 
 .experience-tour-detail__paragraph {

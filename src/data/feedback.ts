@@ -18,6 +18,8 @@ export interface FeedbackChannel {
   examples: string[];
   note: string;
   image: string;
+  imageAlt: string;
+  sortOrder: number;
 }
 
 export const feedbackChannels: FeedbackChannel[] = [
@@ -40,6 +42,8 @@ export const feedbackChannels: FeedbackChannel[] = [
     ],
     note: "Nội dung nên rõ ràng, ngắn gọn và có thông tin liên hệ để tiện phản hồi.",
     image: feedbackIcon,
+    imageAlt: "Góp ý chung cho địa phương",
+    sortOrder: 1,
   },
   {
     id: "phan-anh-ha-tang",
@@ -60,6 +64,8 @@ export const feedbackChannels: FeedbackChannel[] = [
     ],
     note: "Nên ghi rõ vị trí cụ thể hoặc chọn điểm trên bản đồ khi chức năng bản đồ được tích hợp.",
     image: feedbackIcon,
+    imageAlt: "Phản ánh hạ tầng, môi trường",
+    sortOrder: 2,
   },
   {
     id: "dich-vu-cong",
@@ -80,6 +86,8 @@ export const feedbackChannels: FeedbackChannel[] = [
     ],
     note: "Không nên gửi thông tin nhạy cảm công khai; chỉ nhập thông tin cần thiết cho việc xử lý.",
     image: feedbackIcon,
+    imageAlt: "Góp ý dịch vụ công",
+    sortOrder: 3,
   },
   {
     id: "du-lich-trai-nghiem",
@@ -100,6 +108,8 @@ export const feedbackChannels: FeedbackChannel[] = [
     ],
     note: "Nên nêu rõ thời gian trải nghiệm để địa phương dễ đối chiếu và cải thiện.",
     image: feedbackIcon,
+    imageAlt: "Phản hồi du lịch, trải nghiệm",
+    sortOrder: 4,
   },
   {
     id: "loi-mini-app",
@@ -120,5 +130,7 @@ export const feedbackChannels: FeedbackChannel[] = [
     ],
     note: "Nếu có thể, hãy gửi kèm ảnh chụp màn hình để đội kỹ thuật kiểm tra nhanh hơn.",
     image: feedbackIcon,
+    imageAlt: "Báo lỗi Mini App",
+    sortOrder: 5,
   },
 ];

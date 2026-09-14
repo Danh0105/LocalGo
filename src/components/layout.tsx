@@ -6,11 +6,12 @@ import {
   SnackbarProvider,
   ZMPRouter,
 } from "zmp-ui";
-import { AppProps } from "zmp-ui/app";
 
 import AgricultureDetailPage from "@/pages/agriculture-detail";
 import AgriculturePage from "@/pages/agriculture";
 import AboutPage from "@/pages/about";
+import BusinessRegisterPage from "@/pages/business-register";
+import ChatPage from "@/pages/chat";
 import AttractionDetailPage from "@/pages/attraction-detail";
 import AttractionsPage from "@/pages/attractions";
 import ContactDetailPage from "@/pages/contact-detail";
@@ -23,6 +24,8 @@ import ExperienceTourDetailPage from "@/pages/experience-tour-detail";
 import ExperienceToursPage from "@/pages/experience-tours";
 import FeedbackDetailPage from "@/pages/feedback-detail";
 import FeedbackPage from "@/pages/feedback";
+import FeedbackLookupPage from "@/pages/feedback-lookup";
+import FeedbackSendPage from "@/pages/feedback-send";
 import FestivalDetailPage from "@/pages/festival-detail";
 import FestivalsPage from "@/pages/festivals";
 import HistoricalSiteDetailPage from "@/pages/historical-site-detail";
@@ -38,13 +41,25 @@ import SpecialtiesPage from "@/pages/specialties";
 import SpecialtyDetailPage from "@/pages/specialty-detail";
 import TempleDetailPage from "@/pages/temple-detail";
 import TemplesPage from "@/pages/temples";
+import TradePage from "@/pages/trade";
+import TradeCreatePage from "@/pages/trade-create";
+import TradeDetailPage from "@/pages/trade-detail";
+import AppBackHandler from "@/components/app-back-handler";
+import { AuthProvider } from "@/contexts/auth-context";
+import "@/css/responsive.css";
+import "@/css/components/back-button.css";
+
+const systemInfo = getSystemInfo();
+document.documentElement.dataset.platform = systemInfo.platform || "unknown";
 
 const Layout = () => {
   return (
-    <App theme={getSystemInfo().zaloTheme as AppProps["theme"]}>
-      <SnackbarProvider>
-        <ZMPRouter>
-          <AnimationRoutes>
+    <App theme="light">
+      <AuthProvider>
+        <SnackbarProvider>
+          <ZMPRouter>
+            <AppBackHandler />
+            <AnimationRoutes>
             <Route path="/" element={<HomePage />}></Route>
             <Route path="/agriculture" element={<AgriculturePage />}></Route>
             <Route
@@ -52,6 +67,7 @@ const Layout = () => {
               element={<AgricultureDetailPage />}
             ></Route>
             <Route path="/about" element={<AboutPage />}></Route>
+            <Route path="/chat" element={<ChatPage />}></Route>
             <Route path="/temples" element={<TemplesPage />}></Route>
             <Route path="/temples/:id" element={<TempleDetailPage />}></Route>
             <Route path="/attractions" element={<AttractionsPage />}></Route>
@@ -87,6 +103,14 @@ const Layout = () => {
             ></Route>
             <Route path="/feedback" element={<FeedbackPage />}></Route>
             <Route
+              path="/feedback/send"
+              element={<FeedbackSendPage />}
+            ></Route>
+            <Route
+              path="/feedback/lookup"
+              element={<FeedbackLookupPage />}
+            ></Route>
+            <Route
               path="/feedback/:id"
               element={<FeedbackDetailPage />}
             ></Route>
@@ -111,12 +135,20 @@ const Layout = () => {
             <Route path="/ocop/:id" element={<OcopDetailPage />}></Route>
             <Route path="/specialties" element={<SpecialtiesPage />}></Route>
             <Route
+              path="/business/register"
+              element={<BusinessRegisterPage />}
+            ></Route>
+            <Route path="/trade" element={<TradePage />}></Route>
+            <Route path="/trade/create" element={<TradeCreatePage />}></Route>
+            <Route path="/trade/:id" element={<TradeDetailPage />}></Route>
+            <Route
               path="/specialties/:id"
               element={<SpecialtyDetailPage />}
             ></Route>
-          </AnimationRoutes>
-        </ZMPRouter>
-      </SnackbarProvider>
+            </AnimationRoutes>
+          </ZMPRouter>
+        </SnackbarProvider>
+      </AuthProvider>
     </App>
   );
 };

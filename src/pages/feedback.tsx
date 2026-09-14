@@ -1,11 +1,8 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
 import { FeedbackCategory, FeedbackChannel } from "@/data/feedback";
-import {
-  getFeedbackChannels,
-  submitFeedback,
-} from "@/services/feedback";
+import { getFeedbackChannels } from "@/services/feedback";
 import "../css/pages/feedback.css";
 
 type FeedbackFilter = "Tất cả" | FeedbackCategory;
@@ -25,7 +22,6 @@ function FeedbackPage() {
   const [channels, setChannels] = useState<FeedbackChannel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const [submitMessage, setSubmitMessage] = useState("");
 
   useEffect(() => {
     let isActive = true;
@@ -52,20 +48,6 @@ function FeedbackPage() {
     };
   }, [activeFilter]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-
-    submitFeedback({
-      fullName: String(formData.get("fullName") || ""),
-      phone: String(formData.get("phone") || ""),
-      content: String(formData.get("content") || ""),
-    }).then((result) => {
-      setSubmitMessage(`Đã ghi nhận phản hồi mẫu: ${result.ticketCode}`);
-      event.currentTarget.reset();
-    });
-  };
-
   return (
     <Page className="feedback-page">
       <header className="feedback-header">
@@ -84,45 +66,23 @@ function FeedbackPage() {
       </header>
 
       <main className="feedback-content">
-        <form className="feedback-form" onSubmit={handleSubmit}>
-          <h2>Gửi phản hồi nhanh</h2>
-          <label>
-            Họ tên
-            <input name="fullName" placeholder="Nhập họ tên" required />
-          </label>
-          <label>
-            Số điện thoại
-            <input name="phone" placeholder="Nhập số điện thoại" required />
-          </label>
-          <label>
-            Nội dung
-            <textarea
-              name="content"
-              placeholder="Nhập nội dung phản hồi"
-              required
-              rows={4}
-            />
-          </label>
-          <button type="submit">
+        <div className="feedback-cta-row">
+          <button
+            className="feedback-cta"
+            type="button"
+            onClick={() => navigate("/feedback/send")}
+          >
             <Icon icon="zi-send-solid" />
-            <span>Gửi phản hồi</span>
+            <span>Gửi phản hồi mới</span>
           </button>
-          {submitMessage && <p>{submitMessage}</p>}
-        </form>
-
-        <div className="feedback-filters">
-          {filters.map((filter) => (
-            <button
-              className={`feedback-filter${
-                filter === activeFilter ? " feedback-filter--active" : ""
-              }`}
-              key={filter}
-              type="button"
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </button>
-          ))}
+          <button
+            className="feedback-cta feedback-cta--outline"
+            type="button"
+            onClick={() => navigate("/feedback/lookup")}
+          >
+            <Icon icon="zi-search" />
+            <span>Tra cứu phản hồi</span>
+          </button>
         </div>
 
         {isLoading && <p className="feedback-status">Đang tải dữ liệu...</p>}
@@ -145,7 +105,7 @@ function FeedbackPage() {
                 onClick={() => navigate(`/feedback/${channel.id}`)}
               >
                 <div className="feedback-card__image">
-                  <img src={channel.image} alt="" />
+                  <img src={channel.image} alt={channel.imageAlt} />
                 </div>
                 <div className="feedback-card__body">
                   <span className="feedback-card__category">
@@ -158,7 +118,10 @@ function FeedbackPage() {
                   </p>
                   <p className="feedback-card__summary">{channel.summary}</p>
                 </div>
-                <Icon className="feedback-card__arrow" icon="zi-chevron-right" />
+                <Icon
+                  className="feedback-card__arrow"
+                  icon="zi-chevron-right"
+                />
               </button>
             ))}
           </section>

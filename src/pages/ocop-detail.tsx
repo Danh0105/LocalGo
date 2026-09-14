@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import PreviewableImage from "@/components/previewable-image";
 import { OcopProduct } from "@/data/ocop";
 import { getOcopProductById } from "@/services/ocop";
 import "../css/pages/ocop.css";
@@ -24,27 +25,31 @@ function OcopDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<OcopProduct>();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<"not-found" | "request" | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
-    let isActive = true;
-
+    const controller = new AbortController();
     setIsLoading(true);
+    setError(null);
     if (!id) {
-      setProduct(undefined);
+      setError("not-found");
       setIsLoading(false);
-      return;
+      return () => controller.abort();
     }
-
-    getOcopProductById(id).then((data) => {
-      if (!isActive) return;
-      setProduct(data);
-      setIsLoading(false);
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, [id]);
+    async function load(): Promise<void> {
+      try {
+        setProduct(await getOcopProductById(id!, controller.signal));
+      } catch (requestError: unknown) {
+        if (requestError instanceof DOMException && requestError.name === "AbortError") return;
+        setError(requestError instanceof Error && requestError.message === "NOT_FOUND" ? "not-found" : "request");
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
+      }
+    }
+    void load();
+    return () => controller.abort();
+  }, [id, retryKey]);
 
   if (isLoading) {
     return (
@@ -54,7 +59,7 @@ function OcopDetailPage() {
     );
   }
 
-  if (!product) {
+  if (!product || error) {
     return (
       <Page className="ocop-page">
         <header className="ocop-header">
@@ -66,8 +71,24 @@ function OcopDetailPage() {
           >
             <Icon icon="zi-arrow-left" />
           </button>
-          <h1>Không tìm thấy sản phẩm</h1>
+          <h1>{error === "request" ? "Không thể tải dữ liệu" : "Không tìm thấy sản phẩm"}</h1>
         </header>
+        <main className="ocop-content">
+          <p className="ocop-detail__empty">
+            {error === "request"
+              ? "Kết nối không thành công. Vui lòng thử lại."
+              : "Sản phẩm này không tồn tại, đã bị ẩn hoặc đã bị xóa."}
+          </p>
+          {error === "request" && (
+            <button
+              className="ocop-detail__retry"
+              type="button"
+              onClick={() => setRetryKey((value) => value + 1)}
+            >
+              Thử lại
+            </button>
+          )}
+        </main>
       </Page>
     );
   }
@@ -75,7 +96,11 @@ function OcopDetailPage() {
   return (
     <Page className="ocop-page">
       <section className="ocop-detail__hero">
-        <img src={product.image} alt="" />
+        <PreviewableImage
+          src={product.image}
+          alt={product.name}
+          previewTitle={product.name}
+        />
         <button
           className="ocop-back ocop-detail__back"
           type="button"
@@ -100,6 +125,14 @@ function OcopDetailPage() {
               <Icon icon="zi-location" />
               <span>{product.address}</span>
             </li>
+            {product.contactPhone && (
+              <li>
+                <Icon icon="zi-call" />
+                <a href={`tel:${product.contactPhone.replace(/[^\d+]/g, "")}`}>
+                  {product.contactPhone}
+                </a>
+              </li>
+            )}
             <li>
               <Icon icon="zi-note" />
               <span>{product.priceRange}</span>

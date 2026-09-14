@@ -1,5 +1,6 @@
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import PreviewableImage from "@/components/previewable-image";
 import { attractions } from "@/data/attractions";
 import "../css/pages/attractions.css";
 
@@ -34,7 +35,11 @@ function AttractionDetailPage() {
   return (
     <Page className="attractions-page">
       <section className="attraction-detail__hero">
-        <img src={attraction.image} alt={attraction.name} />
+        <PreviewableImage
+          src={attraction.image}
+          alt={attraction.name}
+          previewTitle={attraction.name}
+        />
         <button
           className="attractions-back attraction-detail__back"
           type="button"

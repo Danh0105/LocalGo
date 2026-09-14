@@ -1,0 +1,183 @@
+/* Shared iOS-inspired back button used by list and detail page headers. */
+:root {
+  --app-status-bar-fallback: 24px;
+  --app-status-bar-safe-top: max(
+    env(safe-area-inset-top, 0px),
+    var(--app-status-bar-fallback)
+  );
+}
+
+/* Zalo iOS WebView can occasionally report a zero safe-area value. */
+:root[data-platform="iOS"] {
+  --app-status-bar-fallback: 44px;
+}
+
+@media (min-height: 800px) and (orientation: portrait) {
+  :root[data-platform="iOS"] {
+    --app-status-bar-fallback: 50px;
+  }
+}
+
+@media (min-height: 880px) and (orientation: portrait) {
+  :root[data-platform="iOS"] {
+    --app-status-bar-fallback: 56px;
+  }
+}
+
+@media (orientation: landscape) {
+  :root[data-platform="iOS"] {
+    --app-status-bar-fallback: 24px;
+  }
+}
+
+/* Keep regular page headers below Android/iOS system status bars. */
+:is(
+  .agriculture-header,
+  .attractions-header,
+  .chat-header,
+  .contacts-header,
+  .craft-villages-header,
+  .cuisine-header,
+  .experience-tours-header,
+  .feedback-header,
+  .festivals-header,
+  .historical-sites-header,
+  .map-places-header,
+  .news-header,
+  .ocop-header,
+  .specialties-header,
+  .temples-header,
+  .trade-header
+) {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding-top: calc(var(--app-status-bar-safe-top) + 14px);
+  box-shadow: 0 8px 20px rgb(9 61 94 / 10%);
+}
+
+/* Hero/detail buttons float independently so they remain visible after scroll. */
+.about-back,
+button[class*="-detail__back"],
+.village-hero__back {
+  position: fixed;
+  top: calc(var(--app-status-bar-safe-top) + 14px);
+  left: max(16px, env(safe-area-inset-left, 0px));
+  z-index: 90;
+}
+
+button[class$="-back"],
+button[class*="-back "] {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  overflow: hidden;
+  border: 0.5px solid rgb(255 255 255 / 76%);
+  border-radius: 50%;
+  color: #007aff;
+  background: rgb(248 252 255 / 78%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 88%),
+    0 1px 2px rgb(14 54 82 / 10%),
+    0 6px 18px rgb(14 54 82 / 16%);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  place-items: center;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+button[class$="-back"]::before,
+button[class*="-back "]::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  margin-left: 4px;
+  border-bottom: 2.25px solid currentColor;
+  border-left: 2.25px solid currentColor;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
+/* The CSS chevron keeps every page visually consistent despite legacy icons. */
+button[class$="-back"] .zaui-icon,
+button[class*="-back "] .zaui-icon {
+  display: none;
+}
+
+button[class$="-back"]:active,
+button[class*="-back "]:active {
+  background: rgb(236 247 255 / 88%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 72%),
+    0 2px 7px rgb(14 54 82 / 14%);
+  transform: scale(0.91);
+}
+
+button[class$="-back"]:focus-visible,
+button[class*="-back "]:focus-visible {
+  outline: 3px solid rgb(10 132 255 / 42%);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button[class$="-back"]:hover,
+  button[class*="-back "]:hover {
+    color: #0066d6;
+    background: rgb(255 255 255 / 90%);
+    box-shadow:
+      inset 0 1px 0 #fff,
+      0 8px 22px rgb(14 54 82 / 19%);
+  }
+}
+
+@media (min-width: 520px) {
+  .about-back,
+  button[class*="-detail__back"],
+  .village-hero__back {
+    left: max(calc(50% - 199px), env(safe-area-inset-left, 0px));
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  button[class$="-back"],
+  button[class*="-back "] {
+    border-color: rgb(255 255 255 / 18%);
+    color: #f5faff;
+    background: rgb(26 35 43 / 68%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 13%),
+      0 6px 18px rgb(0 0 0 / 26%);
+  }
+
+  button[class$="-back"]:active,
+  button[class*="-back "]:active {
+    background: rgb(46 58 68 / 82%);
+  }
+}
+
+@media (forced-colors: active) {
+  button[class$="-back"],
+  button[class*="-back "] {
+    border: 1px solid ButtonText;
+    color: ButtonText;
+    background: ButtonFace;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button[class$="-back"],
+  button[class*="-back "] {
+    transition: none;
+  }
+}

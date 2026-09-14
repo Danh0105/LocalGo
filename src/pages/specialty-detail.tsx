@@ -1,14 +1,51 @@
+import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
-import { specialties } from "@/data/specialties";
+import PreviewableImage from "@/components/previewable-image";
+import { Specialty } from "@/data/specialties";
+import { getSpecialtyById } from "@/services/specialties";
 import "../css/pages/specialties.css";
 
 function SpecialtyDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const specialty = specialties.find((item) => item.id === id);
+  const [specialty, setSpecialty] = useState<Specialty>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<"not-found" | "request" | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
-  if (!specialty) {
+  useEffect(() => {
+    const controller = new AbortController();
+    setIsLoading(true);
+    setError(null);
+    if (!id) {
+      setError("not-found");
+      setIsLoading(false);
+      return () => controller.abort();
+    }
+    async function load(): Promise<void> {
+      try {
+        setSpecialty(await getSpecialtyById(id!, controller.signal));
+      } catch (requestError: unknown) {
+        if (requestError instanceof DOMException && requestError.name === "AbortError") return;
+        setError(requestError instanceof Error && requestError.message === "NOT_FOUND" ? "not-found" : "request");
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
+      }
+    }
+    void load();
+    return () => controller.abort();
+  }, [id, retryKey]);
+
+  if (isLoading) {
+    return (
+      <Page className="specialties-page">
+        <p className="specialties-status">Đang tải dữ liệu...</p>
+      </Page>
+    );
+  }
+
+  if (!specialty || error) {
     return (
       <Page className="specialties-page">
         <header className="specialties-header">
@@ -20,12 +57,23 @@ function SpecialtyDetailPage() {
           >
             <Icon icon="zi-arrow-left" />
           </button>
-          <h1>Không tìm thấy</h1>
+          <h1>{error === "request" ? "Không thể tải dữ liệu" : "Không tìm thấy"}</h1>
         </header>
         <main className="specialties-content">
           <p className="specialty-detail__empty">
-            Đặc sản này không tồn tại hoặc đã bị xóa.
+            {error === "request"
+              ? "Kết nối không thành công. Vui lòng thử lại."
+              : "Đặc sản này không tồn tại hoặc đã bị xóa."}
           </p>
+          {error === "request" && (
+            <button
+              className="specialty-detail__retry"
+              type="button"
+              onClick={() => setRetryKey((value) => value + 1)}
+            >
+              Thử lại
+            </button>
+          )}
         </main>
       </Page>
     );
@@ -34,7 +82,11 @@ function SpecialtyDetailPage() {
   return (
     <Page className="specialties-page">
       <section className="specialty-detail__hero">
-        <img src={specialty.image} alt={specialty.name} />
+        <PreviewableImage
+          src={specialty.image}
+          alt={specialty.name}
+          previewTitle={specialty.name}
+        />
         <button
           className="specialties-back specialty-detail__back"
           type="button"

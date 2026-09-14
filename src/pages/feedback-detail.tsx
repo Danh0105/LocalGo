@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import PreviewableImage from "@/components/previewable-image";
 import { FeedbackChannel } from "@/data/feedback";
 import { getFeedbackChannelById } from "@/services/feedback";
 import "../css/pages/feedback.css";
@@ -10,27 +11,31 @@ function FeedbackDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [channel, setChannel] = useState<FeedbackChannel>();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<"not-found" | "request" | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
-    let isActive = true;
-
+    const controller = new AbortController();
     setIsLoading(true);
+    setError(null);
     if (!id) {
-      setChannel(undefined);
+      setError("not-found");
       setIsLoading(false);
-      return;
+      return () => controller.abort();
     }
-
-    getFeedbackChannelById(id).then((data) => {
-      if (!isActive) return;
-      setChannel(data);
-      setIsLoading(false);
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, [id]);
+    async function load(): Promise<void> {
+      try {
+        setChannel(await getFeedbackChannelById(id!, controller.signal));
+      } catch (requestError: unknown) {
+        if (requestError instanceof DOMException && requestError.name === "AbortError") return;
+        setError(requestError instanceof Error && requestError.message === "NOT_FOUND" ? "not-found" : "request");
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
+      }
+    }
+    void load();
+    return () => controller.abort();
+  }, [id, retryKey]);
 
   if (isLoading) {
     return (
@@ -40,7 +45,7 @@ function FeedbackDetailPage() {
     );
   }
 
-  if (!channel) {
+  if (!channel || error) {
     return (
       <Page className="feedback-page">
         <header className="feedback-header">
@@ -52,8 +57,24 @@ function FeedbackDetailPage() {
           >
             <Icon icon="zi-arrow-left" />
           </button>
-          <h1>Không tìm thấy phản hồi</h1>
+          <h1>{error === "request" ? "Không thể tải dữ liệu" : "Không tìm thấy phản hồi"}</h1>
         </header>
+        <main className="feedback-content">
+          <p className="feedback-detail__empty">
+            {error === "request"
+              ? "Kết nối không thành công. Vui lòng thử lại."
+              : "Kênh phản hồi này không tồn tại, đã bị ẩn hoặc đã bị xóa."}
+          </p>
+          {error === "request" && (
+            <button
+              className="feedback-detail__retry"
+              type="button"
+              onClick={() => setRetryKey((value) => value + 1)}
+            >
+              Thử lại
+            </button>
+          )}
+        </main>
       </Page>
     );
   }
@@ -61,7 +82,11 @@ function FeedbackDetailPage() {
   return (
     <Page className="feedback-page">
       <section className="feedback-detail__hero">
-        <img src={channel.image} alt="" />
+        <PreviewableImage
+          src={channel.image}
+          alt={channel.imageAlt}
+          previewTitle={channel.title}
+        />
         <button
           className="feedback-back feedback-detail__back"
           type="button"
@@ -119,6 +144,15 @@ function FeedbackDetailPage() {
           <h2>Lưu ý</h2>
           <p className="feedback-detail__paragraph">{channel.note}</p>
         </section>
+
+        <button
+          className="feedback-cta"
+          type="button"
+          onClick={() => navigate(`/feedback/send?channelId=${channel.id}`)}
+        >
+          <Icon icon="zi-send-solid" />
+          <span>Gửi phản hồi</span>
+        </button>
       </main>
     </Page>
   );

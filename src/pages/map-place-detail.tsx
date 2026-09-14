@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import PreviewableImage from "@/components/previewable-image";
 import { MapPlace } from "@/data/map-places";
 import { getMapPlaceById } from "@/services/map-places";
 import "../css/pages/map-places.css";
@@ -10,37 +11,33 @@ function MapPlaceDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [place, setPlace] = useState<MapPlace>();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<"not-found" | "request" | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
-    let isActive = true;
-
+    const controller = new AbortController();
     setIsLoading(true);
+    setError(null);
     if (!id) {
-      setPlace(undefined);
+      setError("not-found");
       setIsLoading(false);
-      return;
+      return () => controller.abort();
     }
-
-    getMapPlaceById(id).then((data) => {
-      if (!isActive) return;
-      setPlace(data);
-      setIsLoading(false);
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, [id]);
+    async function load(): Promise<void> {
+      try {
+        setPlace(await getMapPlaceById(id!, controller.signal));
+      } catch (requestError: unknown) {
+        if (requestError instanceof DOMException && requestError.name === "AbortError") return;
+        setError(requestError instanceof Error && requestError.message === "NOT_FOUND" ? "not-found" : "request");
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
+      }
+    }
+    void load();
+    return () => controller.abort();
+  }, [id, retryKey]);
 
   if (isLoading) {
-    return (
-      <Page className="map-places-page">
-        <p className="map-places-status">Đang tải dữ liệu...</p>
-      </Page>
-    );
-  }
-
-  if (!place) {
     return (
       <Page className="map-places-page">
         <header className="map-places-header">
@@ -52,16 +49,58 @@ function MapPlaceDetailPage() {
           >
             <Icon icon="zi-arrow-left" />
           </button>
-          <h1>Không tìm thấy địa điểm</h1>
+          <div>
+            <span>Điểm đến quanh xã</span>
+            <h1>Bản đồ</h1>
+          </div>
         </header>
+        <p className="map-places-status">Đang tải dữ liệu...</p>
       </Page>
     );
   }
 
+  if (!place || error) {
+    return (
+      <Page className="map-places-page">
+        <header className="map-places-header">
+          <button
+            className="map-places-back"
+            type="button"
+            aria-label="Quay lại"
+            onClick={() => navigate(-1)}
+          >
+            <Icon icon="zi-arrow-left" />
+          </button>
+          <h1>{error === "request" ? "Không thể tải dữ liệu" : "Không tìm thấy địa điểm"}</h1>
+        </header>
+        <main className="map-places-content">
+          <p className="map-place-detail__empty">
+            {error === "request"
+              ? "Kết nối không thành công. Vui lòng thử lại."
+              : "Địa điểm này không tồn tại, đã bị ẩn hoặc đã bị xóa."}
+          </p>
+          {error === "request" && (
+            <button
+              className="map-place-detail__retry"
+              type="button"
+              onClick={() => setRetryKey((value) => value + 1)}
+            >
+              Thử lại
+            </button>
+          )}
+        </main>
+      </Page>
+    );
+  }
+
+  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    `${place.coordinates.lat},${place.coordinates.lng}`
+  )}`;
+
   return (
     <Page className="map-places-page">
       <section className="map-place-detail__hero">
-        <img src={place.image} alt="" />
+        <PreviewableImage src={place.image} alt={place.name} previewTitle={place.name} />
         <button
           className="map-places-back map-place-detail__back"
           type="button"
@@ -98,6 +137,16 @@ function MapPlaceDetailPage() {
             <span>Lat: {place.coordinates.lat}</span>
             <span>Lng: {place.coordinates.lng}</span>
           </div>
+          <a
+            className="map-place-detail__google-maps"
+            href={googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon icon="zi-location-solid" />
+            Chỉ đường bằng Google Maps
+            <Icon icon="zi-chevron-right" />
+          </a>
         </section>
 
         <section className="map-place-detail__card">

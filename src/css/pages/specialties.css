@@ -67,6 +67,17 @@
   box-shadow: 0 4px 8px rgba(126, 207, 250, 0.4);
 }
 
+.specialties-status {
+  margin: 28px 0;
+  color: #586d78;
+  font-size: 14px;
+  text-align: center;
+}
+
+.specialties-status--error {
+  color: #b42318;
+}
+
 .specialties-list {
   display: flex;
   flex-direction: column;
@@ -281,6 +292,16 @@
   color: #608aa0;
   font-size: 15px;
   text-align: center;
+}
+
+.specialty-detail__retry {
+  margin-top: 10px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #1677ff;
+  color: #fff;
+  font-weight: 600;
 }
 
 @media (min-width: 520px) {

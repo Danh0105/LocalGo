@@ -15,6 +15,7 @@ export interface ExperienceTour {
   startTime: string;
   priceRange: string;
   meetingPoint: string;
+  contactPhone?: string;
   summary: string;
   description: string[];
   itinerary: string[];

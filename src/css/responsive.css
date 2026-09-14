@@ -1,0 +1,446 @@
+/* Shared mobile safeguards loaded after all page styles. */
+html {
+  width: 100%;
+  overflow-x: hidden;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+#app,
+.zaui-app,
+.zaui-page {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  max-width: 100%;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+input,
+textarea,
+select {
+  font-size: max(16px, 1em);
+}
+
+:is(
+  .home-page,
+  .about-page,
+  .chat-page,
+  .agriculture-page,
+  .attractions-page,
+  .contacts-page,
+  .craft-villages-page,
+  .cuisine-page,
+  .experience-tours-page,
+  .feedback-page,
+  .festivals-page,
+  .historical-sites-page,
+  .map-places-page,
+  .news-page,
+  .ocop-page,
+  .specialties-page,
+  .temples-page,
+  .trade-page
+) {
+  width: 100%;
+  min-width: 0;
+  margin-inline: auto;
+}
+
+/* Prevent long API content from pushing cards beyond the viewport. */
+:is(
+  .agriculture-card,
+  .attraction-card,
+  .contact-card,
+  .craft-village-card,
+  .cuisine-card,
+  .experience-tour-card,
+  .feedback-card,
+  .festival-card,
+  .historical-site-card,
+  .map-place-card,
+  .news-card,
+  .ocop-card,
+  .specialty-card,
+  .temple-card,
+  .trade-card,
+  .about-card
+) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+:is(
+  .agriculture-card,
+  .attraction-card,
+  .contact-card,
+  .craft-village-card,
+  .cuisine-card,
+  .experience-tour-card,
+  .feedback-card,
+  .festival-card,
+  .historical-site-card,
+  .map-place-card,
+  .news-card,
+  .ocop-card,
+  .specialty-card,
+  .temple-card,
+  .trade-card
+) :is(h2, h3, p, span, strong) {
+  overflow-wrap: anywhere;
+}
+
+/* Keep standard detail-page hero media large without letting content cover it. */
+:is(
+  .agriculture-detail__hero,
+  .attraction-detail__hero,
+  .contact-detail__hero,
+  .craft-village-detail__hero,
+  .cuisine-detail__hero,
+  .experience-tour-detail__hero,
+  .feedback-detail__hero,
+  .festival-detail__hero,
+  .historical-site-detail__hero,
+  .map-place-detail__hero,
+  .news-detail__hero,
+  .ocop-detail__hero,
+  .specialty-detail__hero,
+  .temple-detail__hero,
+  .trade-detail__hero
+) {
+  height: calc(250px + env(safe-area-inset-top));
+}
+
+:is(
+  .agriculture-detail__hero,
+  .attraction-detail__hero,
+  .contact-detail__hero,
+  .craft-village-detail__hero,
+  .cuisine-detail__hero,
+  .experience-tour-detail__hero,
+  .feedback-detail__hero,
+  .festival-detail__hero,
+  .historical-site-detail__hero,
+  .map-place-detail__hero,
+  .news-detail__hero,
+  .ocop-detail__hero,
+  .specialty-detail__hero,
+  .temple-detail__hero,
+  .trade-detail__hero
+) img {
+  display: block;
+  width: calc(100% - 16px);
+  max-width: 414px;
+  height: clamp(184px, 51vw, 220px);
+  max-height: calc(100% - 24px);
+  object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgb(22 78 108 / 20%));
+}
+
+:is(
+  .agriculture-detail__content,
+  .attraction-detail__content,
+  .contact-detail__content,
+  .craft-village-detail__content,
+  .cuisine-detail__content,
+  .experience-tour-detail__content,
+  .feedback-detail__content,
+  .festival-detail__content,
+  .historical-site-detail__content,
+  .map-place-detail__content,
+  .news-detail__content,
+  .ocop-detail__content,
+  .specialty-detail__content,
+  .temple-detail__content,
+  .trade-detail__content
+) {
+  margin-top: -8px;
+}
+
+/* Small Android and older iPhone screens. */
+@media (max-width: 359px) {
+  :is(
+    .agriculture-header,
+    .attractions-header,
+    .chat-header,
+    .contacts-header,
+    .craft-villages-header,
+    .cuisine-header,
+    .experience-tours-header,
+    .feedback-header,
+    .festivals-header,
+    .historical-sites-header,
+    .map-places-header,
+    .news-header,
+    .ocop-header,
+    .specialties-header,
+    .temples-header,
+    .trade-header
+  ) {
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  :is(
+    .agriculture-header,
+    .attractions-header,
+    .chat-header,
+    .contacts-header,
+    .craft-villages-header,
+    .cuisine-header,
+    .experience-tours-header,
+    .feedback-header,
+    .festivals-header,
+    .historical-sites-header,
+    .map-places-header,
+    .news-header,
+    .ocop-header,
+    .specialties-header,
+    .temples-header,
+    .trade-header
+  ) h1 {
+    font-size: 18px;
+    overflow-wrap: anywhere;
+  }
+
+  :is(
+    .agriculture-content,
+    .attractions-content,
+    .contacts-content,
+    .craft-villages-content,
+    .cuisine-content,
+    .experience-tours-content,
+    .feedback-content,
+    .festivals-content,
+    .historical-sites-content,
+    .map-places-content,
+    .news-content,
+    .ocop-content,
+    .specialties-content,
+    .temples-content,
+    .trade-content,
+    .about-content
+  ) {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  :is(
+    .agriculture-card,
+    .attraction-card,
+    .contact-card,
+    .craft-village-card,
+    .cuisine-card,
+    .experience-tour-card,
+    .feedback-card,
+    .festival-card,
+    .historical-site-card,
+    .map-place-card,
+    .news-card,
+    .ocop-card,
+    .specialty-card,
+    .temple-card,
+    .trade-card
+  ) {
+    padding: 10px;
+    gap: 9px;
+  }
+
+  :is(
+    .agriculture-card__image,
+    .attraction-card__image,
+    .contact-card__image,
+    .craft-village-card__image,
+    .cuisine-card__image,
+    .experience-tour-card__image,
+    .feedback-card__image,
+    .festival-card__image,
+    .historical-site-card__image,
+    .map-place-card__image,
+    .news-card__image,
+    .ocop-card__image,
+    .specialty-card__image,
+    .temple-card__image
+  ) {
+    width: 58px;
+    height: 58px;
+  }
+
+  :is(
+    .agriculture-card,
+    .attraction-card,
+    .contact-card,
+    .craft-village-card,
+    .cuisine-card,
+    .experience-tour-card,
+    .feedback-card,
+    .festival-card,
+    .historical-site-card,
+    .map-place-card,
+    .news-card,
+    .ocop-card,
+    .specialty-card,
+    .temple-card,
+    .trade-card
+  ) h2,
+  .trade-card h3 {
+    font-size: 14px;
+  }
+
+  .about-hero-title {
+    right: 16px;
+    left: 16px;
+    width: fit-content;
+    max-width: calc(100% - 32px);
+    font-size: 23px;
+  }
+
+  .about-stats {
+    gap: 8px;
+  }
+
+  .about-stat {
+    padding: 13px 8px;
+  }
+
+  .trade-quick-card {
+    min-height: 108px;
+  }
+
+  .trade-card__image {
+    width: 92px;
+    height: 108px;
+  }
+
+  .trade-card__body {
+    padding-right: 18px;
+  }
+
+  .trade-detail__content {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .trade-detail__card {
+    padding: 14px;
+  }
+
+  .trade-reviews__overview {
+    padding: 11px;
+    gap: 10px;
+  }
+
+  .trade-review-popup__dialog {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .search-popup__bar,
+  .search-popup__body {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+}
+
+/* Short landscape screens and devices with the keyboard open. */
+@media (max-height: 600px) and (orientation: landscape) {
+  .search-popup__panel,
+  .trade-review-popup__dialog {
+    max-height: 100dvh;
+  }
+
+  .trade-review-popup {
+    padding-top: 0;
+  }
+
+  .trade-review-popup__dialog {
+    border-radius: 20px 20px 0 0;
+  }
+
+  :is(
+    .agriculture-detail__hero,
+    .attraction-detail__hero,
+    .contact-detail__hero,
+    .craft-village-detail__hero,
+    .cuisine-detail__hero,
+    .experience-tour-detail__hero,
+    .feedback-detail__hero,
+    .festival-detail__hero,
+    .historical-site-detail__hero,
+    .map-place-detail__hero,
+    .news-detail__hero,
+    .ocop-detail__hero,
+    .specialty-detail__hero,
+    .temple-detail__hero,
+    .trade-detail__hero
+  ) {
+    height: min(210px, 48dvh);
+  }
+}
+
+/* Center the mobile canvas on tablets while retaining phone proportions. */
+@media (min-width: 520px) {
+  :is(
+    .home-page,
+    .about-page,
+    .agriculture-page,
+    .attractions-page,
+    .contacts-page,
+    .craft-villages-page,
+    .cuisine-page,
+    .experience-tours-page,
+    .feedback-page,
+    .festivals-page,
+    .historical-sites-page,
+    .map-places-page,
+    .news-page,
+    .ocop-page,
+    .specialties-page,
+    .temples-page,
+    .trade-page
+  ) {
+    max-width: 430px;
+    box-shadow: 0 0 34px rgb(20 67 86 / 8%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

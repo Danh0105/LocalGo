@@ -15,6 +15,7 @@ export interface OcopProduct {
   rating: OcopRating;
   producer: string;
   address: string;
+  contactPhone?: string;
   priceRange: string;
   summary: string;
   description: string[];

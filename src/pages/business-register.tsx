@@ -61,7 +61,6 @@ function BusinessRegisterPage() {
     status: authStatus,
     error: authError,
     authenticate,
-    refreshUser,
   } = useCurrentUser();
   const [application, setApplication] = useState<BusinessApplication | null>(null);
   const [zaloCheck, setZaloCheck] = useState<BusinessApplicationZaloCheck | null>(null);
@@ -75,6 +74,12 @@ function BusinessRegisterPage() {
   const [zaloProfile, setZaloProfile] = useState<ZaloProfile | null>(null);
   const [zaloProfileError, setZaloProfileError] = useState("");
   const [zaloProfileReloadKey, setZaloProfileReloadKey] = useState(0);
+
+  useEffect(() => {
+    if (authStatus === "idle") {
+      void authenticate({ requestUserInfoPermission: true }).catch(() => undefined);
+    }
+  }, [authStatus, authenticate]);
 
   useEffect(() => {
     let active = true;
@@ -123,6 +128,13 @@ function BusinessRegisterPage() {
         if (result) setApplicantType(result.applicantType);
         setHasApplicationLoadError(false);
         setPageError("");
+        if (
+          user.status === "ACTIVE" &&
+          (result?.status === "APPROVED" ||
+            (check.exists && check.status === "APPROVED"))
+        ) {
+          navigate("/trade/create", { replace: true });
+        }
       } catch (error: unknown) {
         if (!active) return;
         setPageError(
@@ -321,7 +333,7 @@ function BusinessRegisterPage() {
       );
     }
 
-    if (authStatus === "loading" || !zaloProfile || isLoading) {
+    if (authStatus === "idle" || authStatus === "loading" || !zaloProfile || isLoading) {
       return <p className="trade-flow__loading">Đang xác thực tài khoản...</p>;
     }
 
@@ -331,8 +343,15 @@ function BusinessRegisterPage() {
           <Icon icon="zi-warning" />
           <h2>Chưa thể đăng nhập</h2>
           <p>{authError || "Không thể xác thực tài khoản Zalo."}</p>
-          <button type="button" onClick={() => void authenticate().catch(() => undefined)}>
-            Thử lại
+          <button
+            type="button"
+            onClick={() =>
+              void authenticate({ requestUserInfoPermission: true }).catch(
+                () => undefined
+              )
+            }
+          >
+            Cấp quyền Zalo và thử lại
           </button>
         </section>
       );
@@ -375,26 +394,14 @@ function BusinessRegisterPage() {
           <h2>Hồ sơ đang chờ duyệt</h2>
           <p>
             Hồ sơ <strong>{application.businessName}</strong> đã được gửi tới Admin.
-            Bạn chỉ có thể đăng tin sau khi tài khoản được cấp role Business.
+            Bạn có thể đăng tin ngay sau khi hồ sơ được duyệt.
           </p>
         </section>
       );
     }
 
     if (application?.status === "APPROVED") {
-      return (
-        <section className="trade-flow__status-card trade-flow__status-card--pending">
-          <Icon icon="zi-check-circle" />
-          <h2>Hồ sơ đã được duyệt</h2>
-          <p>
-            Tài khoản hiện vẫn chưa nhận role Business. Hãy làm mới thông tin tài khoản;
-            nếu trạng thái không đổi, vui lòng liên hệ Admin.
-          </p>
-          <button type="button" onClick={() => void refreshUser().catch(() => undefined)}>
-            Làm mới tài khoản
-          </button>
-        </section>
-      );
+      return <p className="trade-flow__loading">Đang mở form đăng tin...</p>;
     }
 
     if (!application && zaloCheck?.exists && zaloCheck.status === "PENDING") {
@@ -410,19 +417,7 @@ function BusinessRegisterPage() {
     }
 
     if (!application && zaloCheck?.exists && zaloCheck.status === "APPROVED") {
-      return (
-        <section className="trade-flow__status-card trade-flow__status-card--pending">
-          <Icon icon="zi-check-circle" />
-          <h2>Hồ sơ đã được duyệt</h2>
-          <p>
-            Zalo ID này đã có hồ sơ Business được duyệt. Hãy làm mới thông tin tài khoản;
-            nếu trạng thái không đổi, vui lòng liên hệ Admin.
-          </p>
-          <button type="button" onClick={() => void refreshUser().catch(() => undefined)}>
-            Làm mới tài khoản
-          </button>
-        </section>
-      );
+      return <p className="trade-flow__loading">Đang mở form đăng tin...</p>;
     }
 
     return (
@@ -621,20 +616,28 @@ function BusinessRegisterPage() {
   };
 
   return (
-    <Page className="trade-flow-page">
-      <header className="trade-flow__header">
-        <button type="button" aria-label="Quay lại" onClick={() => navigate(-1)}>
-          <Icon icon="zi-arrow-left" />
-        </button>
-        <div>
-          <span>Quyền đăng tin</span>
-          <h1>Đăng ký Business</h1>
+    <Page className="trade-flow-page business-register-page">
+      <header className="trade-header trade-create-header business-register-header">
+        <div className="trade-header__bar">
+          <button
+            className="trade-back"
+            type="button"
+            aria-label="Quay lại"
+            onClick={() => navigate(-1)}
+          >
+            <Icon icon="zi-arrow-left" />
+          </button>
+          <div>
+            <p>Quyền đăng tin</p>
+            <h1>Đăng ký Business</h1>
+          </div>
         </div>
+        <p className="trade-header__description">
+          Hoàn tất hồ sơ để được xác minh và bắt đầu đăng tin giao thương trên
+          LocalGo.
+        </p>
       </header>
       <main className="trade-flow__content">
-        <p className="trade-flow__intro">
-          Chỉ hồ sơ được Admin duyệt và tài khoản có role Business mới được đăng tin giao thương.
-        </p>
         {pageError && application?.status !== "REJECTED" && (
           <p className="trade-flow__message--error">{pageError}</p>
         )}

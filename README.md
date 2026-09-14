@@ -1,5 +1,15 @@
 # Zalo Mini App
 
+## Configuration
+
+Copy `.env.example` to `.env`, fill in `APP_ID`/`ZMP_TOKEN`, and configure the backend URL (including `/api/v1`):
+
+```env
+VITE_API_BASE_URL=https://api.localgo.skilltripx.com.vn/api/v1
+```
+
+`localhost` works only in the simulator on the same computer. Before deploying to a real phone, use a reachable HTTPS API domain and add that domain to the Mini App's allowed network domains in the Zalo developer console. Restart the development server after changing `.env`.
+
 ## Development
 
 ### Using Zalo Mini App Extension
@@ -21,6 +31,15 @@
    zmp start
    ```
 1. **Open** `localhost:3000` in your browser.
+
+For the AI travel assistant, keep the backend running at the URL configured by `VITE_API_BASE_URL`, then open **AI Hướng dẫn viên** from the home screen. The local backend Swagger is available at `http://localhost:3001/docs`.
+
+Before committing or deploying, run:
+
+```bash
+npm run typecheck
+npm run build
+```
 
 ## Deployment
 

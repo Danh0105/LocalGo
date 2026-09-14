@@ -223,6 +223,23 @@
   color: #b42318;
 }
 
+.ocop-detail__empty {
+  margin: 24px 0;
+  color: #5d7680;
+  font-size: 15px;
+  text-align: center;
+}
+
+.ocop-detail__retry {
+  margin-top: 10px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #1677ff;
+  color: #fff;
+  font-weight: 600;
+}
+
 .ocop-detail__hero {
   position: relative;
   display: grid;
@@ -306,6 +323,12 @@
 .ocop-detail__meta .zaui-icon {
   color: #10a3f2;
   font-size: 18px;
+}
+
+.ocop-detail__meta a {
+  color: inherit;
+  font-weight: 800;
+  text-decoration: none;
 }
 
 .ocop-detail__paragraph {

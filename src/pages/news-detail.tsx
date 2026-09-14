@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import PreviewableImage from "@/components/previewable-image";
 import { NewsArticle } from "@/data/news";
 import { getNewsArticleById } from "@/services/news";
 import "../css/pages/news.css";
@@ -10,27 +11,31 @@ function NewsDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [article, setArticle] = useState<NewsArticle>();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<"not-found" | "request" | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
-    let isActive = true;
-
+    const controller = new AbortController();
     setIsLoading(true);
+    setError(null);
     if (!id) {
-      setArticle(undefined);
+      setError("not-found");
       setIsLoading(false);
-      return;
+      return () => controller.abort();
     }
-
-    getNewsArticleById(id).then((data) => {
-      if (!isActive) return;
-      setArticle(data);
-      setIsLoading(false);
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, [id]);
+    async function load(): Promise<void> {
+      try {
+        setArticle(await getNewsArticleById(id!, controller.signal));
+      } catch (requestError: unknown) {
+        if (requestError instanceof DOMException && requestError.name === "AbortError") return;
+        setError(requestError instanceof Error && requestError.message === "NOT_FOUND" ? "not-found" : "request");
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
+      }
+    }
+    void load();
+    return () => controller.abort();
+  }, [id, retryKey]);
 
   if (isLoading) {
     return (
@@ -40,7 +45,7 @@ function NewsDetailPage() {
     );
   }
 
-  if (!article) {
+  if (!article || error) {
     return (
       <Page className="news-page">
         <header className="news-header">
@@ -52,8 +57,24 @@ function NewsDetailPage() {
           >
             <Icon icon="zi-arrow-left" />
           </button>
-          <h1>Không tìm thấy tin tức</h1>
+          <h1>{error === "request" ? "Không thể tải dữ liệu" : "Không tìm thấy tin tức"}</h1>
         </header>
+        <main className="news-content">
+          <p className="news-detail__empty">
+            {error === "request"
+              ? "Kết nối không thành công. Vui lòng thử lại."
+              : "Bài viết này không tồn tại, đã bị ẩn hoặc đã bị xóa."}
+          </p>
+          {error === "request" && (
+            <button
+              className="news-detail__retry"
+              type="button"
+              onClick={() => setRetryKey((value) => value + 1)}
+            >
+              Thử lại
+            </button>
+          )}
+        </main>
       </Page>
     );
   }
@@ -61,7 +82,11 @@ function NewsDetailPage() {
   return (
     <Page className="news-page">
       <section className="news-detail__hero">
-        <img src={article.image} alt="" />
+        <PreviewableImage
+          src={article.image}
+          alt={article.title}
+          previewTitle={article.title}
+        />
         <button
           className="news-back news-detail__back"
           type="button"

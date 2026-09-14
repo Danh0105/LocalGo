@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
 import { NewsArticle, NewsCategory } from "@/data/news";
-import { getNewsArticles } from "@/services/news";
+import { getNewsArticlesPage } from "@/services/news";
 import "../css/pages/news.css";
 
 type NewsFilter = "Tất cả" | NewsCategory;
@@ -22,6 +22,9 @@ function NewsPage() {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   useEffect(() => {
     let isActive = true;
@@ -29,12 +32,15 @@ function NewsPage() {
     setIsLoading(true);
     setError("");
 
-    getNewsArticles({
-      category: activeFilter === "Tất cả" ? undefined : activeFilter,
-    })
-      .then((data) => {
+    getNewsArticlesPage(
+      { category: activeFilter === "Tất cả" ? undefined : activeFilter },
+      1
+    )
+      .then((result) => {
         if (!isActive) return;
-        setArticles(data);
+        setArticles(result.articles);
+        setPage(result.page);
+        setTotalPages(result.totalPages);
         setIsLoading(false);
       })
       .catch(() => {
@@ -47,6 +53,25 @@ function NewsPage() {
       isActive = false;
     };
   }, [activeFilter]);
+
+  const handleLoadMore = () => {
+    setIsLoadingMore(true);
+    getNewsArticlesPage(
+      { category: activeFilter === "Tất cả" ? undefined : activeFilter },
+      page + 1
+    )
+      .then((result) => {
+        setArticles((current) => [...current, ...result.articles]);
+        setPage(result.page);
+        setTotalPages(result.totalPages);
+      })
+      .catch(() => {
+        setError("Không thể tải thêm tin tức.");
+      })
+      .finally(() => {
+        setIsLoadingMore(false);
+      });
+  };
 
   return (
     <Page className="news-page">
@@ -122,6 +147,17 @@ function NewsPage() {
                 <Icon className="news-card__arrow" icon="zi-chevron-right" />
               </button>
             ))}
+
+            {page < totalPages && (
+              <button
+                className="news-load-more"
+                type="button"
+                disabled={isLoadingMore}
+                onClick={handleLoadMore}
+              >
+                {isLoadingMore ? "Đang tải..." : "Xem thêm tin tức"}
+              </button>
+            )}
           </section>
         )}
       </main>
