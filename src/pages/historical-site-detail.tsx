@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { HistoricalSite } from "@/data/historical-sites";
 import { getHistoricalSiteById } from "@/services/historical-sites";
@@ -107,6 +108,7 @@ function HistoricalSiteDetailPage() {
               <span>Công nhận năm {site.recognizedYear}</span>
             </p>
           )}
+          <DirectionsButton googleMapsUrl={site.googleMapsUrl} />
         </section>
 
         <section className="historical-site-detail__card">

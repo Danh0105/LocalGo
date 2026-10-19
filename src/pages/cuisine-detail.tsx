@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { CuisineItem } from "@/data/cuisine";
 import { getCuisineItemById } from "@/services/cuisine";
@@ -107,6 +108,7 @@ function CuisineDetailPage() {
               <span>{item.bestTime}</span>
             </li>
           </ul>
+          <DirectionsButton googleMapsUrl={item.googleMapsUrl} />
         </section>
 
         <section className="cuisine-detail__card">

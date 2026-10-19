@@ -6,6 +6,7 @@ export interface TempleListItem {
   type: TempleType;
   address: string;
   openHours: string;
+  googleMapsUrl?: string | null;
   summary: string;
   imageUrl: string | null;
   imageAlt: string;

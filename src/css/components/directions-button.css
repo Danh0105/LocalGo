@@ -1,0 +1,36 @@
+.directions-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  background: linear-gradient(100deg, #078dc2, #19b7dc);
+  box-shadow: 0 5px 13px rgb(10 159 210 / 22%);
+  cursor: pointer;
+}
+
+.directions-button .zaui-icon {
+  font-size: 16px;
+}
+
+.directions-button:active {
+  box-shadow: 0 2px 7px rgb(10 159 210 / 18%);
+  transform: scale(0.98);
+}
+
+.directions-button:focus-visible {
+  outline: 3px solid rgb(10 159 210 / 35%);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .directions-button {
+    transition: none;
+  }
+}

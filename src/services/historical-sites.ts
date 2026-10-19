@@ -11,6 +11,7 @@ interface HistoricalSiteApiItem {
   rank: HistoricalSiteRank;
   address: string;
   recognizedYear: number | null;
+  googleMapsUrl?: string | null;
   summary: string;
   history: string[];
   highlights: string[];
@@ -42,6 +43,7 @@ function toHistoricalSite(item: HistoricalSiteApiItem): HistoricalSite {
     rank: item.rank,
     address: item.address,
     recognizedYear: item.recognizedYear ?? undefined,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     summary: item.summary,
     history: item.history,
     highlights: item.highlights,

@@ -13,6 +13,7 @@ export interface CraftVillage {
   address: string;
   workingTime: string;
   mainProducts: string;
+  googleMapsUrl?: string | null;
   summary: string;
   description: string[];
   highlights: string[];

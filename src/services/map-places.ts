@@ -11,6 +11,7 @@ interface MapPlaceApiItem {
   category: MapPlaceCategory;
   address: string;
   coordinates: { lat: number; lng: number };
+  googleMapsUrl?: string | null;
   openTime: string;
   distanceFromCenter: string;
   summary: string;
@@ -45,6 +46,7 @@ function toMapPlace(item: MapPlaceApiItem): MapPlace {
     category: item.category,
     address: item.address,
     coordinates: item.coordinates,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     openTime: item.openTime,
     distanceFromCenter: item.distanceFromCenter,
     summary: item.summary,

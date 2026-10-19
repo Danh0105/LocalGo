@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { ExperienceTour } from "@/data/experience-tours";
 import { getExperienceTourById } from "@/services/experience-tours";
@@ -125,6 +126,7 @@ function ExperienceTourDetailPage() {
               </li>
             )}
           </ul>
+          <DirectionsButton googleMapsUrl={tour.googleMapsUrl} />
         </section>
 
         <section className="experience-tour-detail__card">

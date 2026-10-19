@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { Specialty } from "@/data/specialties";
 import { getSpecialtyById } from "@/services/specialties";
@@ -114,6 +115,7 @@ function SpecialtyDetailPage() {
               <span>{specialty.season}</span>
             </li>
           </ul>
+          <DirectionsButton googleMapsUrl={specialty.googleMapsUrl} />
         </section>
 
         <section className="specialty-detail__card">

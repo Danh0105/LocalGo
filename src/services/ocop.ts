@@ -14,6 +14,7 @@ interface OcopApiItem {
   producer: string;
   address: string;
   contactPhone?: string | null;
+  googleMapsUrl?: string | null;
   priceRange: string;
   summary: string;
   description: string[];
@@ -49,6 +50,7 @@ function toOcopProduct(item: OcopApiItem): OcopProduct {
     producer: item.producer,
     address: item.address,
     contactPhone: item.contactPhone?.trim() || undefined,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     priceRange: item.priceRange,
     summary: item.summary,
     description: item.description,

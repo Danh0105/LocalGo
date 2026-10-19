@@ -12,6 +12,7 @@ interface CraftVillageApiItem {
   address: string;
   workingTime: string;
   mainProducts: string;
+  googleMapsUrl?: string | null;
   summary: string;
   description: string[];
   highlights: string[];
@@ -45,6 +46,7 @@ function toCraftVillage(item: CraftVillageApiItem): CraftVillage {
     address: item.address,
     workingTime: item.workingTime,
     mainProducts: item.mainProducts,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     summary: item.summary,
     description: item.description,
     highlights: item.highlights,

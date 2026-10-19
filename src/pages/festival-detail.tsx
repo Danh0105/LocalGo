@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { Festival } from "@/data/festivals";
 import { getFestivalById } from "@/services/festivals";
@@ -115,6 +116,7 @@ function FestivalDetailPage() {
               <span>{festival.scale}</span>
             </li>
           </ul>
+          <DirectionsButton googleMapsUrl={festival.googleMapsUrl} />
         </section>
 
         <section className="festival-detail__card">

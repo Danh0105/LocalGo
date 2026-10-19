@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { AgricultureItem } from "@/data/agriculture";
 import { getAgricultureItemById } from "@/services/agriculture";
@@ -111,6 +112,7 @@ function AgricultureDetailPage() {
               <span>{item.scale}</span>
             </li>
           </ul>
+          <DirectionsButton googleMapsUrl={item.googleMapsUrl} />
         </section>
 
         <section className="agriculture-detail__card">

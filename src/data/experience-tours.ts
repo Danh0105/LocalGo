@@ -16,6 +16,7 @@ export interface ExperienceTour {
   priceRange: string;
   meetingPoint: string;
   contactPhone?: string;
+  googleMapsUrl?: string | null;
   summary: string;
   description: string[];
   itinerary: string[];

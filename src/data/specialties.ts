@@ -9,6 +9,7 @@ export interface Specialty {
   category: SpecialtyCategory;
   price: string;
   season: string;
+  googleMapsUrl?: string | null;
   summary: string;
   description: string[];
   buyPlaces: string[];

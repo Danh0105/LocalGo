@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { MapPlace } from "@/data/map-places";
+import { isValidGoogleMapsUrl } from "@/lib/google-maps-link";
 import { getMapPlaceById } from "@/services/map-places";
 import "../css/pages/map-places.css";
 
@@ -93,9 +95,11 @@ function MapPlaceDetailPage() {
     );
   }
 
-  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-    `${place.coordinates.lat},${place.coordinates.lng}`
-  )}`;
+  const directionsUrl = isValidGoogleMapsUrl(place.googleMapsUrl)
+    ? (place.googleMapsUrl as string)
+    : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+        `${place.coordinates.lat},${place.coordinates.lng}`
+      )}`;
 
   return (
     <Page className="map-places-page">

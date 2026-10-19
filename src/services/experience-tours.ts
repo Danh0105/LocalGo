@@ -17,6 +17,7 @@ interface ExperienceTourApiItem {
   priceRange: string;
   meetingPoint: string;
   contactPhone?: string | null;
+  googleMapsUrl?: string | null;
   summary: string;
   description: string[];
   itinerary: string[];
@@ -53,6 +54,7 @@ function toExperienceTour(item: ExperienceTourApiItem): ExperienceTour {
     priceRange: item.priceRange,
     meetingPoint: item.meetingPoint,
     contactPhone: item.contactPhone?.trim() || undefined,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     summary: item.summary,
     description: item.description,
     itinerary: item.itinerary,

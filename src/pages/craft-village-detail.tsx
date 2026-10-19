@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { CraftVillage } from "@/data/craft-villages";
 import { getCraftVillageById } from "@/services/craft-villages";
@@ -117,6 +118,7 @@ function CraftVillageDetailPage() {
               <span>{village.mainProducts}</span>
             </li>
           </ul>
+          <DirectionsButton googleMapsUrl={village.googleMapsUrl} />
         </section>
 
         <section className="craft-village-detail__card">

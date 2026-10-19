@@ -13,6 +13,7 @@ export interface CuisineItem {
   category: CuisineCategory;
   priceRange: string;
   bestTime: string;
+  googleMapsUrl?: string | null;
   suggestedPlaces: string[];
   summary: string;
   description: string[];

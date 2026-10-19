@@ -13,6 +13,7 @@ export interface Festival {
   time: string;
   location: string;
   scale: string;
+  googleMapsUrl?: string | null;
   summary: string;
   description: string[];
   activities: string[];

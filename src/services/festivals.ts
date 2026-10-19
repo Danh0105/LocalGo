@@ -12,6 +12,7 @@ interface FestivalApiItem {
   time: string;
   location: string;
   scale: string;
+  googleMapsUrl?: string | null;
   summary: string;
   description: string[];
   activities: string[];
@@ -45,6 +46,7 @@ function toFestival(item: FestivalApiItem): Festival {
     time: item.time,
     location: item.location,
     scale: item.scale,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     summary: item.summary,
     description: item.description,
     activities: item.activities,

@@ -13,6 +13,7 @@ export interface AgricultureItem {
   location: string;
   season: string;
   scale: string;
+  googleMapsUrl?: string | null;
   summary: string;
   description: string[];
   highlights: string[];

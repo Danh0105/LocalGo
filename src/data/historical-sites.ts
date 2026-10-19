@@ -8,6 +8,7 @@ export interface HistoricalSite {
   rank: HistoricalSiteRank;
   address: string;
   recognizedYear?: number;
+  googleMapsUrl?: string | null;
   summary: string;
   history: string[];
   highlights: string[];

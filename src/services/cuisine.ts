@@ -11,6 +11,7 @@ interface CuisineApiItem {
   category: CuisineCategory;
   priceRange: string;
   bestTime: string;
+  googleMapsUrl?: string | null;
   suggestedPlaces: string[];
   summary: string;
   description: string[];
@@ -44,6 +45,7 @@ function toCuisineItem(item: CuisineApiItem): CuisineItem {
     category: item.category,
     priceRange: item.priceRange,
     bestTime: item.bestTime,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     suggestedPlaces: item.suggestedPlaces,
     summary: item.summary,
     description: item.description,

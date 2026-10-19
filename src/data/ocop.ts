@@ -16,6 +16,7 @@ export interface OcopProduct {
   producer: string;
   address: string;
   contactPhone?: string;
+  googleMapsUrl?: string | null;
   priceRange: string;
   summary: string;
   description: string[];

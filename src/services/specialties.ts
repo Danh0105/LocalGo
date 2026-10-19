@@ -11,6 +11,7 @@ interface SpecialtyApiItem {
   category: SpecialtyCategory;
   price: string;
   season: string;
+  googleMapsUrl?: string | null;
   summary: string;
   description: string[];
   buyPlaces: string[];
@@ -42,6 +43,7 @@ function toSpecialty(item: SpecialtyApiItem): Specialty {
     category: item.category,
     price: item.price,
     season: item.season,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     summary: item.summary,
     description: item.description,
     buyPlaces: item.buyPlaces,

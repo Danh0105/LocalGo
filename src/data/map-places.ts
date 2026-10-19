@@ -16,6 +16,7 @@ export interface MapPlace {
     lat: number;
     lng: number;
   };
+  googleMapsUrl?: string | null;
   openTime: string;
   distanceFromCenter: string;
   summary: string;

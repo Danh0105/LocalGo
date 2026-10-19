@@ -12,6 +12,7 @@ interface AgricultureApiItem {
   location: string;
   season: string;
   scale: string;
+  googleMapsUrl?: string | null;
   summary: string;
   description: string[];
   highlights: string[];
@@ -45,6 +46,7 @@ function toAgricultureItem(item: AgricultureApiItem): AgricultureItem {
     location: item.location,
     season: item.season,
     scale: item.scale,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     summary: item.summary,
     description: item.description,
     highlights: item.highlights,

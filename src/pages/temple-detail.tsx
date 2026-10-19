@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import templePlaceholder from "@/static/temple.png";
 import { getTempleById, TempleDetail } from "@/services/temples";
@@ -114,6 +115,7 @@ function TempleDetailPage() {
               <span>{temple.openHours}</span>
             </li>
           </ul>
+          <DirectionsButton googleMapsUrl={temple.googleMapsUrl} />
         </section>
 
         <section className="temple-detail__card">
