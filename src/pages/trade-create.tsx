@@ -9,12 +9,16 @@ import {
 import { Icon, Page, useNavigate } from "zmp-ui";
 
 import PreviewableImage from "@/components/previewable-image";
-import { useCurrentUser } from "@/contexts/auth-context";
 import {
-  checkBusinessApplicationByZaloId,
-  getMyBusinessApplication,
-} from "@/services/business-applications";
+  BusinessProfileRequiredDialog,
+  TradeLoginRequiredDialog,
+} from "@/components/trade-access-dialogs";
+import { useCurrentUser } from "@/contexts/auth-context";
 import { useTradePostCategories } from "@/hooks/use-trade-post-categories";
+import {
+  expiryDateInputToIso,
+  getMinExpiryDateInput,
+} from "@/lib/trade-post-dates";
 import {
   TRADE_POST_CATEGORY_INVALID_MESSAGE,
   TradePostPayload,
@@ -23,12 +27,14 @@ import {
   TradePostResponse,
   createTradePost,
   isTradePostCategoryInvalidError,
+  isTradePostExpiredError,
   submitTradePost,
   uploadTradePostImage,
 } from "@/services/trade-posts";
 import "../css/pages/trade.css";
 
 type SubmitIntent = "draft" | "submit";
+type BusinessDialogSource = "gate" | "submit";
 
 interface SelectedTradeImage {
   file: File;
@@ -59,6 +65,7 @@ function TradeCreatePage() {
     status: authStatus,
     error: authError,
     authenticate,
+    refreshUser,
   } = useCurrentUser();
   const {
     categories,
@@ -76,10 +83,18 @@ function TradeCreatePage() {
   const [result, setResult] = useState<TradePostResponse | null>(null);
   const [submitFailed, setSubmitFailed] = useState(false);
   const [hasBusinessAccess, setHasBusinessAccess] = useState(false);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [businessDialogSource, setBusinessDialogSource] =
+    useState<BusinessDialogSource | null>(null);
   const [selectedImages, setSelectedImages] = useState<SelectedTradeImage[]>([]);
   const [imageError, setImageError] = useState("");
+  const [expiresAtError, setExpiresAtError] = useState("");
+  const minExpiryDate = useMemo(() => getMinExpiryDateInput(), []);
   const submitIntent = useRef<SubmitIntent>("draft");
   const selectedImagesRef = useRef<SelectedTradeImage[]>([]);
+  const hasRefreshedUserRef = useRef(false);
 
   const selectedCategory = useMemo(
     () => categories.find((item) => item.code === category),
@@ -90,9 +105,18 @@ function TradeCreatePage() {
 
   useEffect(() => {
     if (authStatus === "idle") {
-      void authenticate({ requestUserInfoPermission: true }).catch(() => undefined);
+      setLoginDialogOpen(true);
     }
-  }, [authStatus, authenticate]);
+  }, [authStatus]);
+
+  // Re-fetch the current user when opening the posting form so a business
+  // profile that an admin just approved is reflected immediately.
+  useEffect(() => {
+    if (authStatus === "authenticated" && !hasRefreshedUserRef.current) {
+      hasRefreshedUserRef.current = true;
+      void refreshUser().catch(() => undefined);
+    }
+  }, [authStatus, refreshUser]);
 
   useEffect(() => {
     if (isLoadingCategories) return;
@@ -124,49 +148,45 @@ function TradeCreatePage() {
   );
 
   useEffect(() => {
-    if (authStatus !== "authenticated" || !accessToken || !user) return;
+    if (authStatus !== "authenticated" || !user) return;
 
     if (user.status !== "ACTIVE") {
-      navigate("/business/register");
+      setHasBusinessAccess(false);
       return;
     }
 
     if (user.role === "BUSINESS") {
       setHasBusinessAccess(true);
+      setBusinessDialogSource(null);
       return;
     }
 
-    let active = true;
     setHasBusinessAccess(false);
-    void (async () => {
-      try {
-        const application = await getMyBusinessApplication(accessToken);
-        if (!active) return;
+    setBusinessDialogSource("gate");
+  }, [authStatus, user]);
 
-        if (application?.status === "APPROVED") {
-          setHasBusinessAccess(true);
-          return;
-        }
+  const handleLogin = async () => {
+    if (isAuthenticating) return;
 
-        if (user.zaloId) {
-          const check = await checkBusinessApplicationByZaloId(user.zaloId);
-          if (!active) return;
-          if (check.exists && check.status === "APPROVED") {
-            setHasBusinessAccess(true);
-            return;
-          }
-        }
-
-        navigate("/business/register");
-      } catch {
-        if (active) navigate("/business/register");
+    setLoginError("");
+    setIsAuthenticating(true);
+    try {
+      const session = await authenticate({ requestUserInfoPermission: true });
+      setLoginDialogOpen(false);
+      if (
+        session.user.status === "ACTIVE" &&
+        session.user.role !== "BUSINESS"
+      ) {
+        setBusinessDialogSource("gate");
       }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [authStatus, accessToken, user, navigate]);
+    } catch {
+      setLoginError(
+        "Bạn cần đăng nhập và cấp quyền truy cập thông tin Zalo để đăng tin."
+      );
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
 
   const addImages = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
@@ -241,7 +261,15 @@ function TradeCreatePage() {
       user.status !== "ACTIVE" ||
       !hasBusinessAccess
     ) {
-      navigate("/business/register");
+      if (!accessToken || !user) {
+        setLoginDialogOpen(true);
+      } else if (user.status !== "ACTIVE") {
+        setSubmitError(
+          "Tài khoản của bạn chưa hoạt động. Vui lòng liên hệ quản trị viên."
+        );
+      } else {
+        setBusinessDialogSource("gate");
+      }
       return;
     }
 
@@ -258,10 +286,19 @@ function TradeCreatePage() {
     const rawPrice = text(formData, "price");
     const promotionStartAt = toIsoDate(promotionStartAtValue);
     const promotionEndAt = toIsoDate(promotionEndAtValue);
-    const expiresAt = toIsoDate(text(formData, "expiresAt"));
+    const expiresAtInput = text(formData, "expiresAt");
+    const expiresAt = expiresAtInput
+      ? expiryDateInputToIso(expiresAtInput)
+      : null;
     const images = selectedImages.map(({ file }) => file);
 
     setSubmitError("");
+    setExpiresAtError("");
+
+    if (expiresAtInput && (!expiresAt || new Date(expiresAt).getTime() <= Date.now())) {
+      setExpiresAtError("Ngày hết hạn phải là một ngày trong tương lai.");
+      return;
+    }
 
     if (!category || !selectedCategory) {
       setSubmitError("Vui lòng chọn danh mục tin hợp lệ.");
@@ -375,6 +412,14 @@ function TradeCreatePage() {
           setResult(submitted);
           setSubmitFailed(false);
         } catch (error: unknown) {
+          if (isTradePostExpiredError(error)) {
+            navigate(`/trade/manage/posts/${created.id}/edit`, {
+              state: {
+                flashMessage: "Tin đã quá ngày hết hạn, vui lòng cập nhật.",
+              },
+            });
+            return;
+          }
           setResult(created);
           setSubmitFailed(true);
           if (isTradePostCategoryInvalidError(error)) {
@@ -402,11 +447,11 @@ function TradeCreatePage() {
       }
       if (
         error instanceof TradePostRequestError &&
+        error.status === 403 &&
         error.code === "BUSINESS_PROFILE_REQUIRED"
       ) {
-        setSubmitError(
-          "Hồ sơ đã được duyệt nhưng quyền đăng tin trên máy chủ chưa được cập nhật. Vui lòng liên hệ quản trị viên."
-        );
+        setSubmitError("");
+        setBusinessDialogSource("submit");
         return;
       }
       setSubmitError(
@@ -428,6 +473,22 @@ function TradeCreatePage() {
       setResult(submitted);
       setSubmitFailed(false);
     } catch (error: unknown) {
+      if (isTradePostExpiredError(error)) {
+        navigate(`/trade/manage/posts/${result.id}/edit`, {
+          state: {
+            flashMessage: "Tin đã quá ngày hết hạn, vui lòng cập nhật.",
+          },
+        });
+        return;
+      }
+      if (
+        error instanceof TradePostRequestError &&
+        error.status === 403 &&
+        error.code === "BUSINESS_PROFILE_REQUIRED"
+      ) {
+        setBusinessDialogSource("submit");
+        return;
+      }
       if (isTradePostCategoryInvalidError(error)) {
         setCategory("");
         reloadCategories();
@@ -467,15 +528,43 @@ function TradeCreatePage() {
     </header>
   );
 
+  const accessDialogs = (
+    <>
+      <TradeLoginRequiredDialog
+        visible={loginDialogOpen}
+        loading={isAuthenticating}
+        error={loginError}
+        onLogin={() => void handleLogin()}
+        onClose={() => {
+          if (isAuthenticating) return;
+          setLoginDialogOpen(false);
+          if (!hasBusinessAccess) navigate("/trade", { replace: true });
+        }}
+      />
+      <BusinessProfileRequiredDialog
+        visible={businessDialogSource !== null}
+        zaloId={user?.zaloId}
+        onClose={() => {
+          const source = businessDialogSource;
+          setBusinessDialogSource(null);
+          if (source === "gate") navigate("/trade", { replace: true });
+        }}
+      />
+    </>
+  );
+
   if (
     authStatus === "idle" ||
     authStatus === "loading" ||
-    (authStatus === "authenticated" && !hasBusinessAccess)
+    (authStatus === "authenticated" &&
+      user?.status === "ACTIVE" &&
+      !hasBusinessAccess)
   ) {
     return (
       <Page className="trade-flow-page trade-create-page">
         {renderHeader()}
         <p className="trade-flow__loading">Đang xác thực quyền đăng tin...</p>
+        {accessDialogs}
       </Page>
     );
   }
@@ -489,20 +578,31 @@ function TradeCreatePage() {
           <button
             className="trade-flow__primary"
             type="button"
-            onClick={() =>
-              void authenticate({ requestUserInfoPermission: true }).catch(
-                () => undefined
-              )
-            }
+            onClick={() => setLoginDialogOpen(true)}
           >
-            Cấp quyền Zalo và thử lại
+            Đăng nhập Zalo và thử lại
           </button>
         </main>
+        {accessDialogs}
       </Page>
     );
   }
 
-  if (!user || user.status !== "ACTIVE" || !hasBusinessAccess) return null;
+  if (!user || user.status !== "ACTIVE" || !hasBusinessAccess) {
+    return (
+      <Page className="trade-flow-page trade-create-page">
+        {renderHeader()}
+        <main className="trade-flow__content">
+          <section className="trade-flow__status-card trade-flow__status-card--error">
+            <Icon icon="zi-warning" />
+            <h2>Tài khoản chưa hoạt động</h2>
+            <p>Vui lòng liên hệ quản trị viên để kiểm tra trạng thái tài khoản.</p>
+          </section>
+        </main>
+        {accessDialogs}
+      </Page>
+    );
+  }
 
   return (
     <Page className="trade-flow-page trade-create-page">
@@ -687,7 +787,12 @@ function TradeCreatePage() {
                 <span className="trade-flow__label-text">
                   Ngày hết hạn <small>Không bắt buộc</small>
                 </span>
-                <input name="expiresAt" type="datetime-local" />
+                <input name="expiresAt" type="date" min={minExpiryDate} />
+                {expiresAtError && (
+                  <span className="trade-flow__field-error" role="alert">
+                    {expiresAtError}
+                  </span>
+                )}
               </label>
             </section>
 
@@ -792,6 +897,7 @@ function TradeCreatePage() {
           </>
         )}
       </main>
+      {accessDialogs}
     </Page>
   );
 }

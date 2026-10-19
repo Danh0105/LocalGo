@@ -1,11 +1,43 @@
 export type BusinessApplicantType = "INDIVIDUAL" | "ORGANIZATION";
 export type BusinessApplicationStatus = "PENDING" | "APPROVED" | "REJECTED";
+export type BusinessType = string;
+export type TradePostPurpose = "COMMERCIAL" | "NON_PROFIT";
 export type BusinessDocumentType =
   | "IDENTITY_FRONT"
   | "IDENTITY_BACK"
   | "BUSINESS_LICENSE"
   | "TAX_DOCUMENT"
+  | "MANAGEMENT_DECISION"
+  | "FOOD_SAFETY_CERTIFICATE"
+  | "SECURITY_CERTIFICATE"
+  | "LAND_USE_CERTIFICATE"
   | "OTHER";
+
+export interface BusinessTypeFieldSpec {
+  field: string;
+  label: string;
+}
+
+export interface BusinessTypeDocumentSpec {
+  type: BusinessDocumentType;
+  label: string;
+}
+
+export interface BusinessTypeApplicantSpec {
+  applicantType: BusinessApplicantType;
+  requiredFields: BusinessTypeFieldSpec[];
+  optionalFields: BusinessTypeFieldSpec[];
+  requiredDocuments: BusinessTypeDocumentSpec[];
+  optionalDocuments: BusinessTypeDocumentSpec[];
+}
+
+export interface BusinessTypeInfo {
+  type: BusinessType;
+  label: string;
+  description: string;
+  postPurposes: TradePostPurpose[];
+  applicantTypes: BusinessTypeApplicantSpec[];
+}
 
 export interface BusinessApplicationDocument {
   id: string;
@@ -18,6 +50,7 @@ export interface BusinessApplicationDocument {
 export interface BusinessApplication {
   id: string;
   applicantType: BusinessApplicantType;
+  businessType: BusinessType | null;
   businessName: string;
   businessCategory: string;
   contactName: string;
@@ -31,6 +64,12 @@ export interface BusinessApplication {
   taxCode: string | null;
   representativeName: string | null;
   representativeTitle: string | null;
+  templeName: string | null;
+  openingHours: string | null;
+  seatingCapacity: number | null;
+  roomCount: number | null;
+  gardenArea: string | null;
+  mainProducts: string | null;
   website: string | null;
   description: string | null;
   zaloId: string | null;
@@ -48,8 +87,9 @@ export interface BusinessApplication {
 
 export interface BusinessApplicationPayload {
   applicantType: BusinessApplicantType;
+  businessType?: BusinessType;
   businessName: string;
-  businessCategory: string;
+  businessCategory?: string;
   contactName: string;
   contactPhone: string;
   contactEmail: string;
@@ -61,6 +101,12 @@ export interface BusinessApplicationPayload {
   taxCode?: string | null;
   representativeName?: string | null;
   representativeTitle?: string | null;
+  templeName?: string | null;
+  openingHours?: string | null;
+  seatingCapacity?: number | null;
+  roomCount?: number | null;
+  gardenArea?: string | null;
+  mainProducts?: string | null;
   website?: string | null;
   description?: string | null;
   zaloId: string;
@@ -136,6 +182,41 @@ async function request<T>(
       body && !body.success
         ? body.error.message
         : "Không thể xử lý hồ sơ Business.",
+      response.status,
+      body && !body.success ? body.error.code : undefined
+    );
+  }
+
+  return body.data;
+}
+
+export async function getBusinessTypes(
+  signal?: AbortSignal
+): Promise<BusinessTypeInfo[]> {
+  let response: Response;
+  try {
+    response = await fetch(
+      `${API_BASE_URL}/business-applications/business-types`,
+      { signal }
+    );
+  } catch {
+    throw new BusinessApplicationError("Không thể kết nối tới máy chủ.", 0);
+  }
+
+  let body: ApiEnvelope<BusinessTypeInfo[]> | ApiErrorEnvelope | undefined;
+  try {
+    body = (await response.json()) as
+      | ApiEnvelope<BusinessTypeInfo[]>
+      | ApiErrorEnvelope;
+  } catch {
+    body = undefined;
+  }
+
+  if (!response.ok || !body?.success) {
+    throw new BusinessApplicationError(
+      body && !body.success
+        ? body.error.message
+        : "Không thể tải danh sách loại hình đăng ký.",
       response.status,
       body && !body.success ? body.error.code : undefined
     );

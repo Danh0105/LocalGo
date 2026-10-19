@@ -1,9 +1,10 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Icon, Page, useNavigate, useParams } from "zmp-ui";
+import { Icon, Page, useLocation, useNavigate, useParams } from "zmp-ui";
 
 import PreviewableImage from "@/components/previewable-image";
 import { useCurrentUser } from "@/contexts/auth-context";
+import { useTradeSaves } from "@/contexts/trade-save-context";
 import { AuthRequestError } from "@/services/auth";
 import {
   TradePostRequestError,
@@ -15,6 +16,8 @@ import {
   getTradePostDetail,
   getPublishedTradeReviews,
   getTradeReviewSummary,
+  recordTradePostInteraction,
+  startTradeConversation,
   uploadTradePostImage,
 } from "@/services/trade-posts";
 import phone from "@/static/phone.png";
@@ -56,8 +59,10 @@ function publishedDate(post: TradePostResponse): string {
 
 function TradeDetailPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams<{ id: string }>();
-  const { accessToken, authenticate } = useCurrentUser();
+  const { user, accessToken, authenticate } = useCurrentUser();
+  const { getSaveState, syncTradePosts, toggleSave } = useTradeSaves();
   const [post, setPost] = useState<TradePostResponse | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [reviews, setReviews] = useState<TradeReviewResponse[]>([]);
@@ -78,9 +83,16 @@ function TradeDetailPage() {
   const [reviewSubmitError, setReviewSubmitError] = useState("");
   const [reviewSubmitMessage, setReviewSubmitMessage] = useState("");
   const [isReviewSubmitting, setIsReviewSubmitting] = useState(false);
+  const [messageOpen, setMessageOpen] = useState(false);
+  const [messageContent, setMessageContent] = useState("");
+  const [messageError, setMessageError] = useState("");
+  const [saveActionError, setSaveActionError] = useState("");
+  const [isMessageSending, setIsMessageSending] = useState(false);
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const swipeStartX = useRef<number | null>(null);
   const viewerSwipeStartX = useRef<number | null>(null);
+  const requestedReviewId =
+    (location.state as { reviewId?: string } | null)?.reviewId ?? "";
 
   useEffect(() => {
     if (!imageViewerOpen) return;
@@ -115,9 +127,10 @@ function TradeDetailPage() {
     setReviewLoadError("");
     void (async () => {
       try {
-        const result = await getTradePostDetail(id, controller.signal);
+        const result = await getTradePostDetail(id, controller.signal, accessToken);
         if (!active) return;
         setPost(result);
+        syncTradePosts([result]);
         setActiveImageIndex(0);
 
         try {
@@ -161,7 +174,20 @@ function TradeDetailPage() {
       active = false;
       controller.abort();
     };
-  }, [id, reloadKey]);
+  }, [accessToken, id, reloadKey, syncTradePosts]);
+
+  useEffect(() => {
+    if (!requestedReviewId || !reviews.some((review) => review.id === requestedReviewId)) {
+      return;
+    }
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(`trade-review-${requestedReviewId}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [requestedReviewId, reviews]);
 
   const closeReviewPopup = () => {
     setReviewOpen(false);
@@ -263,6 +289,58 @@ function TradeDetailPage() {
     }
   };
 
+  const submitMessage = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!post || isMessageSending) return;
+    const content = messageContent.trim();
+    if (!content) {
+      setMessageError("Vui lòng nhập nội dung cần trao đổi.");
+      return;
+    }
+
+    setIsMessageSending(true);
+    setMessageError("");
+    try {
+      const token = accessToken ?? (await authenticate()).accessToken;
+      const conversation = await startTradeConversation(token, post.id, content);
+      setMessageContent("");
+      setMessageOpen(false);
+      navigate(`/trade/messages/${conversation.id}`);
+    } catch (error: unknown) {
+      setMessageError(
+        error instanceof AuthRequestError || error instanceof TradePostRequestError
+          ? error.message
+          : "Không thể gửi tin nhắn. Vui lòng thử lại."
+      );
+    } finally {
+      setIsMessageSending(false);
+    }
+  };
+
+  const handleToggleSave = async () => {
+    if (!post || post.ownerId === user?.id) return;
+    setSaveActionError("");
+    try {
+      const token = accessToken ?? (await authenticate()).accessToken;
+      await toggleSave(post, token);
+    } catch (error: unknown) {
+      if (
+        error instanceof TradePostRequestError &&
+        error.status === 404 &&
+        error.code === "RESOURCE_NOT_FOUND"
+      ) {
+        setPost(null);
+        setLoadError("Tin không còn hiển thị.");
+        return;
+      }
+      setSaveActionError(
+        error instanceof Error
+          ? error.message
+          : "Không thể cập nhật tin đã lưu. Vui lòng thử lại."
+      );
+    }
+  };
+
   if (isLoading) {
     return (
       <Page className="trade-page">
@@ -329,6 +407,8 @@ function TradeDetailPage() {
     : post.promotionPercent
       ? `-${post.promotionPercent}%`
       : null;
+  const saveState = getSaveState(post);
+  const canSave = post.ownerId !== user?.id;
 
   return (
     <Page className="trade-page trade-detail-page">
@@ -467,6 +547,10 @@ function TradeDetailPage() {
               <Icon icon="zi-info-circle" />
               {post.viewCount} lượt xem
             </span>
+            <span className="trade-detail__save-count">
+              <Icon icon="zi-bookmark" />
+              {saveState.saveCount} người đã lưu
+            </span>
             <span>
               <Icon icon="zi-note" />
               {priceTypeLabels[post.priceType]}
@@ -550,11 +634,21 @@ function TradeDetailPage() {
 
           <div className="trade-reviews__list">
             {reviews.map((review) => (
-              <article className="trade-review" key={review.id}>
-                <div className="trade-review__avatar">T</div>
+              <article
+                className="trade-review"
+                id={`trade-review-${review.id}`}
+                key={review.id}
+              >
+                <div className="trade-review__avatar">
+                  {review.reviewer?.avatarUrl ? (
+                    <img src={review.reviewer.avatarUrl} alt="" />
+                  ) : (
+                    (review.reviewer?.displayName || "T").charAt(0)
+                  )}
+                </div>
                 <div>
                   <div className="trade-review__topline">
-                    <strong>Thành viên LocalGo</strong>
+                    <strong>{review.reviewer?.displayName || "Thành viên LocalGo"}</strong>
                     <span>
                       {new Intl.DateTimeFormat("vi-VN").format(
                         new Date(review.createdAt)
@@ -591,6 +685,12 @@ function TradeDetailPage() {
                       ))}
                     </div>
                   )}
+                  {review.replyContent && (
+                    <div className="trade-review__owner-reply">
+                      <strong>Phản hồi từ người bán</strong>
+                      <p>{review.replyContent}</p>
+                    </div>
+                  )}
                 </div>
               </article>
             ))}
@@ -612,14 +712,39 @@ function TradeDetailPage() {
       </main>
 
       <div className="trade-detail__actions">
-        <button className="trade-detail__save" type="button">
-          Lưu tin
-        </button>
+        {canSave && (
+          <button
+            className={`trade-detail__save${
+              saveState.isSaved ? " is-saved" : ""
+            }`}
+            type="button"
+            aria-pressed={saveState.isSaved}
+            disabled={saveState.isSaving}
+            onClick={() => void handleToggleSave()}
+          >
+            <Icon icon="zi-bookmark" />
+            <span>{saveState.isSaved ? "Đã lưu" : "Lưu tin"}</span>
+          </button>
+        )}
+        {post.ownerId !== user?.id && (
+          <button
+            className="trade-detail__message"
+            type="button"
+            onClick={() => {
+              setMessageError("");
+              setMessageOpen(true);
+            }}
+          >
+            <Icon icon="zi-chat" />
+            Nhắn tin
+          </button>
+        )}
         <button
           className="trade-detail__call"
           type="button"
           aria-label={`Gọi ${post.contactPhone}`}
           onClick={() => {
+            void recordTradePostInteraction(post.id, "CONTACT_PHONE");
             window.location.href = `tel:${post.contactPhone}`;
           }}
         >
@@ -630,6 +755,57 @@ function TradeDetailPage() {
           </span>
         </button>
       </div>
+
+      {saveActionError && (
+        <p className="trade-detail__save-error" role="alert">
+          {saveActionError}
+        </p>
+      )}
+
+      {messageOpen && (
+        <div
+          className="trade-message-popup"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !isMessageSending) {
+              setMessageOpen(false);
+            }
+          }}
+        >
+          <section role="dialog" aria-modal="true" aria-labelledby="trade-message-title">
+            <header>
+              <div>
+                <span>Trao đổi trực tiếp</span>
+                <h2 id="trade-message-title">Nhắn tin cho {ownerName}</h2>
+              </div>
+              <button type="button" aria-label="Đóng" disabled={isMessageSending} onClick={() => setMessageOpen(false)}>×</button>
+            </header>
+            <div className="trade-message-popup__post">
+              <img src={imageUrl} alt="" />
+              <strong>{post.title}</strong>
+            </div>
+            <form onSubmit={submitMessage}>
+              <label>
+                <span>Nội dung trao đổi</span>
+                <textarea
+                  autoFocus
+                  rows={4}
+                  maxLength={1000}
+                  value={messageContent}
+                  placeholder="Ví dụ: Sản phẩm này còn không? Tôi muốn biết thêm về giá và cách giao nhận..."
+                  onChange={(event) => setMessageContent(event.target.value)}
+                />
+                <small>{messageContent.length}/1000</small>
+              </label>
+              {messageError && <p className="trade-flow__message--error" role="alert">{messageError}</p>}
+              <div>
+                <button type="button" disabled={isMessageSending} onClick={() => setMessageOpen(false)}>Hủy</button>
+                <button type="submit" disabled={isMessageSending}>{isMessageSending ? "Đang gửi..." : "Gửi tin nhắn"}</button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
 
       {reviewOpen && (
         <div

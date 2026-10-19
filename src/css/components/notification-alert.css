@@ -1,0 +1,170 @@
+.notification-alert {
+  position: fixed;
+  right: 16px;
+  bottom: calc(
+    max(env(safe-area-inset-bottom, 0px), var(--zaui-safe-area-inset-bottom, 0px)) + 18px
+  );
+  left: 16px;
+  z-index: 1200;
+  width: min(calc(100% - 32px), 460px);
+  margin: 0 auto;
+  animation: notification-alert-enter 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.notification-alert__surface {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 68%);
+  border-radius: 22px;
+  background: rgb(255 255 255 / 88%);
+  box-shadow:
+    0 18px 40px rgb(16 49 76 / 22%),
+    0 2px 8px rgb(15 60 94 / 10%),
+    inset 0 1px 0 rgb(255 255 255 / 92%);
+  backdrop-filter: blur(20px) saturate(150%);
+}
+
+.notification-alert__surface::before {
+  position: absolute;
+  top: -34px;
+  right: -20px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(81 198 255 / 20%), transparent 68%);
+  content: "";
+  pointer-events: none;
+}
+
+.notification-alert__content {
+  display: flex;
+  width: 100%;
+  min-height: 88px;
+  padding: 14px 48px 14px 14px;
+  border: 0;
+  color: #1d1d1f;
+  background: transparent;
+  text-align: left;
+  align-items: center;
+  gap: 12px;
+}
+
+.notification-alert__icon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 43px;
+  height: 43px;
+  flex: 0 0 43px;
+  border: 1px solid rgb(0 122 255 / 10%);
+  border-radius: 15px;
+  color: #007aff;
+  background: linear-gradient(145deg, #e9f6ff, #d6edff);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 88%);
+  place-items: center;
+
+  .zaui-icon {
+    font-size: 22px;
+  }
+}
+
+.notification-alert__copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+
+  small {
+    color: #007aff;
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+  }
+
+  strong,
+  > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  strong {
+    color: #1d1d1f;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  > span {
+    color: #6e6e73;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+}
+
+.notification-alert__open {
+  position: absolute;
+  right: 13px;
+  bottom: 14px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #007aff;
+  background: rgb(0 122 255 / 9%);
+  place-items: center;
+
+  .zaui-icon {
+    font-size: 14px;
+  }
+}
+
+.notification-alert__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: grid;
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #8e8e93;
+  background: rgb(60 60 67 / 7%);
+  place-items: center;
+
+  .zaui-icon {
+    font-size: 13px;
+  }
+
+  &:active {
+    color: #4a4a4d;
+    background: rgb(60 60 67 / 14%);
+  }
+}
+
+@keyframes notification-alert-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 360px) {
+  .notification-alert {
+    right: 12px;
+    left: 12px;
+    width: calc(100% - 24px);
+  }
+
+  .notification-alert__content {
+    min-height: 82px;
+    padding-right: 43px;
+  }
+}

@@ -23,6 +23,13 @@
   background: #079fd8;
 }
 
+.home-page .home-notification-bell {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 58px);
+  left: max(16px, env(safe-area-inset-left, 0px));
+  z-index: 5;
+}
+
 .village-hero__back {
   position: absolute;
   top: calc(env(safe-area-inset-top, 0px) + 22px);

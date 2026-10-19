@@ -1,9 +1,12 @@
 import type { CSSProperties } from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
 import SearchPopup from "@/components/search-popup";
+import NotificationBell from "@/components/notification-bell";
+import ZaloAuthDialog from "@/components/zalo-auth-dialog";
 import { requestAppBack } from "@/components/app-back-handler";
+import { useCurrentUser } from "@/contexts/auth-context";
 
 import bg from "@/static/home-hero.jpg";
 import mascot from "@/static/mascot.png";
@@ -47,13 +50,72 @@ const menuItems = [
   { label: "Phản hồi", image: customerService, path: "/feedback" },
 ];
 
+type PendingHomeAction =
+  | { type: "navigate"; path: string }
+  | { type: "search" };
+
+function getAuthenticationErrorMessage(error: unknown): string {
+  if (error instanceof Error && error.message.trim()) return error.message;
+  return "Không thể xác thực tài khoản Zalo. Vui lòng thử lại.";
+}
+
 function HomePage() {
   const navigate = useNavigate();
+  const { user, accessToken, status, authenticate } = useCurrentUser();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [pendingAction, setPendingAction] =
+    useState<PendingHomeAction | null>(null);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
+  const authInFlightRef = useRef(false);
+
+  const completeAction = (action: PendingHomeAction) => {
+    if (action.type === "search") {
+      setSearchOpen(true);
+      return;
+    }
+    navigate(action.path);
+  };
+
+  const authenticateAndContinue = async (action: PendingHomeAction) => {
+    if (authInFlightRef.current) return;
+
+    authInFlightRef.current = true;
+    setAuthDialogOpen(true);
+    setAuthLoading(true);
+    setAuthError("");
+    try {
+      await authenticate();
+      setAuthDialogOpen(false);
+      setPendingAction(null);
+      completeAction(action);
+    } catch (error: unknown) {
+      setAuthError(getAuthenticationErrorMessage(error));
+    } finally {
+      authInFlightRef.current = false;
+      setAuthLoading(false);
+    }
+  };
+
+  const requireAuthentication = (action: PendingHomeAction) => {
+    if (status === "authenticated" && user && accessToken) {
+      completeAction(action);
+      return;
+    }
+
+    setPendingAction(action);
+    void authenticateAndContinue(action);
+  };
 
   return (
     <Page className="home-page">
       <section className="village-hero">
+        <NotificationBell
+          alwaysVisible
+          prominent
+          className="home-notification-bell"
+        />
         <img
           className="village-hero__background"
           src={bg}
@@ -89,7 +151,7 @@ function HomePage() {
             className="search-pill"
             type="button"
             aria-label="Tìm kiếm"
-            onClick={() => setSearchOpen(true)}
+            onClick={() => requireAuthentication({ type: "search" })}
           >
             <span>Tìm kiếm</span>
             <Icon icon="zi-search" />
@@ -102,7 +164,9 @@ function HomePage() {
               className="feature-card"
               key={item.label}
               type="button"
-              onClick={() => navigate(item.path)}
+              onClick={() =>
+                requireAuthentication({ type: "navigate", path: item.path })
+              }
             >
               <div className="feature-card__image">
                 <img src={item.image} alt="" />
@@ -122,7 +186,11 @@ function HomePage() {
               className="menu-item"
               key={item.label}
               type="button"
-              onClick={() => "path" in item && item.path && navigate(item.path)}
+              onClick={() =>
+                "path" in item &&
+                item.path &&
+                requireAuthentication({ type: "navigate", path: item.path })
+              }
             >
               <div className="menu-item__image">
                 <img src={item.image} alt="" />
@@ -134,6 +202,20 @@ function HomePage() {
       </main>
 
       <SearchPopup open={searchOpen} onClose={() => setSearchOpen(false)} />
+      <ZaloAuthDialog
+        visible={authDialogOpen}
+        loading={authLoading}
+        error={authError}
+        onRetry={() => {
+          if (pendingAction) void authenticateAndContinue(pendingAction);
+        }}
+        onClose={() => {
+          if (authLoading) return;
+          setAuthDialogOpen(false);
+          setPendingAction(null);
+          setAuthError("");
+        }}
+      />
     </Page>
   );
 }

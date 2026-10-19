@@ -1,0 +1,290 @@
+.trade-saved-page {
+  min-height: 100vh;
+  color: #173946;
+  background: #f4f8fb;
+}
+
+.trade-saved-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  min-height: 74px;
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 18px 12px;
+  border-bottom: 1px solid rgb(216 232 239 / 85%);
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 4px 18px rgb(25 82 103 / 5%);
+  backdrop-filter: blur(16px);
+  align-items: center;
+  gap: 12px;
+}
+
+.trade-saved-header > button {
+  display: grid;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid #d6e8ef;
+  border-radius: 13px;
+  color: #217d9d;
+  background: #f9fdff;
+  place-items: center;
+}
+
+.trade-saved-header > button .zaui-icon {
+  font-size: 20px;
+}
+
+.trade-saved-header > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.trade-saved-header span {
+  display: block;
+  margin-bottom: 2px;
+  color: #7795a2;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.trade-saved-header h1 {
+  margin: 0;
+  color: #173946;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.trade-saved-header > .trade-saved-header__refresh {
+  width: auto;
+  min-width: 62px;
+  padding: 0 10px;
+  color: #1a7899;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.trade-saved-header__refresh:disabled {
+  opacity: 0.55;
+}
+
+.trade-saved-content {
+  width: min(100%, 430px);
+  padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 28px);
+  margin: 0 auto;
+}
+
+.trade-saved-hint {
+  margin: 0 0 12px;
+  color: #7f9aa5;
+  font-size: 10px;
+  font-weight: 650;
+  text-align: center;
+}
+
+.trade-saved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.trade-saved-card {
+  position: relative;
+  display: flex;
+  min-height: 112px;
+  padding: 10px;
+  border: 1px solid #e3eef2;
+  border-radius: 19px;
+  background: #fff;
+  box-shadow: 0 5px 16px rgb(21 74 94 / 6%);
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+}
+
+.trade-saved-card:focus-visible {
+  outline: 3px solid rgb(10 159 210 / 23%);
+  outline-offset: 2px;
+}
+
+.trade-saved-card.is-unavailable {
+  color: #7e8d94;
+  background: #f8fafb;
+  cursor: default;
+}
+
+.trade-saved-card.is-unavailable .trade-saved-card__image,
+.trade-saved-card.is-unavailable .trade-saved-card__body {
+  opacity: 0.57;
+  filter: grayscale(0.5);
+}
+
+.trade-saved-card__image {
+  flex: 0 0 auto;
+  width: 82px;
+  height: 92px;
+  border-radius: 12px;
+  object-fit: contain;
+  background: #f0f7f9;
+}
+
+.trade-saved-card__body {
+  display: flex;
+  min-width: 0;
+  padding: 2px 34px 2px 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.trade-saved-card__body h2 {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #1d3d49;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.32;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.trade-saved-card__body > strong {
+  color: #df6832;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.trade-saved-card__body > span:not(.trade-saved-card__unavailable) {
+  color: #8098a2;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.trade-saved-card__unavailable {
+  padding: 3px 6px;
+  border-radius: 999px;
+  color: #a55347;
+  font-size: 8px;
+  font-weight: 850;
+  background: #fff0ed;
+}
+
+.trade-saved-card__unsave {
+  position: absolute;
+  top: 12px;
+  right: 11px;
+  display: grid;
+  width: 29px;
+  height: 29px;
+  padding: 0;
+  border: 1px solid #f2c392;
+  border-radius: 50%;
+  color: #cc652d;
+  background: #fff6ec;
+  place-items: center;
+}
+
+.trade-saved-card__unsave .zaui-icon {
+  font-size: 17px;
+}
+
+.trade-saved-card__unsave:disabled {
+  opacity: 0.55;
+}
+
+.trade-saved-load-more {
+  min-height: 35px;
+  padding: 11px 8px 2px;
+  color: #8198a2;
+  font-size: 10px;
+  font-weight: 650;
+  text-align: center;
+}
+
+.trade-saved-empty {
+  display: flex;
+  min-height: 260px;
+  padding: 30px 24px;
+  border: 1px solid #e0edf2;
+  border-radius: 24px;
+  color: #76919c;
+  text-align: center;
+  background: #fff;
+  box-shadow: 0 6px 22px rgb(24 79 99 / 6%);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.trade-saved-empty__icon {
+  display: grid;
+  width: 55px;
+  height: 55px;
+  margin-bottom: 13px;
+  border-radius: 18px;
+  color: #168eb9;
+  background: #e9f8fc;
+  place-items: center;
+}
+
+.trade-saved-empty__icon .zaui-icon {
+  font-size: 28px;
+}
+
+.trade-saved-empty h2 {
+  margin: 0 0 7px;
+  color: #264752;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.trade-saved-empty p {
+  max-width: 250px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.trade-saved-empty > button {
+  margin-top: 18px;
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 13px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 850;
+  background: linear-gradient(110deg, #078fc3, #25b6d6);
+  box-shadow: 0 6px 15px rgb(10 159 210 / 22%);
+}
+
+.trade-saved-error {
+  margin: 10px 0 0;
+  padding: 9px 11px;
+  border-radius: 12px;
+  color: #a34f45;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  background: #fff2f0;
+}
+
+.trade-saved-login {
+  padding-top: 28px;
+}
+
+@media (max-width: 360px) {
+  .trade-saved-card__image {
+    width: 72px;
+    height: 84px;
+  }
+
+  .trade-saved-card__body h2 {
+    font-size: 12px;
+  }
+}

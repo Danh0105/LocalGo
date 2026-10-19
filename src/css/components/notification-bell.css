@@ -1,0 +1,88 @@
+.notification-bell {
+  position: relative;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 55%);
+  border-radius: 50%;
+  color: #087eb8;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 5px 13px rgb(0 82 126 / 20%);
+  place-items: center;
+  isolation: isolate;
+  transition: transform 170ms ease, box-shadow 170ms ease;
+
+  .zaui-icon {
+    font-size: 23px;
+  }
+
+  > span {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border: 2px solid #fff;
+    border-radius: 12px;
+    color: #fff;
+    background: #e23b45;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 14px;
+    text-align: center;
+    box-shadow: 0 3px 7px rgb(125 23 29 / 28%);
+    z-index: 2;
+  }
+
+  &:active {
+    box-shadow: 0 3px 8px rgb(0 82 126 / 18%);
+    transform: scale(0.93);
+  }
+}
+
+.notification-bell--prominent {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgb(255 255 255 / 45%);
+  color: #fff;
+  background:
+    radial-gradient(circle at 30% 26%, rgb(255 255 255 / 46%) 0 2px, transparent 3px),
+    linear-gradient(145deg, #096fbd 0%, #08aee0 54%, #48d3e2 100%);
+  box-shadow:
+    0 10px 22px rgb(0 64 118 / 34%),
+    inset 0 1px 0 rgb(255 255 255 / 45%);
+
+  &::before {
+    position: absolute;
+    inset: 4px;
+    z-index: 0;
+    border: 1px solid rgb(255 255 255 / 23%);
+    border-radius: inherit;
+    content: "";
+    pointer-events: none;
+  }
+
+  .zaui-icon {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 26px;
+    height: 26px;
+    font-size: 26px;
+    line-height: 26px;
+    filter: drop-shadow(0 2px 2px rgb(0 72 131 / 28%));
+  }
+
+  > span {
+    top: -6px;
+    right: -8px;
+    min-width: 20px;
+    height: 20px;
+    border-color: #e6faff;
+    background: linear-gradient(145deg, #ff6a63, #e63143);
+    font-size: 10px;
+    line-height: 16px;
+  }
+}

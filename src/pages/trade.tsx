@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
+import {
+  BusinessProfileRequiredDialog,
+  TradeLoginRequiredDialog,
+} from "@/components/trade-access-dialogs";
+import NotificationBell from "@/components/notification-bell";
 import { useCurrentUser } from "@/contexts/auth-context";
+import { useTradeSaves } from "@/contexts/trade-save-context";
 import { useTradePostCategories } from "@/hooks/use-trade-post-categories";
 import {
   TRADE_POST_CATEGORY_INVALID_MESSAGE,
@@ -64,7 +70,8 @@ function postImage(post: TradePostResponse): string {
 
 function TradePage() {
   const navigate = useNavigate();
-  const { user, status: authStatus, authenticate } = useCurrentUser();
+  const { user, accessToken, status: authStatus, authenticate } = useCurrentUser();
+  const { getSaveState, syncTradePosts, toggleSave } = useTradeSaves();
   const {
     categories,
     isLoading: isLoadingCategories,
@@ -81,7 +88,11 @@ function TradePage() {
   const [loadError, setLoadError] = useState("");
   const [loadMoreError, setLoadMoreError] = useState("");
   const [createPostError, setCreatePostError] = useState("");
+  const [saveError, setSaveError] = useState("");
   const [isRequestingPermission, setIsRequestingPermission] = useState(false);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const [businessDialogOpen, setBusinessDialogOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [reloadKey, setReloadKey] = useState(0);
@@ -124,11 +135,13 @@ function TradePage() {
         sortBy,
         sortOrder: "desc",
       },
-      controller.signal
+      controller.signal,
+      accessToken
     )
       .then((result) => {
         if (!active) return;
         setPosts(result.items);
+        syncTradePosts(result.items);
         setPage(result.meta.page);
         setTotalPages(result.meta.totalPages);
       })
@@ -156,7 +169,7 @@ function TradePage() {
       active = false;
       controller.abort();
     };
-  }, [activeCategory, reloadCategories, reloadKey, search, sortBy]);
+  }, [accessToken, activeCategory, reloadCategories, reloadKey, search, sortBy, syncTradePosts]);
 
   const handleLoadMore = () => {
     if (isLoadingMore || page >= totalPages) return;
@@ -164,14 +177,18 @@ function TradePage() {
     const queryVersion = queryVersionRef.current;
     setIsLoadingMore(true);
     setLoadMoreError("");
-    void getTradePosts({
-      page: nextPage,
-      limit: 20,
-      search: search || undefined,
-      category: activeCategory || undefined,
-      sortBy,
-      sortOrder: "desc",
-    })
+    void getTradePosts(
+      {
+        page: nextPage,
+        limit: 20,
+        search: search || undefined,
+        category: activeCategory || undefined,
+        sortBy,
+        sortOrder: "desc",
+      },
+      undefined,
+      accessToken
+    )
       .then((result) => {
         if (queryVersion !== queryVersionRef.current) return;
         setPosts((current) => {
@@ -181,6 +198,7 @@ function TradePage() {
             ...result.items.filter((post) => !existingIds.has(post.id)),
           ];
         });
+        syncTradePosts(result.items);
         setPage(result.meta.page);
         setTotalPages(result.meta.totalPages);
       })
@@ -206,22 +224,77 @@ function TradePage() {
       });
   };
 
-  const handleCreatePost = async () => {
+  const handleToggleSave = async (post: TradePostResponse) => {
+    if (post.ownerId === user?.id) return;
+    setSaveError("");
+    try {
+      const token = accessToken ?? (await authenticate()).accessToken;
+      await toggleSave(post, token);
+    } catch (error: unknown) {
+      if (
+        error instanceof TradePostRequestError &&
+        error.status === 404 &&
+        error.code === "RESOURCE_NOT_FOUND"
+      ) {
+        setPosts((current) => current.filter((item) => item.id !== post.id));
+        setSaveError("Tin không còn hiển thị.");
+        return;
+      }
+      setSaveError(
+        error instanceof Error
+          ? error.message
+          : "Không thể cập nhật tin đã lưu. Vui lòng thử lại."
+      );
+    }
+  };
+
+  const openCreatePost = () => {
     if (isRequestingPermission) return;
 
     setCreatePostError("");
+    setLoginError("");
+    if (authStatus !== "authenticated" || !user) {
+      setLoginDialogOpen(true);
+      return;
+    }
+
+    if (user.status !== "ACTIVE") {
+      setCreatePostError(
+        "Tài khoản của bạn chưa hoạt động. Vui lòng liên hệ quản trị viên."
+      );
+      return;
+    }
+
+    if (user.role !== "BUSINESS") {
+      setBusinessDialogOpen(true);
+      return;
+    }
+
+    navigate("/trade/create");
+  };
+
+  const handleLoginForCreatePost = async () => {
+    if (isRequestingPermission) return;
+
+    setLoginError("");
     setIsRequestingPermission(true);
     try {
-      const currentUser =
-        authStatus === "authenticated" && user
-          ? user
-          : (await authenticate({ requestUserInfoPermission: true })).user;
+      const currentUser = (
+        await authenticate({ requestUserInfoPermission: true })
+      ).user;
+      setLoginDialogOpen(false);
 
-      navigate(
-        currentUser.role === "USER" ? "/business/register" : "/trade/create"
-      );
+      if (currentUser.status !== "ACTIVE") {
+        setCreatePostError(
+          "Tài khoản của bạn chưa hoạt động. Vui lòng liên hệ quản trị viên."
+        );
+      } else if (currentUser.role === "BUSINESS") {
+        navigate("/trade/create");
+      } else {
+        setBusinessDialogOpen(true);
+      }
     } catch {
-      setCreatePostError(
+      setLoginError(
         "Bạn cần cấp quyền truy cập thông tin Zalo để sử dụng tính năng đăng tin."
       );
     } finally {
@@ -246,6 +319,22 @@ function TradePage() {
             <h1>Giao thương</h1>
           </div>
         </div>
+
+        <NotificationBell
+          alwaysVisible
+          prominent
+          className="trade-notification-bell"
+        />
+        {authStatus === "authenticated" && user && (
+          <button
+            className="trade-saved-header-button"
+            type="button"
+            aria-label="Tin đã lưu"
+            onClick={() => navigate("/trade/saved")}
+          >
+            <Icon icon="zi-bookmark" />
+          </button>
+        )}
 
         <p className="trade-header__description">
           Kết nối người dân, hộ kinh doanh, doanh nghiệp và du khách; cùng quảng
@@ -308,17 +397,43 @@ function TradePage() {
               <span className="trade-section__eyebrow">Khám phá cơ hội</span>
               <h2>Tin giao thương mới</h2>
             </div>
-            <button
-              type="button"
-              disabled={isRequestingPermission}
-              onClick={() => void handleCreatePost()}
-            >
-              {isRequestingPermission ? "Đang xin quyền..." : "Đăng tin"}
-            </button>
+            <div className="trade-section__actions">
+              {authStatus === "authenticated" && user && (
+                <button
+                  className="trade-saved-tag"
+                  type="button"
+                  onClick={() => navigate("/trade/saved")}
+                >
+                  <Icon icon="zi-bookmark" />
+                  Tin đã lưu
+                </button>
+              )}
+              {authStatus === "authenticated" &&
+                user?.status === "ACTIVE" &&
+                user.role === "BUSINESS" && (
+                  <button
+                    className="trade-management-tag"
+                    type="button"
+                    onClick={() => navigate("/trade/manage")}
+                  >
+                    <Icon icon="zi-setting" />
+                    Quản lý tin giao thương
+                  </button>
+                )}
+              <button
+                className="trade-create-button"
+                type="button"
+                disabled={isRequestingPermission}
+                onClick={openCreatePost}
+              >
+                Đăng tin
+              </button>
+            </div>
           </div>
           {createPostError && (
             <p className="trade-action-error">{createPostError}</p>
           )}
+          {saveError && <p className="trade-action-error">{saveError}</p>}
 
           <div className="trade-filter-row">
             <div className="trade-filters">
@@ -367,6 +482,8 @@ function TradePage() {
               posts.map((post) => {
                 const rating = postRating(post);
                 const badge = postBadge(post);
+                const saveState = getSaveState(post);
+                const canSave = post.ownerId !== user?.id;
                 return (
                   <article
                     className="trade-card"
@@ -416,6 +533,22 @@ function TradePage() {
                         <strong>{postPrice(post)}</strong>
                       </div>
                     </div>
+                    <button
+                      className={`trade-card__save${
+                        saveState.isSaved ? " is-saved" : ""
+                      }`}
+                      type="button"
+                      aria-label={saveState.isSaved ? "Bỏ lưu tin" : "Lưu tin"}
+                      aria-pressed={saveState.isSaved}
+                      disabled={saveState.isSaving}
+                      hidden={!canSave}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        void handleToggleSave(post);
+                      }}
+                    >
+                      <Icon icon="zi-bookmark" />
+                    </button>
                     <button
                       className="trade-card__contact"
                       type="button"
@@ -478,6 +611,21 @@ function TradePage() {
           </div>
         </section>
       </main>
+
+      <TradeLoginRequiredDialog
+        visible={loginDialogOpen}
+        loading={isRequestingPermission}
+        error={loginError}
+        onLogin={() => void handleLoginForCreatePost()}
+        onClose={() => {
+          if (!isRequestingPermission) setLoginDialogOpen(false);
+        }}
+      />
+      <BusinessProfileRequiredDialog
+        visible={businessDialogOpen}
+        zaloId={user?.zaloId}
+        onClose={() => setBusinessDialogOpen(false)}
+      />
     </Page>
   );
 }

@@ -10,6 +10,7 @@ export interface CurrentUser {
   avatarUrl: string | null;
   role: UserRole;
   status: UserStatus;
+  businessType: string | null;
   lastLoginAt: string | null;
   createdAt: string;
   updatedAt: string;

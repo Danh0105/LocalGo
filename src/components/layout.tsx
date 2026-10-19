@@ -44,8 +44,15 @@ import TemplesPage from "@/pages/temples";
 import TradePage from "@/pages/trade";
 import TradeCreatePage from "@/pages/trade-create";
 import TradeDetailPage from "@/pages/trade-detail";
+import TradeEditPage from "@/pages/trade-edit";
+import TradeManagementPage from "@/pages/trade-management";
+import TradeMessagesPage from "@/pages/trade-messages";
 import AppBackHandler from "@/components/app-back-handler";
 import { AuthProvider } from "@/contexts/auth-context";
+import { NotificationProvider } from "@/contexts/notification-context";
+import { TradeSaveProvider } from "@/contexts/trade-save-context";
+import NotificationsPage from "@/pages/notifications";
+import SavedTradePostsPage from "@/pages/trade-saved";
 import "@/css/responsive.css";
 import "@/css/components/back-button.css";
 
@@ -58,8 +65,10 @@ const Layout = () => {
       <AuthProvider>
         <SnackbarProvider>
           <ZMPRouter>
-            <AppBackHandler />
-            <AnimationRoutes>
+            <NotificationProvider>
+              <TradeSaveProvider>
+                <AppBackHandler />
+                <AnimationRoutes>
             <Route path="/" element={<HomePage />}></Route>
             <Route path="/agriculture" element={<AgriculturePage />}></Route>
             <Route
@@ -131,6 +140,7 @@ const Layout = () => {
             <Route path="/map/:id" element={<MapPlaceDetailPage />}></Route>
             <Route path="/news" element={<NewsPage />}></Route>
             <Route path="/news/:id" element={<NewsDetailPage />}></Route>
+            <Route path="/notifications" element={<NotificationsPage />}></Route>
             <Route path="/ocop" element={<OcopPage />}></Route>
             <Route path="/ocop/:id" element={<OcopDetailPage />}></Route>
             <Route path="/specialties" element={<SpecialtiesPage />}></Route>
@@ -139,13 +149,25 @@ const Layout = () => {
               element={<BusinessRegisterPage />}
             ></Route>
             <Route path="/trade" element={<TradePage />}></Route>
+            <Route path="/trade/saved" element={<SavedTradePostsPage />}></Route>
             <Route path="/trade/create" element={<TradeCreatePage />}></Route>
+            <Route path="/trade/manage" element={<TradeManagementPage />}></Route>
+            <Route
+              path="/trade/manage/posts/:id/edit"
+              element={<TradeEditPage />}
+            ></Route>
+            <Route
+              path="/trade/messages/:id"
+              element={<TradeMessagesPage />}
+            ></Route>
             <Route path="/trade/:id" element={<TradeDetailPage />}></Route>
             <Route
               path="/specialties/:id"
               element={<SpecialtyDetailPage />}
             ></Route>
-            </AnimationRoutes>
+                </AnimationRoutes>
+              </TradeSaveProvider>
+            </NotificationProvider>
           </ZMPRouter>
         </SnackbarProvider>
       </AuthProvider>

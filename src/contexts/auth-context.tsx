@@ -38,7 +38,9 @@ interface AuthContextValue {
   status: AuthStatus;
   error: string;
   authenticate: (options?: AuthenticateOptions) => Promise<AuthSession>;
+  refreshSession: () => Promise<AuthSession>;
   refreshUser: () => Promise<CurrentUser>;
+  logout: () => void;
 }
 
 const ACCESS_TOKEN_KEY = "localgo.auth.access-token";
@@ -109,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     promise: Promise<AuthSession>;
     requestsUserInfoPermission: boolean;
   } | null>(null);
+  const refreshInFlightRef = useRef<Promise<AuthSession> | null>(null);
 
   const authenticate = useCallback(
     function authenticateUser(
@@ -214,6 +217,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const refreshSession = useCallback((): Promise<AuthSession> => {
+    if (refreshInFlightRef.current) return refreshInFlightRef.current;
+
+    const storedRefreshToken = readSessionValue(REFRESH_TOKEN_KEY);
+    if (!storedRefreshToken) {
+      const requestError = new AuthRequestError(
+        "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại bằng Zalo.",
+        401,
+        "UNAUTHORIZED"
+      );
+      clearSession();
+      setUser(null);
+      setAccessToken(null);
+      setStatus("error");
+      setError(authMessage(requestError));
+      return Promise.reject(requestError);
+    }
+
+    const task = (async () => {
+      const tokens = await refreshAuthToken(storedRefreshToken);
+      writeSession(tokens);
+      const profile = await getCurrentUser(tokens.accessToken);
+      setAccessToken(tokens.accessToken);
+      setUser(profile);
+      setStatus("authenticated");
+      setError("");
+      return { user: profile, accessToken: tokens.accessToken };
+    })().catch((requestError: unknown) => {
+      clearSession();
+      setUser(null);
+      setAccessToken(null);
+      setStatus("error");
+      setError(authMessage(requestError));
+      throw requestError;
+    });
+
+    refreshInFlightRef.current = task;
+    const clearRefreshInFlight = () => {
+      if (refreshInFlightRef.current === task) {
+        refreshInFlightRef.current = null;
+      }
+    };
+    void task.then(clearRefreshInFlight, clearRefreshInFlight);
+    return task;
+  }, []);
+
   const refreshUser = useCallback(async (): Promise<CurrentUser> => {
     if (!accessToken) return (await authenticate()).user;
     try {
@@ -227,18 +276,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         requestError instanceof AuthRequestError &&
         requestError.status === 401
       ) {
-        clearSession();
-        setAccessToken(null);
-        return (await authenticate()).user;
+        return (await refreshSession()).user;
       }
       setError(authMessage(requestError));
       throw requestError;
     }
-  }, [accessToken, authenticate]);
+  }, [accessToken, authenticate, refreshSession]);
+
+  const logout = useCallback(() => {
+    clearSession();
+    setUser(null);
+    setAccessToken(null);
+    setStatus("idle");
+    setError("");
+  }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, accessToken, status, error, authenticate, refreshUser }),
-    [user, accessToken, status, error, authenticate, refreshUser]
+    () => ({
+      user,
+      accessToken,
+      status,
+      error,
+      authenticate,
+      refreshSession,
+      refreshUser,
+      logout,
+    }),
+    [
+      user,
+      accessToken,
+      status,
+      error,
+      authenticate,
+      refreshSession,
+      refreshUser,
+      logout,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
