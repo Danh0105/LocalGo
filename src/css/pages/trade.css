@@ -8,7 +8,7 @@
 
 .trade-header {
   position: relative;
-  padding: calc(env(safe-area-inset-top, 0px) + 16px) 20px 28px;
+  padding: calc(var(--app-status-bar-safe-top, env(safe-area-inset-top, 0px)) + 22px) 20px 28px;
   overflow: hidden;
   color: #fff;
   background:
@@ -58,36 +58,49 @@
   text-transform: uppercase;
 }
 
-.trade-page .trade-notification-bell {
+.trade-header__actions {
   position: absolute;
-  top: calc(env(safe-area-inset-top, 0px) + 68px);
+  top: calc(var(--app-status-bar-safe-top, env(safe-area-inset-top, 0px)) + 78px);
   right: 20px;
   z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .trade-saved-header-button {
-  position: absolute;
-  top: calc(env(safe-area-inset-top, 0px) + 72px);
-  right: 76px;
-  z-index: 2;
-  display: grid;
-  width: 36px;
-  height: 36px;
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: 1px solid rgb(255 255 255 / 55%);
   border-radius: 50%;
   color: #087ead;
   background: rgb(255 255 255 / 94%);
   box-shadow: 0 5px 13px rgb(0 82 126 / 18%);
-  place-items: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .trade-saved-header-button .zaui-icon {
-  font-size: 19px;
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  font-size: 24px;
+  line-height: 1;
+  align-items: center;
+  justify-content: center;
 }
 
-.trade-page .trade-header__bar > div {
-  padding-right: 48px;
+.trade-page .trade-header__actions .notification-bell--prominent {
+  width: 44px;
+  height: 44px;
+}
+
+.trade-page .trade-notification-bell {
+  position: relative;
+  inset: auto;
 }
 
 .trade-back {
@@ -107,7 +120,7 @@
   position: relative;
   z-index: 1;
   max-width: 355px;
-  padding-right: 68px;
+  padding-right: 112px;
   margin: 18px 0;
   font-size: 13px;
   line-height: 1.5;

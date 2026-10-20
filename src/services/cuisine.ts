@@ -1,45 +1,86 @@
-import cuisineIcon from "@/static/fried-rice.png";
-import { CuisineCategory, CuisineItem, CuisineSuggestedPlace } from "@/data/cuisine";
+import cuisineIcon from '@/static/fried-rice.png';
+import type {
+  CuisineApiDetailItem,
+  CuisineApiListItem,
+  CuisineItem,
+  CuisineQuery,
+  CuisineSuggestedPlace,
+} from '@/types/cuisine';
 
-export interface CuisineQuery {
-  category?: CuisineCategory;
-}
-
-interface CuisineApiItem {
-  id: string;
-  name: string;
-  category: CuisineCategory;
-  priceRange: string;
-  bestTime: string;
-  googleMapsUrl?: string | null;
-  suggestedPlaces?: string[];
-  suggestedPlaceDetails?: CuisineSuggestedPlace[];
-  summary: string;
-  description: string[];
-  highlights: string[];
-  tip: string;
-  imageUrl: string | null;
-  imageAlt: string;
-}
+export type { CuisineQuery } from '@/types/cuisine';
 
 interface ApiEnvelope<T> {
-  success: true;
-  data: T;
+  success: boolean;
+  data?: T;
+  error?: { code?: string; message?: string };
 }
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "https://api.localgo.skilltripx.com.vn/api/v1";
+export class CuisineApiError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly code: string,
+  ) {
+    super(code);
+    this.name = 'CuisineApiError';
+  }
+}
+
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL ??
+  'https://api.localgo.skilltripx.com.vn/api/v1'
+).replace(/\/$/, '');
+
+export { getSafeCuisineMapsUrl } from './cuisine-maps';
 
 async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, { signal });
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: 'GET',
+    signal,
+    headers: { Accept: 'application/json' },
+    // Cho phép trình duyệt/WebView dùng Cache-Control + ETag từ backend.
+    cache: 'default',
+  });
+
   if (!response.ok) {
-    throw new Error(response.status === 404 ? "NOT_FOUND" : "REQUEST_FAILED");
+    let code = response.status === 404
+      ? 'CUISINE_ITEM_NOT_FOUND'
+      : 'REQUEST_FAILED';
+    try {
+      const body = (await response.json()) as ApiEnvelope<unknown>;
+      code = body.error?.code ?? code;
+    } catch {
+      // Không có JSON hợp lệ: vẫn dùng HTTP status.
+    }
+    throw new CuisineApiError(response.status, code);
   }
+
   const body = (await response.json()) as ApiEnvelope<T>;
+  if (!body || body.success !== true || body.data === undefined) {
+    throw new CuisineApiError(response.status, 'INVALID_API_RESPONSE');
+  }
   return body.data;
 }
 
-function toCuisineItem(item: CuisineApiItem): CuisineItem {
+function toSuggestedPlaceDetails(item: CuisineApiListItem): CuisineSuggestedPlace[] {
+  // API mới trả danh sách object; dữ liệu/record cũ có thể chỉ có string[].
+  if (Array.isArray(item.suggestedPlaceDetails)) {
+    return item.suggestedPlaceDetails.map((place, index) => ({
+      id: place.id || `place-${index + 1}`,
+      name: place.name || '',
+      address: place.address ?? '',
+      googleMapsUrl: place.googleMapsUrl ?? '',
+    }));
+  }
+  return (item.suggestedPlaces ?? []).map((name, index) => ({
+    id: `legacy-${index + 1}`,
+    name,
+    address: '',
+    googleMapsUrl: '',
+  }));
+}
+
+function toCuisineItem(item: CuisineApiDetailItem): CuisineItem {
+  const suggestedPlaceDetails = toSuggestedPlaceDetails(item);
   return {
     id: item.id,
     name: item.name,
@@ -47,37 +88,55 @@ function toCuisineItem(item: CuisineApiItem): CuisineItem {
     priceRange: item.priceRange,
     bestTime: item.bestTime,
     googleMapsUrl: item.googleMapsUrl ?? null,
-    suggestedPlaces: item.suggestedPlaceDetails?.map((place) => place.name) ?? item.suggestedPlaces ?? [],
-    suggestedPlaceDetails: item.suggestedPlaceDetails,
     summary: item.summary,
-    description: item.description,
-    highlights: item.highlights,
-    tip: item.tip,
-    image: item.imageUrl ?? cuisineIcon,
+    description: item.description ?? [],
+    highlights: item.highlights ?? [],
+    tip: item.tip ?? '',
+    image: item.imageUrl || cuisineIcon,
+    imageAlt: item.imageAlt || item.name,
+    suggestedPlaces: suggestedPlaceDetails.map((place) => place.name),
+    suggestedPlaceDetails,
+    contactPhone: item.contactPhone ?? '',
+    menu: item.menu ?? [],
+    reviews: item.reviews ?? [],
+    galleryImages: [...(item.galleryImages ?? [])].sort(
+      (a, b) => a.sortOrder - b.sortOrder,
+    ),
+    // Chính backend tính hai giá trị này, không tự tính đè ở client.
+    averageRating: item.averageRating ?? 0,
+    reviewCount: item.reviewCount ?? 0,
   };
 }
 
+/** GET /api/v1/cuisine?category=... (public, chỉ active). */
 export async function getCuisineItems(
-  query: CuisineQuery = {}
+  query: CuisineQuery = {},
+  signal?: AbortSignal,
 ): Promise<CuisineItem[]> {
-  const { category } = query;
-  const search = category ? `?category=${encodeURIComponent(category)}` : "";
-  const items = await get<CuisineApiItem[]>(`/cuisine${search}`);
+  const search = query.category
+    ? `?category=${encodeURIComponent(query.category)}`
+    : '';
+  const items = await get<CuisineApiListItem[]>(`/cuisine${search}`, signal);
   return items.map(toCuisineItem);
 }
 
+/**
+ * GET /api/v1/cuisine/:id.
+ * 404 (không tồn tại hoặc đang ẩn) => undefined.
+ * Lỗi kết nối/server sẽ throw để UI hiển thị nút thử lại.
+ */
 export async function getCuisineItemById(
   id: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<CuisineItem | undefined> {
   try {
-    const item = await get<CuisineApiItem>(
+    const item = await get<CuisineApiDetailItem>(
       `/cuisine/${encodeURIComponent(id)}`,
-      signal
+      signal,
     );
     return toCuisineItem(item);
   } catch (error) {
-    if (error instanceof Error && error.message === "NOT_FOUND") {
+    if (error instanceof CuisineApiError && error.status === 404) {
       return undefined;
     }
     throw error;

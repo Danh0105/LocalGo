@@ -127,3 +127,64 @@ describe("Cuisine dish and suggested place URLs", () => {
     expect(within(legacyPlace).queryByRole("button")).not.toBeInTheDocument();
   });
 });
+
+describe("Specialty buy place details", () => {
+  it("shows each structured place with its own map and real contact actions", async () => {
+    const placeUrl = "https://maps.app.goo.gl/specialtyPlace";
+    mockApi({
+      ...fixture,
+      googleMapsUrl: undefined,
+      buyPlaces: ["Legacy place"],
+      buyPlaceDetails: [
+        {
+          id: "cho-truong-mit",
+          name: "Chợ Truông Mít",
+          address: "Trung tâm xã",
+          googleMapsUrl: placeUrl,
+          phone: "0900 123 456",
+          email: "lienhe@example.com",
+        },
+        {
+          id: "no-contact",
+          name: "Điểm chưa có liên hệ",
+          address: "Ấp Thuận Bình",
+          googleMapsUrl: "https://example.com/not-maps",
+          phone: "",
+          email: null,
+        },
+      ],
+    });
+
+    render(<SpecialtyDetailPage />);
+
+    expect(await screen.findByText("Chợ Truông Mít")).toBeInTheDocument();
+    expect(screen.getByText("Trung tâm xã")).toBeInTheDocument();
+    expect(screen.queryByText("Legacy place")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Gọi điện" })).toHaveAttribute(
+      "href",
+      "tel:0900123456"
+    );
+    expect(screen.getByRole("link", { name: "Email" })).toHaveAttribute(
+      "href",
+      "mailto:lienhe@example.com"
+    );
+
+    const mapButton = screen.getByRole("button", { name: "Xem bản đồ" });
+    await userEvent.setup().click(mapButton);
+    expect(openOutAppMock).toHaveBeenCalledWith({ url: placeUrl });
+
+    const noContactPlace = screen.getByText("Điểm chưa có liên hệ").closest("li")!;
+    expect(within(noContactPlace).queryByRole("button")).not.toBeInTheDocument();
+    expect(within(noContactPlace).queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("keeps legacy place names without inventing maps or contact details", async () => {
+    mockApi({ ...fixture, googleMapsUrl: url, buyPlaces: ["Chợ cũ"] });
+    render(<SpecialtyDetailPage />);
+
+    const legacyPlace = (await screen.findByText("Chợ cũ")).closest("li")!;
+    expect(within(legacyPlace).queryByRole("button")).not.toBeInTheDocument();
+    expect(within(legacyPlace).queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: label })).toHaveLength(1);
+  });
+});

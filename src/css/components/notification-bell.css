@@ -14,7 +14,13 @@
   transition: transform 170ms ease, box-shadow 170ms ease;
 
   .zaui-icon {
+    display: inline-flex;
+    width: 1em;
+    height: 1em;
     font-size: 23px;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
   }
 
   > span {
@@ -67,11 +73,13 @@
   .zaui-icon {
     position: relative;
     z-index: 1;
-    display: block;
+    display: inline-flex;
     width: 26px;
     height: 26px;
     font-size: 26px;
-    line-height: 26px;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
     filter: drop-shadow(0 2px 2px rgb(0 72 131 / 28%));
   }
 

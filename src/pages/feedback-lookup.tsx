@@ -1,7 +1,9 @@
+import "@/services/register-feedback-conversation";
 import { FormEvent, useEffect, useState } from "react";
 import { Icon, Page, Spinner, useNavigate } from "zmp-ui";
 
 import PreviewableImage from "@/components/previewable-image";
+import FeedbackConversation from "@/components/feedback-conversation";
 import { useCurrentUser } from "@/contexts/auth-context";
 import {
   FeedbackLookupError,
@@ -77,7 +79,7 @@ function FeedbackTicketAttachments({
               preload="none"
               aria-label={`Video đính kèm ${index + 1}`}
             />
-          )
+          ),
         )}
       </div>
     </div>
@@ -267,6 +269,12 @@ function FeedbackLookupPage() {
             )}
             <p className="feedback-detail__paragraph">{result.content}</p>
             <FeedbackTicketAttachments attachments={result.attachments} />
+            <FeedbackConversation
+              ticketId={(result as FeedbackTicketLookup & { id?: string }).id}
+              ticketCode={result.ticketCode}
+              status={result.status}
+              accessToken={accessToken}
+            />
             <p className="feedback-lookup-result__meta">
               Đã gửi lúc {formatDateTime(result.createdAt)}
             </p>
@@ -334,42 +342,55 @@ function FeedbackLookupPage() {
               </div>
             )}
 
-          {authStatus !== "idle" && !isMyTicketsLoading && !myTicketsError && myTickets.length > 0 && (
-            <div className="feedback-my-tickets__list">
-              {myTickets.map((ticket) => (
-                <article
-                  className="feedback-my-ticket"
-                  key={ticket.ticketCode}
-                >
-                  <div className="feedback-lookup-result__head">
-                    <span>{ticket.ticketCode}</span>
-                    <span
-                      className={`feedback-status-badge feedback-status-badge--${ticket.status}`}
-                    >
-                      {STATUS_LABELS[ticket.status]}
-                    </span>
-                  </div>
-                  {ticket.channel && (
-                    <p className="feedback-card__category">
-                      {ticket.channel.category} · {ticket.channel.title}
+          {authStatus !== "idle" &&
+            !isMyTicketsLoading &&
+            !myTicketsError &&
+            myTickets.length > 0 && (
+              <div className="feedback-my-tickets__list">
+                {myTickets.map((ticket) => (
+                  <article
+                    className="feedback-my-ticket"
+                    key={ticket.ticketCode}
+                  >
+                    <div className="feedback-lookup-result__head">
+                      <span>{ticket.ticketCode}</span>
+                      <span
+                        className={`feedback-status-badge feedback-status-badge--${ticket.status}`}
+                      >
+                        {STATUS_LABELS[ticket.status]}
+                      </span>
+                    </div>
+                    {ticket.channel && (
+                      <p className="feedback-card__category">
+                        {ticket.channel.category} · {ticket.channel.title}
+                      </p>
+                    )}
+                    <p className="feedback-detail__paragraph">
+                      {ticket.content}
                     </p>
-                  )}
-                  <p className="feedback-detail__paragraph">
-                    {ticket.content}
-                  </p>
-                  <FeedbackTicketAttachments attachments={ticket.attachments} />
-                  <p className="feedback-lookup-result__meta">
-                    Đã gửi lúc {formatDateTime(ticket.createdAt)}
-                  </p>
-                  {ticket.status === "resolved" && ticket.resolvedAt && (
+                    <FeedbackTicketAttachments
+                      attachments={ticket.attachments}
+                    />
+                    <FeedbackConversation
+                      ticketId={
+                        (ticket as FeedbackTicketLookup & { id?: string }).id
+                      }
+                      ticketCode={ticket.ticketCode}
+                      status={ticket.status}
+                      accessToken={accessToken}
+                    />
                     <p className="feedback-lookup-result__meta">
-                      Đã xử lý xong lúc {formatDateTime(ticket.resolvedAt)}
+                      Đã gửi lúc {formatDateTime(ticket.createdAt)}
                     </p>
-                  )}
-                </article>
-              ))}
-            </div>
-          )}
+                    {ticket.status === "resolved" && ticket.resolvedAt && (
+                      <p className="feedback-lookup-result__meta">
+                        Đã xử lý xong lúc {formatDateTime(ticket.resolvedAt)}
+                      </p>
+                    )}
+                  </article>
+                ))}
+              </div>
+            )}
         </section>
       </main>
     </Page>

@@ -52,12 +52,17 @@ function savedAgo(value: string): string {
   return `Đã lưu ${Math.floor(months / 12)} năm trước`;
 }
 
+function categoryLabel(post: SavedTradePostResponse): string {
+  return post.categoryInfo?.name || post.category || "Giao thương";
+}
+
 function SavedTradePostsPage() {
   const navigate = useNavigate();
   const { accessToken, status, authenticate, user } = useCurrentUser();
   const { getSaveState, syncTradePosts, toggleSave } = useTradeSaves();
   const [posts, setPosts] = useState<SavedTradePostResponse[]>([]);
   const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -85,6 +90,7 @@ function SavedTradePostsPage() {
         setPosts(result.items);
         syncTradePosts(result.items);
         setPage(result.meta.page);
+        setTotalItems(result.meta.total);
         setTotalPages(result.meta.totalPages);
       })
       .catch((error: unknown) => {
@@ -118,6 +124,7 @@ function SavedTradePostsPage() {
       });
       syncTradePosts(result.items);
       setPage(result.meta.page);
+      setTotalItems(result.meta.total);
       setTotalPages(result.meta.totalPages);
     } catch (error: unknown) {
       setLoadError(
@@ -152,6 +159,7 @@ function SavedTradePostsPage() {
       setPosts(result.items);
       syncTradePosts(result.items);
       setPage(result.meta.page);
+      setTotalItems(result.meta.total);
       setTotalPages(result.meta.totalPages);
     } catch (error: unknown) {
       setLoadError(
@@ -195,10 +203,12 @@ function SavedTradePostsPage() {
       const result = await toggleSave(post);
       if (!result.isSaved) {
         setPosts((current) => current.filter((item) => item.id !== post.id));
+        setTotalItems((current) => Math.max(0, current - 1));
       }
     } catch (error: unknown) {
       if (error instanceof TradePostRequestError && error.status === 404) {
         setPosts((current) => current.filter((item) => item.id !== post.id));
+        setTotalItems((current) => Math.max(0, current - 1));
       }
     }
   };
@@ -207,14 +217,18 @@ function SavedTradePostsPage() {
     return (
       <Page className="trade-saved-page">
         <header className="trade-saved-header">
-          <button type="button" aria-label="Quay lại" onClick={() => navigate(-1)}>
+          <button className="trade-saved-header__back" type="button" aria-label="Quay lại" onClick={() => navigate(-1)}>
             <Icon icon="zi-arrow-left" />
           </button>
-          <div><span>Giao thương</span><h1>Tin đã lưu</h1></div>
+          <div className="trade-saved-header__copy">
+            <span>Giao thương</span>
+            <h1>Tin đã lưu</h1>
+          </div>
         </header>
         <main className="trade-saved-content trade-saved-login">
           <div className="trade-saved-empty">
             <span className="trade-saved-empty__icon"><Icon icon="zi-bookmark" /></span>
+            <span className="trade-saved-empty__eyebrow">Bộ sưu tập cá nhân</span>
             <h2>Đăng nhập để xem tin đã lưu</h2>
             <p>Tin bạn lưu sẽ được đồng bộ an toàn với tài khoản Zalo.</p>
             {loginError && <p className="trade-saved-error" role="alert">{loginError}</p>}
@@ -228,10 +242,13 @@ function SavedTradePostsPage() {
   return (
     <Page className="trade-saved-page" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <header className="trade-saved-header">
-        <button type="button" aria-label="Quay lại" onClick={() => navigate(-1)}>
+        <button className="trade-saved-header__back" type="button" aria-label="Quay lại" onClick={() => navigate(-1)}>
           <Icon icon="zi-arrow-left" />
         </button>
-        <div><span>Danh sách của bạn</span><h1>Tin đã lưu</h1></div>
+        <div className="trade-saved-header__copy">
+          <span>Bộ sưu tập của bạn</span>
+          <h1>Tin đã lưu</h1>
+        </div>
         <button
           className="trade-saved-header__refresh"
           type="button"
@@ -244,21 +261,37 @@ function SavedTradePostsPage() {
       </header>
 
       <main className="trade-saved-content">
-        <p className="trade-saved-hint">
-          {isRefreshing ? "Đang làm mới…" : "Kéo xuống để làm mới danh sách"}
-        </p>
+        <section className="trade-saved-overview" aria-label="Tổng quan tin đã lưu">
+          <span className="trade-saved-overview__icon" aria-hidden="true">
+            <Icon icon="zi-bookmark" />
+          </span>
+          <div>
+            <span>Danh sách quan tâm</span>
+            <h2>{totalItems} tin đã lưu</h2>
+            <p>Mở lại nhanh những sản phẩm và dịch vụ bạn đang quan tâm.</p>
+          </div>
+        </section>
+
+        <div className="trade-saved-toolbar">
+          <strong>{posts.length > 0 ? "Mới lưu gần đây" : "Bộ sưu tập của bạn"}</strong>
+          <span>{isRefreshing ? "Đang làm mới…" : "Kéo xuống để làm mới"}</span>
+        </div>
 
         {isLoading && (
-          <div className="trade-saved-empty">
-            <span className="trade-saved-empty__icon"><Icon icon="zi-clock-1" /></span>
-            <h2>Đang tải tin đã lưu</h2>
-            <p>Vui lòng chờ trong giây lát.</p>
-          </div>
+          <section className="trade-saved-skeleton-list" aria-label="Đang tải tin đã lưu" aria-busy="true">
+            {[0, 1, 2].map((item) => (
+              <div className="trade-saved-skeleton" key={item}>
+                <span />
+                <div><i /><i /><i /></div>
+              </div>
+            ))}
+          </section>
         )}
 
         {!isLoading && loadError && posts.length === 0 && (
           <div className="trade-saved-empty">
             <span className="trade-saved-empty__icon"><Icon icon="zi-warning" /></span>
+            <span className="trade-saved-empty__eyebrow">Đường truyền gián đoạn</span>
             <h2>Chưa thể tải tin đã lưu</h2>
             <p>{loadError}</p>
             <button type="button" onClick={() => setReloadKey((value) => value + 1)}>Thử lại</button>
@@ -268,6 +301,7 @@ function SavedTradePostsPage() {
         {!isLoading && !loadError && posts.length === 0 && (
           <div className="trade-saved-empty">
             <span className="trade-saved-empty__icon"><Icon icon="zi-bookmark" /></span>
+            <span className="trade-saved-empty__eyebrow">Chưa có nội dung</span>
             <h2>Bạn chưa lưu tin nào</h2>
             <p>Lưu những tin bạn quan tâm để tìm lại nhanh hơn.</p>
             <button type="button" onClick={() => navigate("/trade")}>Khám phá tin giao thương</button>
@@ -283,29 +317,38 @@ function SavedTradePostsPage() {
                 <article
                   className={`trade-saved-card${post.isAvailable ? "" : " is-unavailable"}`}
                   key={post.id}
-                  role={post.isAvailable ? "button" : undefined}
-                  tabIndex={post.isAvailable ? 0 : undefined}
-                  onClick={() => {
-                    if (post.isAvailable) navigate(`/trade/${post.slug || post.id}`);
-                  }}
-                  onKeyDown={(event) => {
-                    if (post.isAvailable && (event.key === "Enter" || event.key === " ")) {
-                      navigate(`/trade/${post.slug || post.id}`);
-                    }
-                  }}
                 >
-                  <img
-                    className="trade-saved-card__image"
-                    src={postImage(post)}
-                    alt={post.title}
-                    onError={(event) => { event.currentTarget.src = restaurant; }}
-                  />
-                  <div className="trade-saved-card__body">
-                    {!post.isAvailable && <span className="trade-saved-card__unavailable">Tin không còn hiển thị</span>}
-                    <h2>{post.title}</h2>
-                    <strong>{postPrice(post)}</strong>
-                    <span>{savedAgo(post.savedAt)}</span>
-                  </div>
+                  <button
+                    className="trade-saved-card__open"
+                    type="button"
+                    disabled={!post.isAvailable}
+                    onClick={() => navigate(`/trade/${post.slug || post.id}`)}
+                  >
+                    <span className="trade-saved-card__media">
+                      <img
+                        className="trade-saved-card__image"
+                        src={postImage(post)}
+                        alt=""
+                        onError={(event) => { event.currentTarget.src = restaurant; }}
+                      />
+                      <span className="trade-saved-card__category">{categoryLabel(post)}</span>
+                    </span>
+                    <span className="trade-saved-card__body">
+                      {!post.isAvailable && <span className="trade-saved-card__unavailable">Tin không còn hiển thị</span>}
+                      <h2>{post.title}</h2>
+                      <span className="trade-saved-card__owner">
+                        {post.owner?.displayName || post.contactName || "Người đăng tin"}
+                      </span>
+                      <span className="trade-saved-card__address">
+                        <Icon icon="zi-location" />
+                        {post.address || "Truông Mít"}
+                      </span>
+                      <span className="trade-saved-card__footer">
+                        <strong>{postPrice(post)}</strong>
+                        <small>{savedAgo(post.savedAt)}</small>
+                      </span>
+                    </span>
+                  </button>
                   {canUnsave && (
                     <button
                       className="trade-saved-card__unsave"
@@ -317,7 +360,7 @@ function SavedTradePostsPage() {
                         void handleUnsave(post);
                       }}
                     >
-                      <Icon icon="zi-bookmark" />
+                      <Icon icon="zi-bookmark-delete" />
                     </button>
                   )}
                 </article>
@@ -326,7 +369,7 @@ function SavedTradePostsPage() {
             <div className="trade-saved-load-more" ref={loadMoreTarget}>
               {isLoadingMore && "Đang tải thêm…"}
               {!isLoadingMore && page < totalPages && "Cuộn để tải thêm"}
-              {!isLoadingMore && page >= totalPages && "Đã hiển thị tất cả tin đã lưu"}
+              {!isLoadingMore && page >= totalPages && posts.length > 0 && "Bạn đã xem hết danh sách"}
             </div>
             {loadError && <p className="trade-saved-error" role="alert">{loadError}</p>}
           </section>
