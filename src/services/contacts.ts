@@ -7,6 +7,7 @@ export interface ContactQuery {
 
 interface ContactApiItem {
   id: string;
+  googleMapsUrl?: string | null;
   name: string;
   category: ContactCategory;
   role: string;
@@ -42,6 +43,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 function toContactItem(item: ContactApiItem): ContactItem {
   return {
     id: item.id,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     name: item.name,
     category: item.category,
     role: item.role,

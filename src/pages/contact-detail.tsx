@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { ContactItem } from "@/data/contacts";
 import { getContactById } from "@/services/contacts";
@@ -122,6 +123,7 @@ function ContactDetailPage() {
               <span>{contact.workingTime}</span>
             </li>
           </ul>
+          <DirectionsButton googleMapsUrl={contact.googleMapsUrl} />
         </section>
 
         <section className="contact-detail__actions">

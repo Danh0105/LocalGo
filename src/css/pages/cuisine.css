@@ -299,6 +299,26 @@
   font-size: 18px;
 }
 
+.cuisine-detail__places li {
+  align-items: flex-start;
+}
+
+.cuisine-detail__places li > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.cuisine-detail__places li > div > p {
+  margin: 0;
+}
+
+.cuisine-detail__places .directions-button .zaui-icon {
+  color: inherit;
+}
+
 .cuisine-detail__paragraph {
   margin: 0 0 10px;
   color: #4f4641;

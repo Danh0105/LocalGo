@@ -60,4 +60,28 @@ describe("isValidGoogleMapsUrl", () => {
       isValidGoogleMapsUrl("https://maps.google.com@evil.com/?q=Den+Ba")
     ).toBe(false);
   });
+  it.each([
+    "https://google.com/mapsevil",
+    "https://www.google.com/maps-redirect",
+    "https://goo.gl/mapsFake/abc",
+    "https://user:password@maps.google.com/",
+    "https://maps.google.com:8443/",
+    "https:maps.google.com",
+    "https:///maps.google.com",
+    "https://maps.google.com\\evil",
+    "https://maps.google.com/pa\nth",
+    "javascript:alert(1)",
+    "data:text/html,maps.google.com",
+    "//maps.google.com/",
+    "https://maps.google.com/?q=" + "a".repeat(2048),
+  ])("rejects unsafe or non-Maps URL %s", (url) => {
+    expect(isValidGoogleMapsUrl(url)).toBe(false);
+  });
+
+  it("accepts trimmed URLs, uppercase hostnames and the exact /maps path", () => {
+    expect(isValidGoogleMapsUrl("  https://MAPS.GOOGLE.COM/?q=Test  ")).toBe(true);
+    expect(isValidGoogleMapsUrl("https://google.com/maps")).toBe(true);
+    expect(isValidGoogleMapsUrl("https://google.com/maps/?q=Test")).toBe(true);
+  });
+
 });

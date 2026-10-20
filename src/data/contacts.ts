@@ -9,6 +9,7 @@ export type ContactCategory =
 
 export interface ContactItem {
   id: string;
+  googleMapsUrl?: string | null;
   name: string;
   category: ContactCategory;
   role: string;

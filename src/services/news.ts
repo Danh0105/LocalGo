@@ -7,6 +7,7 @@ export interface NewsQuery {
 
 interface NewsArticleApiItem {
   id: string;
+  googleMapsUrl?: string | null;
   title: string;
   category: NewsCategory;
   publishedAt: string;
@@ -70,6 +71,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 function toNewsArticle(item: NewsArticleApiItem): NewsArticle {
   return {
     id: item.id,
+    googleMapsUrl: item.googleMapsUrl ?? null,
     title: item.title,
     category: item.category,
     publishedAt: formatPublishedAt(item.publishedAt),

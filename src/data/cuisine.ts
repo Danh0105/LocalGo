@@ -7,6 +7,13 @@ export type CuisineCategory =
   | "Ăn vặt"
   | "Món chay";
 
+export interface CuisineSuggestedPlace {
+  id: string;
+  name: string;
+  address: string;
+  googleMapsUrl?: string | null;
+}
+
 export interface CuisineItem {
   id: string;
   name: string;
@@ -15,6 +22,7 @@ export interface CuisineItem {
   bestTime: string;
   googleMapsUrl?: string | null;
   suggestedPlaces: string[];
+  suggestedPlaceDetails?: CuisineSuggestedPlace[];
   summary: string;
   description: string[];
   highlights: string[];

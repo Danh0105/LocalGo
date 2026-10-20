@@ -135,10 +135,19 @@ function CuisineDetailPage() {
         <section className="cuisine-detail__card">
           <h2>Gợi ý địa điểm</h2>
           <ul className="cuisine-detail__places">
-            {item.suggestedPlaces.map((place) => (
-              <li key={place}>
-                <Icon icon="zi-location" />
-                <span>{place}</span>
+            {(item.suggestedPlaceDetails ?? item.suggestedPlaces.map((name, index) => ({
+              id: `legacy-${index}`,
+              name,
+              address: "",
+              googleMapsUrl: undefined,
+            }))).map((place) => (
+              <li key={place.id}>
+                <Icon icon="zi-location" aria-hidden="true" />
+                <div>
+                  <span>{place.name}</span>
+                  {place.address && <p>{place.address}</p>}
+                  <DirectionsButton googleMapsUrl={place.googleMapsUrl} />
+                </div>
               </li>
             ))}
           </ul>

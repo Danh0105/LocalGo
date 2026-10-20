@@ -1,5 +1,5 @@
 import cuisineIcon from "@/static/fried-rice.png";
-import { CuisineCategory, CuisineItem } from "@/data/cuisine";
+import { CuisineCategory, CuisineItem, CuisineSuggestedPlace } from "@/data/cuisine";
 
 export interface CuisineQuery {
   category?: CuisineCategory;
@@ -12,7 +12,8 @@ interface CuisineApiItem {
   priceRange: string;
   bestTime: string;
   googleMapsUrl?: string | null;
-  suggestedPlaces: string[];
+  suggestedPlaces?: string[];
+  suggestedPlaceDetails?: CuisineSuggestedPlace[];
   summary: string;
   description: string[];
   highlights: string[];
@@ -46,7 +47,8 @@ function toCuisineItem(item: CuisineApiItem): CuisineItem {
     priceRange: item.priceRange,
     bestTime: item.bestTime,
     googleMapsUrl: item.googleMapsUrl ?? null,
-    suggestedPlaces: item.suggestedPlaces,
+    suggestedPlaces: item.suggestedPlaceDetails?.map((place) => place.name) ?? item.suggestedPlaces ?? [],
+    suggestedPlaceDetails: item.suggestedPlaceDetails,
     summary: item.summary,
     description: item.description,
     highlights: item.highlights,

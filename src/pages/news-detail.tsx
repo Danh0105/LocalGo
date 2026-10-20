@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
+import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { NewsArticle } from "@/data/news";
 import { getNewsArticleById } from "@/services/news";
@@ -111,6 +112,7 @@ function NewsDetailPage() {
               <span>{article.author}</span>
             </li>
           </ul>
+          <DirectionsButton googleMapsUrl={article.googleMapsUrl} />
         </article>
 
         <section className="news-detail__card">

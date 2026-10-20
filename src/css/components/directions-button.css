@@ -4,13 +4,13 @@
   justify-content: center;
   gap: 7px;
   min-height: 44px;
-  padding: 0 16px;
+  padding: 10px 16px;
   border: 0;
   border-radius: 14px;
   color: #fff;
   font-size: 13px;
   font-weight: 800;
-  background: linear-gradient(100deg, #078dc2, #19b7dc);
+  background: linear-gradient(100deg, #075985, #0369a1);
   box-shadow: 0 5px 13px rgb(10 159 210 / 22%);
   cursor: pointer;
 }
@@ -19,13 +19,29 @@
   font-size: 16px;
 }
 
+.directions-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.directions-button__fallback {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.directions-button__fallback a {
+  color: #075985;
+  text-decoration: underline;
+}
+
 .directions-button:active {
   box-shadow: 0 2px 7px rgb(10 159 210 / 18%);
   transform: scale(0.98);
 }
 
 .directions-button:focus-visible {
-  outline: 3px solid rgb(10 159 210 / 35%);
+  outline: 3px solid #075985;
   outline-offset: 2px;
 }
 

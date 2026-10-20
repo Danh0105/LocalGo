@@ -9,6 +9,7 @@ export type NewsCategory =
 
 export interface NewsArticle {
   id: string;
+  googleMapsUrl?: string | null;
   title: string;
   category: NewsCategory;
   publishedAt: string;

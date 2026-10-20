@@ -4,7 +4,6 @@ import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { MapPlace } from "@/data/map-places";
-import { isValidGoogleMapsUrl } from "@/lib/google-maps-link";
 import { getMapPlaceById } from "@/services/map-places";
 import "../css/pages/map-places.css";
 
@@ -95,12 +94,6 @@ function MapPlaceDetailPage() {
     );
   }
 
-  const directionsUrl = isValidGoogleMapsUrl(place.googleMapsUrl)
-    ? (place.googleMapsUrl as string)
-    : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-        `${place.coordinates.lat},${place.coordinates.lng}`
-      )}`;
-
   return (
     <Page className="map-places-page">
       <section className="map-place-detail__hero">
@@ -141,16 +134,7 @@ function MapPlaceDetailPage() {
             <span>Lat: {place.coordinates.lat}</span>
             <span>Lng: {place.coordinates.lng}</span>
           </div>
-          <a
-            className="map-place-detail__google-maps"
-            href={googleMapsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Icon icon="zi-location-solid" />
-            Chỉ đường bằng Google Maps
-            <Icon icon="zi-chevron-right" />
-          </a>
+          <DirectionsButton googleMapsUrl={place.googleMapsUrl} />
         </section>
 
         <section className="map-place-detail__card">

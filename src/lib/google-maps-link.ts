@@ -4,9 +4,11 @@ const MAPS_PATH_REQUIRED_HOSTS = new Set(["google.com", "www.google.com", "goo.g
 export function isValidGoogleMapsUrl(
   value: string | null | undefined
 ): boolean {
-  if (!value) return false;
+  if (typeof value !== "string") return false;
   const trimmed = value.trim();
-  if (!trimmed) return false;
+  if (!trimmed || trimmed.length > 2048) return false;
+  // Reject URL parser repairs (backslashes, missing slashes, control characters).
+  if (!/^https:\/\/[^/]/i.test(trimmed) || /[\\\u0000-\u0020\u007f]/.test(trimmed)) return false;
 
   let url: URL;
   try {
@@ -15,12 +17,12 @@ export function isValidGoogleMapsUrl(
     return false;
   }
 
-  if (url.protocol !== "https:") return false;
+  if (url.protocol !== "https:" || url.username || url.password || url.port) return false;
 
   const host = url.hostname.toLowerCase();
   if (MAPS_ONLY_HOSTS.has(host)) return true;
   if (MAPS_PATH_REQUIRED_HOSTS.has(host)) {
-    return url.pathname.toLowerCase().startsWith("/maps");
+    return url.pathname === "/maps" || url.pathname.startsWith("/maps/");
   }
   return false;
 }

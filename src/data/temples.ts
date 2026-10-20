@@ -4,6 +4,7 @@ export type TempleType = "Đình" | "Chùa" | "Miếu";
 
 export interface Temple {
   id: string;
+  googleMapsUrl?: string | null;
   name: string;
   type: TempleType;
   address: string;
