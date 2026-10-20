@@ -7,6 +7,7 @@ import { MapPlace } from "@/data/map-places";
 import { getResolvedMapCoordinates } from "@/data/map-location";
 import { getMapPlaceById } from "@/services/map-places";
 import "../css/pages/map-places.css";
+import "../css/pages/map-places-premium.css";
 
 function MapPlaceDetailPage() {
   const navigate = useNavigate();
@@ -30,8 +31,16 @@ function MapPlaceDetailPage() {
       try {
         setPlace(await getMapPlaceById(id!, controller.signal));
       } catch (requestError: unknown) {
-        if (requestError instanceof DOMException && requestError.name === "AbortError") return;
-        setError(requestError instanceof Error && requestError.message === "NOT_FOUND" ? "not-found" : "request");
+        if (
+          requestError instanceof DOMException &&
+          requestError.name === "AbortError"
+        )
+          return;
+        setError(
+          requestError instanceof Error && requestError.message === "NOT_FOUND"
+            ? "not-found"
+            : "request",
+        );
       } finally {
         if (!controller.signal.aborted) setIsLoading(false);
       }
@@ -42,7 +51,7 @@ function MapPlaceDetailPage() {
 
   if (isLoading) {
     return (
-      <Page className="map-places-page">
+      <Page className="map-places-page lg-premium-map lg-premium-detail">
         <header className="map-places-header">
           <button
             className="map-places-back"
@@ -64,7 +73,7 @@ function MapPlaceDetailPage() {
 
   if (!place || error) {
     return (
-      <Page className="map-places-page">
+      <Page className="map-places-page lg-premium-map lg-premium-detail">
         <header className="map-places-header">
           <button
             className="map-places-back"
@@ -74,7 +83,11 @@ function MapPlaceDetailPage() {
           >
             <Icon icon="zi-arrow-left" />
           </button>
-          <h1>{error === "request" ? "Không thể tải dữ liệu" : "Không tìm thấy địa điểm"}</h1>
+          <h1>
+            {error === "request"
+              ? "Không thể tải dữ liệu"
+              : "Không tìm thấy địa điểm"}
+          </h1>
         </header>
         <main className="map-places-content">
           <p className="map-place-detail__empty">
@@ -97,9 +110,13 @@ function MapPlaceDetailPage() {
   }
 
   return (
-    <Page className="map-places-page">
+    <Page className="map-places-page lg-premium-map lg-premium-detail">
       <section className="map-place-detail__hero">
-        <PreviewableImage src={place.image} alt={place.name} previewTitle={place.name} />
+        <PreviewableImage
+          src={place.image}
+          alt={place.name}
+          previewTitle={place.name}
+        />
         <button
           className="map-places-back map-place-detail__back"
           type="button"
@@ -114,6 +131,7 @@ function MapPlaceDetailPage() {
         <section className="map-place-detail__card">
           <span className="map-place-card__category">{place.category}</span>
           <h1>{place.name}</h1>
+          <p className="lg-premium-detail__summary">{place.summary}</p>
           <ul className="map-place-detail__meta">
             <li>
               <Icon icon="zi-location" />
@@ -131,20 +149,28 @@ function MapPlaceDetailPage() {
         </section>
 
         <section className="map-place-detail__card map-place-detail__coords">
-          <h2>Vị trí địa điểm</h2>
-          {coordinates ? <div>
-            <span>Lat: {coordinates[0]}</span>
-            <span>Lng: {coordinates[1]}</span>
-          </div> : <p className="map-place-detail__paragraph">
-            {place.mapLocation?.status === "pending"
-              ? "Vị trí đang được cập nhật. Bạn có thể mở Google Maps để xem đường đi."
-              : "Chưa có tọa độ xác định. Mở Google Maps để xem vị trí nếu địa điểm đã có link."}
-          </p>}
+          <h2>
+            <span aria-hidden="true">📍</span> Vị trí địa điểm
+          </h2>
+          {coordinates ? (
+            <div>
+              <span>Lat: {coordinates[0]}</span>
+              <span>Lng: {coordinates[1]}</span>
+            </div>
+          ) : (
+            <p className="map-place-detail__paragraph">
+              {place.mapLocation?.status === "pending"
+                ? "Vị trí đang được cập nhật. Bạn có thể mở Google Maps để xem đường đi."
+                : "Chưa có tọa độ xác định. Mở Google Maps để xem vị trí nếu địa điểm đã có link."}
+            </p>
+          )}
           <DirectionsButton googleMapsUrl={place.googleMapsUrl} />
         </section>
 
         <section className="map-place-detail__card">
-          <h2>Giới thiệu địa điểm</h2>
+          <h2>
+            <span aria-hidden="true">✦</span> Giới thiệu địa điểm
+          </h2>
           {place.description.map((paragraph) => (
             <p className="map-place-detail__paragraph" key={paragraph}>
               {paragraph}
@@ -153,7 +179,9 @@ function MapPlaceDetailPage() {
         </section>
 
         <section className="map-place-detail__card">
-          <h2>Điểm nổi bật</h2>
+          <h2>
+            <span aria-hidden="true">🌿</span> Điểm nổi bật
+          </h2>
           <ul className="map-place-detail__highlights">
             {place.highlights.map((highlight) => (
               <li key={highlight}>
