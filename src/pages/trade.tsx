@@ -320,21 +320,23 @@ function TradePage() {
           </div>
         </div>
 
-        <NotificationBell
-          alwaysVisible
-          prominent
-          className="trade-notification-bell"
-        />
-        {authStatus === "authenticated" && user && (
-          <button
-            className="trade-saved-header-button"
-            type="button"
-            aria-label="Tin đã lưu"
-            onClick={() => navigate("/trade/saved")}
-          >
-            <Icon icon="zi-bookmark" />
-          </button>
-        )}
+        <div className="trade-header__actions">
+          {authStatus === "authenticated" && user && (
+            <button
+              className="trade-saved-header-button"
+              type="button"
+              aria-label="Tin đã lưu"
+              onClick={() => navigate("/trade/saved")}
+            >
+              <Icon icon="zi-bookmark" />
+            </button>
+          )}
+          <NotificationBell
+            alwaysVisible
+            prominent
+            className="trade-notification-bell"
+          />
+        </div>
 
         <p className="trade-header__description">
           Kết nối người dân, hộ kinh doanh, doanh nghiệp và du khách; cùng quảng

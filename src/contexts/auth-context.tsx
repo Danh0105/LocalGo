@@ -8,8 +8,8 @@ import {
   useState,
 } from "react";
 import {
+  authorize,
   getAccessToken as getZaloAccessToken,
-  getUserInfo,
 } from "zmp-sdk";
 
 import {
@@ -81,13 +81,13 @@ function authMessage(error: unknown): string {
 
 async function requestZaloUserInfoPermission(): Promise<void> {
   try {
-    const { userInfo } = await getUserInfo({
-      autoRequestPermission: true,
+    const permissions = await authorize({
+      scopes: ["scope.userInfo"],
     });
 
-    if (!userInfo.id || !userInfo.name || !userInfo.avatar) {
+    if (permissions["scope.userInfo"] !== true) {
       throw new AuthRequestError(
-        "Vui lòng cấp quyền truy cập thông tin Zalo để tiếp tục đăng tin.",
+        "Vui lòng cấp quyền truy cập thông tin Zalo để tiếp tục sử dụng LocalGo.",
         0,
         "ZALO_USER_INFO_PERMISSION_REQUIRED"
       );
@@ -95,7 +95,7 @@ async function requestZaloUserInfoPermission(): Promise<void> {
   } catch (requestError) {
     if (requestError instanceof AuthRequestError) throw requestError;
     throw new AuthRequestError(
-      "Vui lòng cấp quyền truy cập tên và ảnh đại diện Zalo để tiếp tục đăng tin.",
+      "Vui lòng cấp quyền truy cập tên và ảnh đại diện Zalo để tiếp tục sử dụng LocalGo.",
       0,
       "ZALO_USER_INFO_PERMISSION_REQUIRED"
     );
@@ -117,7 +117,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     function authenticateUser(
       options: AuthenticateOptions = {}
     ): Promise<AuthSession> {
-      const requestUserInfo = options.requestUserInfoPermission === true;
+      // ZMP SDK 2.35+ returns an ID-only access token unless scope.userInfo
+      // is granted first. The backend requires the Zalo display name, so a
+      // normal LocalGo login must request this scope by default.
+      const requestUserInfo = options.requestUserInfoPermission !== false;
       const currentTask = inFlightRef.current;
       if (currentTask) {
         if (!requestUserInfo || currentTask.requestsUserInfoPermission) {

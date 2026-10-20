@@ -18,7 +18,7 @@ import ContactDetailPage from "@/pages/contact-detail";
 import ContactsPage from "@/pages/contacts";
 import CraftVillageDetailPage from "@/pages/craft-village-detail";
 import CraftVillagesPage from "@/pages/craft-villages";
-import CuisineDetailPage from "@/pages/cuisine-detail";
+import CuisineDetailPage from "@/pages/CuisineDetailPage";
 import CuisinePage from "@/pages/cuisine";
 import ExperienceTourDetailPage from "@/pages/experience-tour-detail";
 import ExperienceToursPage from "@/pages/experience-tours";
@@ -69,102 +69,133 @@ const Layout = () => {
               <TradeSaveProvider>
                 <AppBackHandler />
                 <AnimationRoutes>
-            <Route path="/" element={<HomePage />}></Route>
-            <Route path="/agriculture" element={<AgriculturePage />}></Route>
-            <Route
-              path="/agriculture/:id"
-              element={<AgricultureDetailPage />}
-            ></Route>
-            <Route path="/about" element={<AboutPage />}></Route>
-            <Route path="/chat" element={<ChatPage />}></Route>
-            <Route path="/temples" element={<TemplesPage />}></Route>
-            <Route path="/temples/:id" element={<TempleDetailPage />}></Route>
-            <Route path="/attractions" element={<AttractionsPage />}></Route>
-            <Route
-              path="/attractions/:id"
-              element={<AttractionDetailPage />}
-            ></Route>
-            <Route path="/contacts" element={<ContactsPage />}></Route>
-            <Route
-              path="/contacts/:id"
-              element={<ContactDetailPage />}
-            ></Route>
-            <Route
-              path="/craft-villages"
-              element={<CraftVillagesPage />}
-            ></Route>
-            <Route
-              path="/craft-villages/:id"
-              element={<CraftVillageDetailPage />}
-            ></Route>
-            <Route path="/cuisine" element={<CuisinePage />}></Route>
-            <Route
-              path="/cuisine/:id"
-              element={<CuisineDetailPage />}
-            ></Route>
-            <Route
-              path="/experience-tours"
-              element={<ExperienceToursPage />}
-            ></Route>
-            <Route
-              path="/experience-tours/:id"
-              element={<ExperienceTourDetailPage />}
-            ></Route>
-            <Route path="/feedback" element={<FeedbackPage />}></Route>
-            <Route
-              path="/feedback/send"
-              element={<FeedbackSendPage />}
-            ></Route>
-            <Route
-              path="/feedback/lookup"
-              element={<FeedbackLookupPage />}
-            ></Route>
-            <Route
-              path="/feedback/:id"
-              element={<FeedbackDetailPage />}
-            ></Route>
-            <Route path="/festivals" element={<FestivalsPage />}></Route>
-            <Route
-              path="/festivals/:id"
-              element={<FestivalDetailPage />}
-            ></Route>
-            <Route
-              path="/historical-sites"
-              element={<HistoricalSitesPage />}
-            ></Route>
-            <Route
-              path="/historical-sites/:id"
-              element={<HistoricalSiteDetailPage />}
-            ></Route>
-            <Route path="/map" element={<MapPlacesPage />}></Route>
-            <Route path="/map/:id" element={<MapPlaceDetailPage />}></Route>
-            <Route path="/news" element={<NewsPage />}></Route>
-            <Route path="/news/:id" element={<NewsDetailPage />}></Route>
-            <Route path="/notifications" element={<NotificationsPage />}></Route>
-            <Route path="/ocop" element={<OcopPage />}></Route>
-            <Route path="/ocop/:id" element={<OcopDetailPage />}></Route>
-            <Route path="/specialties" element={<SpecialtiesPage />}></Route>
-            <Route
-              path="/business/register"
-              element={<BusinessRegisterPage />}
-            ></Route>
-            <Route path="/trade" element={<TradePage />}></Route>
-            <Route path="/trade/saved" element={<SavedTradePostsPage />}></Route>
-            <Route path="/trade/create" element={<TradeCreatePage />}></Route>
-            <Route path="/trade/manage" element={<TradeManagementPage />}></Route>
-            <Route
-              path="/trade/manage/posts/:id/edit"
-              element={<TradeEditPage />}
-            ></Route>
-            <Route
-              path="/trade/messages/:id"
-              element={<TradeMessagesPage />}
-            ></Route>
-            <Route path="/trade/:id" element={<TradeDetailPage />}></Route>
-            <Route
-              path="/specialties/:id"
-              element={<SpecialtyDetailPage />}
-            ></Route>
+                  <Route path="/" element={<HomePage />}></Route>
+                  <Route
+                    path="/agriculture"
+                    element={<AgriculturePage />}
+                  ></Route>
+                  <Route
+                    path="/agriculture/:id"
+                    element={<AgricultureDetailPage />}
+                  ></Route>
+                  <Route path="/about" element={<AboutPage />}></Route>
+                  <Route path="/chat" element={<ChatPage />}></Route>
+                  <Route path="/temples" element={<TemplesPage />}></Route>
+                  <Route
+                    path="/temples/:id"
+                    element={<TempleDetailPage />}
+                  ></Route>
+                  <Route
+                    path="/attractions"
+                    element={<AttractionsPage />}
+                  ></Route>
+                  <Route
+                    path="/attractions/:id"
+                    element={<AttractionDetailPage />}
+                  ></Route>
+                  <Route path="/contacts" element={<ContactsPage />}></Route>
+                  <Route
+                    path="/contacts/:id"
+                    element={<ContactDetailPage />}
+                  ></Route>
+                  <Route
+                    path="/craft-villages"
+                    element={<CraftVillagesPage />}
+                  ></Route>
+                  <Route
+                    path="/craft-villages/:id"
+                    element={<CraftVillageDetailPage />}
+                  ></Route>
+                  <Route path="/cuisine" element={<CuisinePage />}></Route>
+                  <Route
+                    path="/cuisine/:id"
+                    element={<CuisineDetailPage />}
+                  ></Route>
+                  <Route
+                    path="/experience-tours"
+                    element={<ExperienceToursPage />}
+                  ></Route>
+                  <Route
+                    path="/experience-tours/:id"
+                    element={<ExperienceTourDetailPage />}
+                  ></Route>
+                  <Route path="/feedback" element={<FeedbackPage />}></Route>
+                  <Route
+                    path="/feedback/send"
+                    element={<FeedbackSendPage />}
+                  ></Route>
+                  <Route
+                    path="/feedback/lookup"
+                    element={<FeedbackLookupPage />}
+                  ></Route>
+                  <Route
+                    path="/feedback/:id"
+                    element={<FeedbackDetailPage />}
+                  ></Route>
+                  <Route path="/festivals" element={<FestivalsPage />}></Route>
+                  <Route
+                    path="/festivals/:id"
+                    element={<FestivalDetailPage />}
+                  ></Route>
+                  <Route
+                    path="/historical-sites"
+                    element={<HistoricalSitesPage />}
+                  ></Route>
+                  <Route
+                    path="/historical-sites/:id"
+                    element={<HistoricalSiteDetailPage />}
+                  ></Route>
+                  <Route path="/map" element={<MapPlacesPage />}></Route>
+                  <Route
+                    path="/map/:id"
+                    element={<MapPlaceDetailPage />}
+                  ></Route>
+                  <Route path="/news" element={<NewsPage />}></Route>
+                  <Route path="/news/:id" element={<NewsDetailPage />}></Route>
+                  <Route
+                    path="/notifications"
+                    element={<NotificationsPage />}
+                  ></Route>
+                  <Route path="/ocop" element={<OcopPage />}></Route>
+                  {/*                   <Route path="/ocop/:id" element={<OcopDetailPage />}></Route>
+                   */}{" "}
+                  <Route
+                    path="/specialties"
+                    element={<SpecialtiesPage />}
+                  ></Route>
+                  <Route
+                    path="/business/register"
+                    element={<BusinessRegisterPage />}
+                  ></Route>
+                  <Route path="/trade" element={<TradePage />}></Route>
+                  <Route
+                    path="/trade/saved"
+                    element={<SavedTradePostsPage />}
+                  ></Route>
+                  <Route
+                    path="/trade/create"
+                    element={<TradeCreatePage />}
+                  ></Route>
+                  <Route
+                    path="/trade/manage"
+                    element={<TradeManagementPage />}
+                  ></Route>
+                  <Route
+                    path="/trade/manage/posts/:id/edit"
+                    element={<TradeEditPage />}
+                  ></Route>
+                  <Route
+                    path="/trade/messages/:id"
+                    element={<TradeMessagesPage />}
+                  ></Route>
+                  <Route
+                    path="/trade/:id"
+                    element={<TradeDetailPage />}
+                  ></Route>
+                  <Route
+                    path="/specialties/:id"
+                    element={<SpecialtyDetailPage />}
+                  ></Route>
                 </AnimationRoutes>
               </TradeSaveProvider>
             </NotificationProvider>

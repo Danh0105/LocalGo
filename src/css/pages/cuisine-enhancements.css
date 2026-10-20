@@ -1,0 +1,233 @@
+/* Bổ sung cho cuisine.css hiện có — không ghi đè các style màn danh sách. */
+.cuisine-detail__rating-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+  color: #62676d;
+  font-size: 13px;
+}
+
+.cuisine-detail__rating-summary strong {
+  color: #191919;
+}
+
+.cuisine-detail__stars {
+  color: #ef9a20;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  font-size: 17px;
+}
+
+.cuisine-detail__stars-empty {
+  color: #b4b4b4;
+}
+
+.cuisine-detail__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.cuisine-detail__phone-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d7e5db;
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #126e46;
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.cuisine-detail__gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.cuisine-detail__gallery-item {
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: #f2f3f4;
+}
+
+.cuisine-detail__gallery-item > *,
+.cuisine-detail__gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cuisine-detail__menu,
+.cuisine-detail__reviews {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cuisine-detail__menu-item,
+.cuisine-detail__review {
+  padding: 14px 0;
+  border-bottom: 1px solid #eef0ee;
+}
+
+.cuisine-detail__menu-item:last-child,
+.cuisine-detail__review:last-child {
+  border-bottom: 0;
+}
+
+.cuisine-detail__menu-heading,
+.cuisine-detail__review-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cuisine-detail__menu-heading strong,
+.cuisine-detail__review-heading strong {
+  min-width: 0;
+  color: #202428;
+}
+
+.cuisine-detail__menu-heading span {
+  flex-shrink: 0;
+  color: #126e46;
+  font-weight: 700;
+}
+
+.cuisine-detail__menu-item p,
+.cuisine-detail__review p,
+.cuisine-detail__places p {
+  margin: 6px 0 0;
+  color: #667078;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.cuisine-detail__review-heading .cuisine-detail__stars {
+  font-size: 15px;
+}
+
+.cuisine-detail__admin-response {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #f3f7f4;
+  border-radius: 10px;
+  line-height: 1.5;
+}
+
+.cuisine-detail__admin-response strong {
+  color: #266149;
+  font-size: 12px;
+}
+
+.cuisine-detail__places strong {
+  font-weight: 600;
+}
+
+@media (min-width: 640px) {
+  .cuisine-detail__gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Apple Premium Contact */
+
+.cuisine-premium-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.cuisine-premium-contact {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  min-width: 100px;
+  min-height: 84px;
+  padding: 12px 18px;
+
+  border: 1px solid transparent;
+  border-radius: 18px;
+
+  font-family: -apple-system, BlinkMacSystemFont,
+    "SF Pro Display", "Segoe UI", sans-serif;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cuisine-premium-contact__icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 38px;
+  height: 38px;
+  border-radius: 13px;
+}
+
+.cuisine-premium-contact__label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cuisine-premium-contact--phone {
+  background: #ecfdf5;
+  border-color: #d1fae5;
+  color: #047857;
+}
+
+.cuisine-premium-contact--phone
+.cuisine-premium-contact__icon {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.cuisine-premium-contact:active {
+  transform: scale(0.94);
+}
+
+.cuisine-premium-contact:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 3px;
+}
+
+/* Google Maps */
+.cuisine-premium-map {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2563eb;
+}
+
+@media (hover: hover) {
+  .cuisine-premium-contact:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(15, 23, 42, 0.07);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cuisine-premium-contact {
+    transition: none;
+  }
+}

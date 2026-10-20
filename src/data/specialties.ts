@@ -4,7 +4,16 @@ import restaurant from "@/static/restaurant.png";
 
 export type SpecialtyCategory = "Món ăn" | "Trái cây" | "Quà mang về";
 
-export interface Specialty extends ContentImageFields {
+export interface SpecialtyBuyPlace {
+  id: string;
+  name: string;
+  address: string;
+  googleMapsUrl?: string | null;
+  phone?: string | null;
+  email?: string | null;
+}
+
+export interface Specialty {
   id: string;
   name: string;
   category: SpecialtyCategory;
@@ -14,6 +23,7 @@ export interface Specialty extends ContentImageFields {
   summary: string;
   description: string[];
   buyPlaces: string[];
+  buyPlaceDetails?: SpecialtyBuyPlace[];
   image: string;
 }
 
