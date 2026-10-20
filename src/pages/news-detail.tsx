@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
 import DirectionsButton from "@/components/directions-button";
-import PreviewableImage from "@/components/previewable-image";
+import ContentGallery from "@/components/content-gallery";
 import { NewsArticle } from "@/data/news";
 import { getNewsArticleById } from "@/services/news";
 import "../css/pages/news.css";
@@ -82,12 +82,8 @@ function NewsDetailPage() {
 
   return (
     <Page className="news-page">
-      <section className="news-detail__hero">
-        <PreviewableImage
-          src={article.image}
-          alt={article.title}
-          previewTitle={article.title}
-        />
+      <section className={`news-detail__hero${article.galleryImages?.length ? " content-detail-hero--gallery" : ""}`}>
+        <ContentGallery imageUrl={article.imageUrl} imageAlt={article.imageAlt} galleryImages={article.galleryImages} fallbackSrc={article.image} title={article.title} />
         <button
           className="news-back news-detail__back"
           type="button"

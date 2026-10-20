@@ -1,3 +1,4 @@
+import { ContentImageFields, mapContentImages } from "@/data/content-images";
 import specialtyIcon from "@/static/restaurant.png";
 import { Specialty, SpecialtyCategory } from "@/data/specialties";
 
@@ -5,7 +6,7 @@ export interface SpecialtyQuery {
   category?: SpecialtyCategory;
 }
 
-interface SpecialtyApiItem {
+interface SpecialtyApiItem extends ContentImageFields {
   id: string;
   name: string;
   category: SpecialtyCategory;
@@ -38,6 +39,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 
 function toSpecialty(item: SpecialtyApiItem): Specialty {
   return {
+    ...mapContentImages(item),
     id: item.id,
     name: item.name,
     category: item.category,

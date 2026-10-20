@@ -1,3 +1,4 @@
+import { ContentImageFields, mapContentImages } from "@/data/content-images";
 import craftIcon from "@/static/pottery.png";
 import { CraftVillage, CraftVillageCategory } from "@/data/craft-villages";
 
@@ -5,7 +6,7 @@ export interface CraftVillageQuery {
   category?: CraftVillageCategory;
 }
 
-interface CraftVillageApiItem {
+interface CraftVillageApiItem extends ContentImageFields {
   id: string;
   name: string;
   category: CraftVillageCategory;
@@ -40,6 +41,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 
 function toCraftVillage(item: CraftVillageApiItem): CraftVillage {
   return {
+    ...mapContentImages(item),
     id: item.id,
     name: item.name,
     category: item.category,

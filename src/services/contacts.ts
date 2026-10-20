@@ -1,3 +1,4 @@
+import { ContentImageFields, mapContentImages } from "@/data/content-images";
 import phoneIcon from "@/static/phone.png";
 import { ContactCategory, ContactItem } from "@/data/contacts";
 
@@ -5,7 +6,7 @@ export interface ContactQuery {
   category?: ContactCategory;
 }
 
-interface ContactApiItem {
+interface ContactApiItem extends ContentImageFields {
   id: string;
   googleMapsUrl?: string | null;
   name: string;
@@ -42,6 +43,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 
 function toContactItem(item: ContactApiItem): ContactItem {
   return {
+    ...mapContentImages(item),
     id: item.id,
     googleMapsUrl: item.googleMapsUrl ?? null,
     name: item.name,

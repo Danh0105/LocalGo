@@ -1,3 +1,4 @@
+import type { ContentImageFields } from "@/data/content-images";
 import newsIcon from "@/static/icon-07.png";
 
 export type NewsCategory =
@@ -7,7 +8,7 @@ export type NewsCategory =
   | "Nông nghiệp"
   | "Chuyển đổi số";
 
-export interface NewsArticle {
+export interface NewsArticle extends ContentImageFields {
   id: string;
   googleMapsUrl?: string | null;
   title: string;

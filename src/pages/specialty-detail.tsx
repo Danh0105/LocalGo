@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
 import DirectionsButton from "@/components/directions-button";
-import PreviewableImage from "@/components/previewable-image";
+import ContentGallery from "@/components/content-gallery";
 import { Specialty } from "@/data/specialties";
 import { getSpecialtyById } from "@/services/specialties";
 import "../css/pages/specialties.css";
@@ -82,12 +82,8 @@ function SpecialtyDetailPage() {
 
   return (
     <Page className="specialties-page">
-      <section className="specialty-detail__hero">
-        <PreviewableImage
-          src={specialty.image}
-          alt={specialty.name}
-          previewTitle={specialty.name}
-        />
+      <section className={`specialty-detail__hero${specialty.galleryImages?.length ? " content-detail-hero--gallery" : ""}`}>
+        <ContentGallery imageUrl={specialty.imageUrl} imageAlt={specialty.imageAlt} galleryImages={specialty.galleryImages} fallbackSrc={specialty.image} title={specialty.name} />
         <button
           className="specialties-back specialty-detail__back"
           type="button"

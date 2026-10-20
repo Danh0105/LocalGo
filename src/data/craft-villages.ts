@@ -1,3 +1,4 @@
+import type { ContentImageFields } from "@/data/content-images";
 import craftIcon from "@/static/pottery.png";
 
 export type CraftVillageCategory =
@@ -6,7 +7,7 @@ export type CraftVillageCategory =
   | "Dịch vụ trải nghiệm"
   | "Sản phẩm gia đình";
 
-export interface CraftVillage {
+export interface CraftVillage extends ContentImageFields {
   id: string;
   name: string;
   category: CraftVillageCategory;

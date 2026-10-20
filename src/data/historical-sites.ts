@@ -1,14 +1,17 @@
+import type { ContentImageFields } from "@/data/content-images";
 import historicalIcon from "@/static/icon-12.png";
+import type { MapLocation } from "@/data/map-location";
 
 export type HistoricalSiteRank = "Cấp tỉnh" | "Cấp quốc gia" | "Chưa xếp hạng";
 
-export interface HistoricalSite {
+export interface HistoricalSite extends ContentImageFields {
   id: string;
   name: string;
   rank: HistoricalSiteRank;
   address: string;
   recognizedYear?: number;
   googleMapsUrl?: string | null;
+  mapLocation?: MapLocation | null;
   summary: string;
   history: string[];
   highlights: string[];

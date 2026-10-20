@@ -1,3 +1,5 @@
+import type { MapLocation } from "@/data/map-location";
+
 export type TempleType = "Đình" | "Chùa" | "Miếu";
 
 export interface TempleListItem {
@@ -7,6 +9,7 @@ export interface TempleListItem {
   address: string;
   openHours: string;
   googleMapsUrl?: string | null;
+  mapLocation?: MapLocation | null;
   summary: string;
   imageUrl: string | null;
   imageAlt: string;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
 import DirectionsButton from "@/components/directions-button";
-import PreviewableImage from "@/components/previewable-image";
+import ContentGallery from "@/components/content-gallery";
 import { ExperienceTour } from "@/data/experience-tours";
 import { getExperienceTourById } from "@/services/experience-tours";
 import "../css/pages/experience-tours.css";
@@ -82,8 +82,8 @@ function ExperienceTourDetailPage() {
 
   return (
     <Page className="experience-tours-page">
-      <section className="experience-tour-detail__hero">
-        <PreviewableImage src={tour.image} alt={tour.name} previewTitle={tour.name} />
+      <section className={`experience-tour-detail__hero${tour.galleryImages?.length ? " content-detail-hero--gallery" : ""}`}>
+        <ContentGallery imageUrl={tour.imageUrl} imageAlt={tour.imageAlt} galleryImages={tour.galleryImages} fallbackSrc={tour.image} title={tour.name} />
         <button
           className="experience-tours-back experience-tour-detail__back"
           type="button"

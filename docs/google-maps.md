@@ -43,6 +43,35 @@ Thay đổi Mini App không triển khai hoặc xác minh luồng ghi của hai 
 
 ## Kiểm thử
 
+Trang `/map` tổng hợp các link hợp lệ từ `/map-places`, `/cuisine` (cả link
+của món và từng `suggestedPlaceDetails`), `/temples`, `/historical-sites`,
+và danh sách điểm du lịch nội bộ nếu được khai báo `googleMapsUrl`.
+Link trùng chính xác sau khi trim được gộp, giữ các nhóm tương ứng.
+Tìm kiếm không dấu và lọc nhóm thực hiện trên toàn bộ dữ liệu đã tải.
+Mỗi nguồn có thời gian chờ tối đa 15 giây; lỗi một nguồn không làm mất
+dữ liệu các nguồn khác, giao diện có thông báo và nút thử lại.
+
+Bản đồ tương tác dùng Leaflet và nền OpenStreetMap, có attribution.
+Cả bốn nguồn và từng `suggestedPlaceDetails[]` đọc `mapLocation` từ BE.
+Chỉ tạo ghim khi `status === "resolved"` và tọa độ là số hữu hạn trong khoảng
+hợp lệ; chuyển `{ lat, lng }` thành `[lat, lng]` cho Leaflet, chấp nhận cả số 0.
+Không dùng tọa độ legacy của `/map-places` hoặc tự phân tích link để bỏ qua
+trạng thái từ BE. Link rút gọn được đặt ghim khi BE trả kết quả resolved.
+Trạng thái pending/unresolved/failed/null vẫn giữ địa điểm trong danh sách
+và dùng link gốc cho icon chỉ đường; không lấy tọa độ cấp món bù vào từng quán.
+Mỗi thẻ hiện trạng thái vị trí. Nút `Cập nhật vị trí` tải lại dữ liệu mà không
+ẩn danh sách hiện tại; khi còn pending, trang tự tải lại sau 15 giây.
+Nếu tất cả kết quả là failed/unresolved/null thì không có ghim để vẽ. Xem
+`docs/prompts/MAP-PINS-RESOLVER-FIX-BE-PROMPT.md` để xử lý resolver BE và dạng
+redirect `/maps/search/<lat>,<lng>` đã quan sát từ các link hiện tại.
+Nguồn attractions nội bộ chưa có contract BE nên chỉ hiện danh sách khi có link.
+Public API hiện dùng danh sách mảng; phân trang admin không áp dụng tại Mini App.
+Nền bản đồ dùng `https://tile.openstreetmap.org`, tự chuyển sang ảnh vệ tinh
+Esri tại `https://services.arcgisonline.com` nếu nguồn chính không tải được.
+Cần cho phép truy cập cả hai hostname khi phát hành. Mỗi nguồn có thời gian
+chờ 8 giây khi không nhận được ô ảnh nào; lỗi cả hai nguồn sẽ hiện nút tải lại.
+Thông báo lỗi được xóa khi ô ảnh tải thành công, không giữ lỗi từ một ô ảnh cũ.
+
 Chạy `npm test`, `npm run typecheck`, `npm run build`.
 `src/pages/content-directions.test.tsx` kiểm tra từ response API giả lập qua
 mapper thật đến UI của cả 12 trang và thao tác mở SDK, gồm các trạng thái thiếu,

@@ -7,6 +7,7 @@ export interface Attraction {
   name: string;
   category: AttractionCategory;
   address: string;
+  googleMapsUrl?: string | null;
   openHours: string;
   ticket: string;
   summary: string;

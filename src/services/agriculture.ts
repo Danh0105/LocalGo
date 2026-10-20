@@ -1,3 +1,4 @@
+import { ContentImageFields, mapContentImages } from "@/data/content-images";
 import agricultureIcon from "@/static/tractor.png";
 import { AgricultureCategory, AgricultureItem } from "@/data/agriculture";
 
@@ -5,7 +6,7 @@ export interface AgricultureQuery {
   category?: AgricultureCategory;
 }
 
-interface AgricultureApiItem {
+interface AgricultureApiItem extends ContentImageFields {
   id: string;
   name: string;
   category: AgricultureCategory;
@@ -40,6 +41,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 
 function toAgricultureItem(item: AgricultureApiItem): AgricultureItem {
   return {
+    ...mapContentImages(item),
     id: item.id,
     name: item.name,
     category: item.category,

@@ -1,4 +1,5 @@
 import cuisineIcon from "@/static/fried-rice.png";
+import type { MapLocation } from "@/data/map-location";
 
 export type CuisineCategory =
   | "Món nước"
@@ -12,6 +13,7 @@ export interface CuisineSuggestedPlace {
   name: string;
   address: string;
   googleMapsUrl?: string | null;
+  mapLocation?: MapLocation | null;
 }
 
 export interface CuisineItem {
@@ -21,6 +23,7 @@ export interface CuisineItem {
   priceRange: string;
   bestTime: string;
   googleMapsUrl?: string | null;
+  mapLocation?: MapLocation | null;
   suggestedPlaces: string[];
   suggestedPlaceDetails?: CuisineSuggestedPlace[];
   summary: string;

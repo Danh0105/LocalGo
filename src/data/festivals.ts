@@ -1,3 +1,4 @@
+import type { ContentImageFields } from "@/data/content-images";
 import festivalIcon from "@/static/dragon-boat.png";
 
 export type FestivalCategory =
@@ -6,7 +7,7 @@ export type FestivalCategory =
   | "Thể thao - vui chơi"
   | "Sự kiện nông sản";
 
-export interface Festival {
+export interface Festival extends ContentImageFields {
   id: string;
   name: string;
   category: FestivalCategory;

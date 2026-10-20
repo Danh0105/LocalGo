@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
 import DirectionsButton from "@/components/directions-button";
-import PreviewableImage from "@/components/previewable-image";
+import ContentGallery from "@/components/content-gallery";
 import { HistoricalSite } from "@/data/historical-sites";
 import { getHistoricalSiteById } from "@/services/historical-sites";
 import "../css/pages/historical-sites.css";
@@ -82,8 +82,8 @@ function HistoricalSiteDetailPage() {
 
   return (
     <Page className="historical-sites-page">
-      <section className="historical-site-detail__hero">
-        <PreviewableImage src={site.image} alt={site.name} previewTitle={site.name} />
+      <section className={`historical-site-detail__hero${site.galleryImages?.length ? " content-detail-hero--gallery" : ""}`}>
+        <ContentGallery imageUrl={site.imageUrl} imageAlt={site.imageAlt} galleryImages={site.galleryImages} fallbackSrc={site.image} title={site.name} />
         <button
           className="historical-sites-back historical-site-detail__back"
           type="button"

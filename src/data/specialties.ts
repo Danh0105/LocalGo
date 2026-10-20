@@ -1,9 +1,10 @@
+import type { ContentImageFields } from "@/data/content-images";
 import friedRice from "@/static/fried-rice.png";
 import restaurant from "@/static/restaurant.png";
 
 export type SpecialtyCategory = "Món ăn" | "Trái cây" | "Quà mang về";
 
-export interface Specialty {
+export interface Specialty extends ContentImageFields {
   id: string;
   name: string;
   category: SpecialtyCategory;

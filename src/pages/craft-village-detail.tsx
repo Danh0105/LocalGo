@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
 import DirectionsButton from "@/components/directions-button";
-import PreviewableImage from "@/components/previewable-image";
+import ContentGallery from "@/components/content-gallery";
 import { CraftVillage } from "@/data/craft-villages";
 import { getCraftVillageById } from "@/services/craft-villages";
 import "../css/pages/craft-villages.css";
@@ -82,12 +82,8 @@ function CraftVillageDetailPage() {
 
   return (
     <Page className="craft-villages-page">
-      <section className="craft-village-detail__hero">
-        <PreviewableImage
-          src={village.image}
-          alt={village.name}
-          previewTitle={village.name}
-        />
+      <section className={`craft-village-detail__hero${village.galleryImages?.length ? " content-detail-hero--gallery" : ""}`}>
+        <ContentGallery imageUrl={village.imageUrl} imageAlt={village.imageAlt} galleryImages={village.galleryImages} fallbackSrc={village.image} title={village.name} />
         <button
           className="craft-villages-back craft-village-detail__back"
           type="button"

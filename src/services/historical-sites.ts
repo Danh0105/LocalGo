@@ -1,17 +1,20 @@
+import { ContentImageFields, mapContentImages } from "@/data/content-images";
 import historicalIcon from "@/static/icon-12.png";
 import { HistoricalSite, HistoricalSiteRank } from "@/data/historical-sites";
+import type { MapLocation } from "@/data/map-location";
 
 export interface HistoricalSiteQuery {
   rank?: HistoricalSiteRank;
 }
 
-interface HistoricalSiteApiItem {
+interface HistoricalSiteApiItem extends ContentImageFields {
   id: string;
   name: string;
   rank: HistoricalSiteRank;
   address: string;
   recognizedYear: number | null;
   googleMapsUrl?: string | null;
+  mapLocation?: MapLocation | null;
   summary: string;
   history: string[];
   highlights: string[];
@@ -38,12 +41,14 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 
 function toHistoricalSite(item: HistoricalSiteApiItem): HistoricalSite {
   return {
+    ...mapContentImages(item),
     id: item.id,
     name: item.name,
     rank: item.rank,
     address: item.address,
     recognizedYear: item.recognizedYear ?? undefined,
     googleMapsUrl: item.googleMapsUrl ?? null,
+    mapLocation: item.mapLocation ?? null,
     summary: item.summary,
     history: item.history,
     highlights: item.highlights,

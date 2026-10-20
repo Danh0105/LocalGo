@@ -1,3 +1,4 @@
+import type { ContentImageFields } from "@/data/content-images";
 import agricultureIcon from "@/static/tractor.png";
 
 export type AgricultureCategory =
@@ -6,7 +7,7 @@ export type AgricultureCategory =
   | "Thủy lợi"
   | "Mô hình sản xuất";
 
-export interface AgricultureItem {
+export interface AgricultureItem extends ContentImageFields {
   id: string;
   name: string;
   category: AgricultureCategory;

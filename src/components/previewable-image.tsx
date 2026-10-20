@@ -13,6 +13,7 @@ import "@/css/components/image-viewer.css";
 export interface PreviewImageItem {
   src: string;
   alt?: string;
+  thumbnailSrc?: string;
 }
 
 interface PreviewableImageProps
@@ -21,6 +22,7 @@ interface PreviewableImageProps
   previewImages?: readonly (string | PreviewImageItem)[];
   previewIndex?: number;
   previewTitle?: string;
+  previewFallbackSrc?: string;
 }
 
 function PreviewableImage({
@@ -30,6 +32,7 @@ function PreviewableImage({
   previewImages,
   previewIndex = 0,
   previewTitle = "Xem hình ảnh",
+  previewFallbackSrc,
   onClick,
   onKeyDown,
   tabIndex,
@@ -159,9 +162,14 @@ function PreviewableImage({
                     key={`${image.src}-${index}`}
                   >
                     <img
-                      src={image.src}
+                      src={index === currentIndex ? image.src : undefined}
                       alt={image.alt ?? alt}
                       draggable={false}
+                      onError={(event) => {
+                        if (!previewFallbackSrc || event.currentTarget.dataset.failed) return;
+                        event.currentTarget.dataset.failed = "true";
+                        event.currentTarget.src = previewFallbackSrc;
+                      }}
                     />
                   </div>
                 ))}
@@ -199,7 +207,11 @@ function PreviewableImage({
                     aria-current={index === currentIndex ? "true" : undefined}
                     onClick={() => showImage(index)}
                   >
-                    <img src={image.src} alt="" />
+                    <img src={image.thumbnailSrc ?? image.src} alt="" loading="lazy" onError={(event) => {
+                      if (!previewFallbackSrc || event.currentTarget.dataset.failed) return;
+                      event.currentTarget.dataset.failed = "true";
+                      event.currentTarget.src = previewFallbackSrc;
+                    }} />
                   </button>
                 ))}
               </nav>

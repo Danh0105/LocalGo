@@ -1,4 +1,5 @@
 import mapIcon from "@/static/map.png";
+import type { MapLocation } from "@/data/map-location";
 
 export type MapPlaceCategory =
   | "Hành chính"
@@ -17,6 +18,7 @@ export interface MapPlace {
     lng: number;
   };
   googleMapsUrl?: string | null;
+  mapLocation?: MapLocation | null;
   openTime: string;
   distanceFromCenter: string;
   summary: string;

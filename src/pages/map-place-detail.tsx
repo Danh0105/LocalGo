@@ -4,6 +4,7 @@ import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 import DirectionsButton from "@/components/directions-button";
 import PreviewableImage from "@/components/previewable-image";
 import { MapPlace } from "@/data/map-places";
+import { getResolvedMapCoordinates } from "@/data/map-location";
 import { getMapPlaceById } from "@/services/map-places";
 import "../css/pages/map-places.css";
 
@@ -14,6 +15,7 @@ function MapPlaceDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<"not-found" | "request" | null>(null);
   const [retryKey, setRetryKey] = useState(0);
+  const coordinates = getResolvedMapCoordinates(place?.mapLocation);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -129,11 +131,15 @@ function MapPlaceDetailPage() {
         </section>
 
         <section className="map-place-detail__card map-place-detail__coords">
-          <h2>Tọa độ mẫu</h2>
-          <div>
-            <span>Lat: {place.coordinates.lat}</span>
-            <span>Lng: {place.coordinates.lng}</span>
-          </div>
+          <h2>Vị trí địa điểm</h2>
+          {coordinates ? <div>
+            <span>Lat: {coordinates[0]}</span>
+            <span>Lng: {coordinates[1]}</span>
+          </div> : <p className="map-place-detail__paragraph">
+            {place.mapLocation?.status === "pending"
+              ? "Vị trí đang được cập nhật. Bạn có thể mở Google Maps để xem đường đi."
+              : "Chưa có tọa độ xác định. Mở Google Maps để xem vị trí nếu địa điểm đã có link."}
+          </p>}
           <DirectionsButton googleMapsUrl={place.googleMapsUrl} />
         </section>
 

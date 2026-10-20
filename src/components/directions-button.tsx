@@ -64,12 +64,14 @@ interface DirectionsButtonProps {
   googleMapsUrl?: string | null;
   label?: string;
   className?: string;
+  iconOnly?: boolean;
 }
 
 function DirectionsButton({
   googleMapsUrl,
   label = "Chỉ đường bằng Google Maps",
   className,
+  iconOnly = false,
 }: DirectionsButtonProps) {
   const [isOpening, setIsOpening] = useState(false);
   const [fallback, setFallback] = useState<{ url: string; failed: boolean; supportCode?: string }>();
@@ -99,13 +101,15 @@ function DirectionsButton({
     <>
       <button
         type="button"
-        className={className ? `directions-button ${className}` : "directions-button"}
+        className={["directions-button", iconOnly && "directions-button--icon-only", className].filter(Boolean).join(" ")}
+        aria-label={label}
+        title={iconOnly ? label : undefined}
         disabled={isOpening}
         aria-busy={isOpening}
         onClick={() => void handleClick()}
       >
         <Icon icon="zi-location" aria-hidden="true" />
-        <span>{label}</span>
+        {!iconOnly && <span>{label}</span>}
       </button>
       {fallback?.url === url && (
         <span className="directions-button__fallback" role="status">

@@ -1,0 +1,19 @@
+.content-detail-hero--gallery.content-detail-hero--gallery {
+  display: block;
+  height: auto;
+  min-height: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.content-gallery { width: 100%; min-width: 0; padding: 14px 12px 22px; }
+.content-gallery-main { position: relative; display: grid; height: clamp(200px, 58vw, 280px); place-items: center; overflow: hidden; border-radius: 16px; background: #eaf2f7; }
+.content-gallery-main.is-loading { background: linear-gradient(110deg, #eaf2f7, #f9fcff, #eaf2f7); background-size: 200% 100%; animation: content-image-loading 1.4s linear infinite; }
+.content-gallery .content-gallery-main > img { display: block; width: 100%; height: 100%; max-width: 100%; max-height: 100%; margin: 0; object-fit: contain; filter: none; }
+.content-gallery-count, .content-gallery-error { position: absolute; right: 10px; bottom: 10px; padding: 5px 9px; border-radius: 8px; color: #fff; background: #163e55bf; font-size: 12px; pointer-events: none; }
+.content-gallery-error { right: auto; left: 10px; }
+.content-gallery-thumbnails { display: flex; gap: 8px; overflow-x: auto; padding: 12px 2px 3px; }
+.content-gallery-thumbnails > button { flex: 0 0 56px; width: 56px; height: 56px; padding: 2px; background: #fff; border: 2px solid transparent; border-radius: 10px; overflow: hidden; }
+.content-gallery-thumbnails > button.is-active { border-color: #1478c8; }
+.content-gallery-thumbnails > button:focus-visible { outline: 2px solid #1478c8; outline-offset: 1px; }
+.content-gallery .content-gallery-thumbnails img { display: block; width: 100%; height: 100%; max-width: 100%; max-height: 100%; border-radius: 6px; object-fit: cover; margin: 0; filter: none; }
+@keyframes content-image-loading { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .content-gallery-main.is-loading { animation: none; } }

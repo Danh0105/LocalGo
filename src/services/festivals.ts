@@ -1,3 +1,4 @@
+import { ContentImageFields, mapContentImages } from "@/data/content-images";
 import festivalIcon from "@/static/dragon-boat.png";
 import { Festival, FestivalCategory } from "@/data/festivals";
 
@@ -5,7 +6,7 @@ export interface FestivalQuery {
   category?: FestivalCategory;
 }
 
-interface FestivalApiItem {
+interface FestivalApiItem extends ContentImageFields {
   id: string;
   name: string;
   category: FestivalCategory;
@@ -40,6 +41,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 
 function toFestival(item: FestivalApiItem): Festival {
   return {
+    ...mapContentImages(item),
     id: item.id,
     name: item.name,
     category: item.category,

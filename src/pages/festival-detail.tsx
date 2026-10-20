@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
 import DirectionsButton from "@/components/directions-button";
-import PreviewableImage from "@/components/previewable-image";
+import ContentGallery from "@/components/content-gallery";
 import { Festival } from "@/data/festivals";
 import { getFestivalById } from "@/services/festivals";
 import "../css/pages/festivals.css";
@@ -82,12 +82,8 @@ function FestivalDetailPage() {
 
   return (
     <Page className="festivals-page">
-      <section className="festival-detail__hero">
-        <PreviewableImage
-          src={festival.image}
-          alt={festival.name}
-          previewTitle={festival.name}
-        />
+      <section className={`festival-detail__hero${festival.galleryImages?.length ? " content-detail-hero--gallery" : ""}`}>
+        <ContentGallery imageUrl={festival.imageUrl} imageAlt={festival.imageAlt} galleryImages={festival.galleryImages} fallbackSrc={festival.image} title={festival.name} />
         <button
           className="festivals-back festival-detail__back"
           type="button"

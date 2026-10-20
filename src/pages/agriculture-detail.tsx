@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
 import DirectionsButton from "@/components/directions-button";
-import PreviewableImage from "@/components/previewable-image";
+import ContentGallery from "@/components/content-gallery";
 import { AgricultureItem } from "@/data/agriculture";
 import { getAgricultureItemById } from "@/services/agriculture";
 import "../css/pages/agriculture.css";
@@ -82,8 +82,8 @@ function AgricultureDetailPage() {
 
   return (
     <Page className="agriculture-page">
-      <section className="agriculture-detail__hero">
-        <PreviewableImage src={item.image} alt={item.name} previewTitle={item.name} />
+      <section className={`agriculture-detail__hero${item.galleryImages?.length ? " content-detail-hero--gallery" : ""}`}>
+        <ContentGallery imageUrl={item.imageUrl} imageAlt={item.imageAlt} galleryImages={item.galleryImages} fallbackSrc={item.image} title={item.name} />
         <button
           className="agriculture-back agriculture-detail__back"
           type="button"

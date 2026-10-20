@@ -1,3 +1,4 @@
+import { ContentImageFields, mapContentImages } from "@/data/content-images";
 import tourIcon from "@/static/world-tour.png";
 import {
   ExperienceTour,
@@ -8,7 +9,7 @@ export interface ExperienceTourQuery {
   category?: ExperienceTourCategory;
 }
 
-interface ExperienceTourApiItem {
+interface ExperienceTourApiItem extends ContentImageFields {
   id: string;
   name: string;
   category: ExperienceTourCategory;
@@ -46,6 +47,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 
 function toExperienceTour(item: ExperienceTourApiItem): ExperienceTour {
   return {
+    ...mapContentImages(item),
     id: item.id,
     name: item.name,
     category: item.category,

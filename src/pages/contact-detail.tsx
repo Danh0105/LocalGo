@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
 import DirectionsButton from "@/components/directions-button";
-import PreviewableImage from "@/components/previewable-image";
+import ContentGallery from "@/components/content-gallery";
 import { ContactItem } from "@/data/contacts";
 import { getContactById } from "@/services/contacts";
 import "../css/pages/contacts.css";
@@ -82,12 +82,8 @@ function ContactDetailPage() {
 
   return (
     <Page className="contacts-page">
-      <section className="contact-detail__hero">
-        <PreviewableImage
-          src={contact.image}
-          alt={contact.name}
-          previewTitle={contact.name}
-        />
+      <section className={`contact-detail__hero${contact.galleryImages?.length ? " content-detail-hero--gallery" : ""}`}>
+        <ContentGallery imageUrl={contact.imageUrl} imageAlt={contact.imageAlt} galleryImages={contact.galleryImages} fallbackSrc={contact.image} title={contact.name} />
         <button
           className="contacts-back contact-detail__back"
           type="button"

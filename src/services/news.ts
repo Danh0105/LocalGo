@@ -1,3 +1,4 @@
+import { ContentImageFields, mapContentImages } from "@/data/content-images";
 import newsIcon from "@/static/icon-07.png";
 import { NewsArticle, NewsCategory } from "@/data/news";
 
@@ -5,7 +6,7 @@ export interface NewsQuery {
   category?: NewsCategory;
 }
 
-interface NewsArticleApiItem {
+interface NewsArticleApiItem extends ContentImageFields {
   id: string;
   googleMapsUrl?: string | null;
   title: string;
@@ -70,6 +71,7 @@ async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
 
 function toNewsArticle(item: NewsArticleApiItem): NewsArticle {
   return {
+    ...mapContentImages(item),
     id: item.id,
     googleMapsUrl: item.googleMapsUrl ?? null,
     title: item.title,

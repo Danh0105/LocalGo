@@ -1,5 +1,6 @@
 import mapIcon from "@/static/map.png";
 import { MapPlace, MapPlaceCategory } from "@/data/map-places";
+import type { MapLocation } from "@/data/map-location";
 
 export interface MapPlaceQuery {
   category?: MapPlaceCategory;
@@ -12,6 +13,7 @@ interface MapPlaceApiItem {
   address: string;
   coordinates: { lat: number; lng: number };
   googleMapsUrl?: string | null;
+  mapLocation?: MapLocation | null;
   openTime: string;
   distanceFromCenter: string;
   summary: string;
@@ -47,6 +49,7 @@ function toMapPlace(item: MapPlaceApiItem): MapPlace {
     address: item.address,
     coordinates: item.coordinates,
     googleMapsUrl: item.googleMapsUrl ?? null,
+    mapLocation: item.mapLocation ?? null,
     openTime: item.openTime,
     distanceFromCenter: item.distanceFromCenter,
     summary: item.summary,

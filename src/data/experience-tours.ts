@@ -1,3 +1,4 @@
+import type { ContentImageFields } from "@/data/content-images";
 import tourIcon from "@/static/world-tour.png";
 
 export type ExperienceTourCategory =
@@ -7,7 +8,7 @@ export type ExperienceTourCategory =
   | "Học sinh"
   | "Nông nghiệp";
 
-export interface ExperienceTour {
+export interface ExperienceTour extends ContentImageFields {
   id: string;
   name: string;
   category: ExperienceTourCategory;

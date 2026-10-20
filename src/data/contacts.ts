@@ -1,3 +1,4 @@
+import type { ContentImageFields } from "@/data/content-images";
 import phoneIcon from "@/static/phone.png";
 
 export type ContactCategory =
@@ -7,7 +8,7 @@ export type ContactCategory =
   | "Nông nghiệp"
   | "Phản ánh";
 
-export interface ContactItem {
+export interface ContactItem extends ContentImageFields {
   id: string;
   googleMapsUrl?: string | null;
   name: string;
