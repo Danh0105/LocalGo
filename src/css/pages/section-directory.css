@@ -1,0 +1,251 @@
+.section-directory-page.section-directory-page {
+  background: #f5f5f7;
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.section-directory-page > header {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  display: flex;
+  min-height: 100px;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top, 0px) + 26px) 22px 24px;
+  border-bottom: 1px solid rgb(255 255 255 / 16%);
+  background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
+  color: #fff;
+  box-shadow: none;
+  gap: 14px;
+}
+.section-directory-page > header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: none;
+  letter-spacing: -0.055em;
+  color: #fff;
+}
+.section-directory-page > header div > span {
+  display: block;
+  margin-bottom: 5px;
+  color: rgb(255 255 255 / 85%);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+.section-directory-page > header > button {
+  position: static;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgb(255 255 255 / 70%);
+  border-radius: 50%;
+  background: #fff;
+  color: #08699d;
+  box-shadow: none;
+}
+.section-directory-page > main {
+  width: 100%;
+  max-width: 940px;
+  padding: 24px 20px env(safe-area-inset-bottom, 0px);
+  margin: 0 auto;
+}
+.section-directory-page > main > :is(.cuisine-intro, .agriculture-intro) {
+  margin: 0 0 24px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  color: #86868b;
+}
+.section-directory-page > main > :is(.cuisine-intro, .agriculture-intro) p {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+.directory-source-tabs {
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  margin-bottom: 24px;
+  border: 1px solid #e4e4e9;
+  border-radius: 13px;
+  background: #eaeaee;
+}
+.directory-source-tabs button {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 8px 5px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #818188;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.18s,
+    color 0.18s,
+    box-shadow 0.18s;
+}
+.directory-source-tabs button[aria-pressed="true"] {
+  background: #fff;
+  color: #252528;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 7%);
+}
+.directory-source-tabs button:focus-visible {
+  outline: 3px solid #87bfff;
+  outline-offset: 2px;
+}
+.section-directory__editorial[hidden],
+.section-directory__market[hidden] {
+  display: none;
+}
+.section-directory__editorial[hidden]
+  + .section-directory__market
+  .section-trade {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: 5px;
+}
+.section-directory-page
+  :is(
+    .cuisine-filters,
+    .agriculture-filters,
+    .temples-filters,
+    .specialties-filters
+  ) {
+  display: flex;
+  gap: 7px;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+  overflow: auto;
+  scrollbar-width: none;
+}
+.section-directory-page
+  :is(
+    .cuisine-filters,
+    .agriculture-filters,
+    .temples-filters,
+    .specialties-filters
+  )::-webkit-scrollbar {
+  display: none;
+}
+.section-directory-page
+  :is(
+    .cuisine-filter,
+    .agriculture-filter,
+    .temples-filter,
+    .specialties-filter
+  ) {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  border: 1px solid #e0e0e5;
+  border-radius: 99px;
+  background: transparent;
+  color: #7a7a81;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: none;
+}
+.section-directory-page
+  :is(
+    .cuisine-filter--active,
+    .agriculture-filter--active,
+    .temples-filter--active,
+    .specialties-filter--active
+  ) {
+  border-color: #1d1d1f;
+  background: #1d1d1f;
+  color: #fff;
+}
+.section-directory-page
+  :is(.cuisine-card, .agriculture-card, .temple-card, .specialty-card) {
+  border: 1px solid #e9e9ee;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgb(0 0 0 / 2%);
+  color: #1d1d1f;
+}
+.section-directory-page
+  :is(.cuisine-card, .agriculture-card, .temple-card, .specialty-card)
+  h2 {
+  color: #1d1d1f;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+.section-directory-page
+  :is(
+    .cuisine-card__category,
+    .agriculture-card__category,
+    .temple-card__type,
+    .specialty-card__category
+  ) {
+  color: #78787e;
+  font-size: 10px;
+  font-weight: 500;
+  background: #f3f3f5;
+  border-radius: 6px;
+}
+.section-directory-page
+  :is(
+    .cuisine-card__summary,
+    .agriculture-card__summary,
+    .temple-card__summary,
+    .specialty-card__summary
+  ) {
+  color: #86868b;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.section-directory-page
+  :is(
+    .cuisine-card__arrow,
+    .agriculture-card__arrow,
+    .temple-card__arrow,
+    .specialty-card__arrow
+  ) {
+  color: #b0b0b6;
+}
+.section-directory-page
+  :is(
+    .cuisine-status,
+    .agriculture-status,
+    .temples-status,
+    .specialties-status
+  ) {
+  color: #86868b;
+  font-size: 13px;
+  font-weight: 400;
+}
+@media (max-width: 350px) {
+  .section-directory-page > main {
+    padding-inline: 16px;
+  }
+  .section-directory-page > header h1 {
+    font-size: 25px;
+  }
+  .directory-source-tabs button {
+    font-size: 11px;
+  }
+}
+@media (min-width: 768px) {
+  .section-directory-page > main {
+    padding-top: 32px;
+  }
+  .directory-source-tabs {
+    width: min(100%, 390px);
+  }
+}

@@ -8,7 +8,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { useNavigate } from "zmp-ui";
+import { useNavigate, useSnackbar } from "zmp-ui";
+import { CONTENT_REVIEW_TYPES } from "@/types/content-reviews";
 
 import NotificationAlert from "@/components/notification-alert";
 import { useCurrentUser } from "@/contexts/auth-context";
@@ -18,10 +19,15 @@ import {
 } from "@/services/notification-socket";
 import {
   AppNotification,
+  getNotification,
   getUnreadNotificationCount,
+  isNotificationTradePostUnavailable,
   markAllNotificationsRead,
   markNotificationRead,
+  NotificationRequestError,
+  TRADE_POST_UNAVAILABLE_MESSAGE,
 } from "@/services/notifications";
+import { getTradePostDetail, TradePostRequestError } from "@/services/trade-posts";
 
 type ChatMessageListener = (event: ChatMessageEvent) => void;
 
@@ -61,6 +67,7 @@ function isTradePostType(type: string, suffix: string): boolean {
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
+  const { openSnackbar } = useSnackbar();
   const { accessToken, status, refreshSession, refreshUser } = useCurrentUser();
   const [unreadCount, setUnreadCount] = useState(0);
   const [latestNotification, setLatestNotification] =
@@ -112,14 +119,78 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const openNotification = useCallback(
     async (notification: AppNotification) => {
       const type = notification.type;
+        if (type.startsWith("CONTENT_REVIEW_")) {
+          const targetType = dataValue(notification.data, "targetType");
+          const targetId = dataValue(notification.data, "targetId");
+          if (targetId && CONTENT_REVIEW_TYPES.some(value => value === targetType)) {
+            navigate(`/${targetType}/${encodeURIComponent(targetId)}`);
+          } else {
+            navigate("/reviews/me");
+          }
+          return;
+        }
+      // Re-resolve stored/socket payloads so a renamed, hidden or deleted post
+      // uses the current destination supplied by the notifications API.
+      const isTradeDestination = type !== "TRADE_CONVERSATION_STARTED" && (
+        type.startsWith("TRADE_POST_") || type.startsWith("TRADE_REVIEW_") ||
+        ["APPROVED", "FEATURED", "UNHIDDEN", "REJECTED", "SAVED", "HIDDEN", "ARCHIVED", "DELETED"]
+          .some((suffix) => isTradePostType(type, suffix)) ||
+        Boolean(dataValue(notification.data, "tradePostId", "tradePostTarget"))
+      );
+      let refreshed = false;
+      if (isTradeDestination) {
+        const token = accessTokenRef.current;
+        if (!token) throw new Error("Vui lòng đăng nhập lại để mở thông báo.");
+        try {
+          notification = await getNotification(token, notification.id);
+          refreshed = true;
+        } catch (error) {
+          // Older API deployments may not expose notification detail yet.
+          // Public destinations are verified against the post API below.
+          if (error instanceof NotificationRequestError &&
+            (error.status === 401 || error.status === 403)) throw error;
+        }
+        if (isNotificationTradePostUnavailable(notification)) {
+          openSnackbar({ text: TRADE_POST_UNAVAILABLE_MESSAGE, type: "warning" });
+          return;
+        }
+      }
       const postId = dataValue(
         notification.data,
         "tradePostId",
         "postId",
         "id"
       );
-      const slug = dataValue(notification.data, "slug", "tradePostSlug");
-      const tradePath = postId || slug ? `/trade/${slug || postId}` : "/trade";
+      let slug = dataValue(notification.data, "tradePostSlug", "slug");
+      const target = dataValue(notification.data, "tradePostTarget");
+      const opensPublicPost = target === "PUBLIC_DETAIL" || (!target && (
+        type === "TRADE_POST_NEW" || isTradePostType(type, "APPROVED") ||
+        isTradePostType(type, "FEATURED") || isTradePostType(type, "UNHIDDEN") ||
+        type === "TRADE_REVIEW_APPROVED" || type === "TRADE_REVIEW_REPLIED"
+      ));
+      if (isTradeDestination && opensPublicPost && slug &&
+        (!refreshed || notification.data?.tradePostAvailable !== true)) {
+        try {
+          const post = await getTradePostDetail(slug);
+          // Never redirect an old slug to a different post that now uses it.
+          if (!post.slug || (postId && post.id !== postId)) {
+            openSnackbar({ text: TRADE_POST_UNAVAILABLE_MESSAGE, type: "warning" });
+            return;
+          }
+          slug = post.slug;
+          notification = {
+            ...notification, data: { ...notification.data, tradePostAvailable: true },
+          };
+        } catch (error) {
+          if (error instanceof TradePostRequestError && (error.status === 404 || error.status === 410)) {
+            openSnackbar({ text: TRADE_POST_UNAVAILABLE_MESSAGE, type: "warning" });
+            return;
+          }
+          throw error;
+        }
+      }
+      const tradePath = slug && notification.data?.tradePostAvailable === true
+        ? `/trade/${encodeURIComponent(slug)}` : "";
       const reviewId = dataValue(notification.data, "reviewId");
       const conversationId = dataValue(notification.data, "conversationId");
       const reason = dataValue(notification.data, "reason", "rejectionReason");
@@ -131,6 +202,32 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       }
       if (type === "BUSINESS_APPLICATION_REJECTED") {
         navigate("/business/register", { state: { reason } });
+        return;
+      }
+      if (isTradeDestination && target) {
+        if (target === "PUBLIC_DETAIL" && tradePath) {
+          navigate(tradePath, { state: { reviewId } satisfies NotificationRouteState });
+        } else if (target === "OWNER_MANAGE" && postId) {
+          // The edit screen fetches /me posts by ID and checks owner access.
+          navigate(`/trade/manage/posts/${encodeURIComponent(postId)}/edit`, {
+            state: { flashMessage: reason || notification.body },
+          });
+        } else {
+          openSnackbar({
+            text: target === "ADMIN_MANAGE"
+              ? "Vui lòng mở thông báo này trên trang quản trị."
+              : TRADE_POST_UNAVAILABLE_MESSAGE,
+            type: "warning",
+          });
+        }
+        return;
+      }
+      if (isTradeDestination && !tradePath && (
+        type === "TRADE_POST_NEW" || isTradePostType(type, "APPROVED") ||
+        isTradePostType(type, "FEATURED") || isTradePostType(type, "UNHIDDEN") ||
+        type === "TRADE_REVIEW_APPROVED" || type === "TRADE_REVIEW_REPLIED"
+      )) {
+        openSnackbar({ text: TRADE_POST_UNAVAILABLE_MESSAGE, type: "warning" });
         return;
       }
       if (type === "TRADE_POST_NEW") {
@@ -187,13 +284,13 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         navigate(`/trade/messages/${conversationId}`);
       }
     },
-    [navigate, refreshUser]
+    [navigate, openSnackbar, refreshUser]
   );
 
   const readAndOpenNotification = useCallback(
     async (notification: AppNotification) => {
       if (!notification.readAt) {
-        await markAsRead(notification.id).catch(() => undefined);
+        void markAsRead(notification.id).catch(() => undefined);
       }
       await openNotification(notification);
     },
@@ -285,7 +382,12 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
           if (!alertNotification) return;
           const notification = alertNotification;
           setAlertNotification(null);
-          void readAndOpenNotification(notification);
+          void readAndOpenNotification(notification).catch((error: unknown) => {
+            openSnackbar({
+              text: error instanceof Error ? error.message : "Không thể mở thông báo.",
+              type: "error",
+            });
+          });
         }}
       />
     </NotificationContext.Provider>

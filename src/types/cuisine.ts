@@ -1,3 +1,5 @@
+import type { MapLocation } from "@/data/map-location";
+
 /**
  * Types dùng cho Mini App (public API), độc lập với DTO quản trị.
  * Các trường chỉ có ở endpoint detail được mặc định [] / '' trong list
@@ -14,6 +16,7 @@ export const CUISINE_CATEGORIES = [
 export type CuisineCategory = (typeof CUISINE_CATEGORIES)[number];
 
 export interface CuisineSuggestedPlace {
+  mapLocation?: MapLocation | null;
   id: string;
   name: string;
   address: string;
@@ -45,6 +48,7 @@ export interface CuisineGalleryImage {
 }
 
 export interface CuisineItem {
+  mapLocation?: MapLocation | null;
   id: string;
   name: string;
   category: CuisineCategory;

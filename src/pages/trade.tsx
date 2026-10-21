@@ -1,3 +1,5 @@
+import { useTradeListLifecycle } from "@/hooks/use-trade-list-lifecycle";
+import { formatTradePostPrice as postPrice } from "@/lib/trade-post-presentation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
@@ -40,16 +42,6 @@ function postRating(post: TradePostResponse): number {
   return Number.isFinite(rating) ? rating : 0;
 }
 
-function postPrice(post: TradePostResponse): string {
-  if (post.priceLabel) return post.priceLabel;
-  if (post.priceType === "NEGOTIABLE") return "Thỏa thuận";
-  if (post.priceType === "CONTACT") return "Liên hệ báo giá";
-  if (!post.price) return "Liên hệ";
-  const price = Number(post.price);
-  return Number.isFinite(price)
-    ? `${new Intl.NumberFormat("vi-VN").format(price)}đ`
-    : "Liên hệ";
-}
 
 function postBadge(post: TradePostResponse): string | null {
   if (post.featured) return "Nổi bật";
@@ -96,6 +88,7 @@ function TradePage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [reloadKey, setReloadKey] = useState(0);
+  const listPathname = useTradeListLifecycle(setPosts);
   const queryVersionRef = useRef(0);
 
   const categoryByCode = useMemo(
@@ -169,7 +162,7 @@ function TradePage() {
       active = false;
       controller.abort();
     };
-  }, [accessToken, activeCategory, reloadCategories, reloadKey, search, sortBy, syncTradePosts]);
+  }, [listPathname, accessToken, activeCategory, reloadCategories, reloadKey, search, sortBy, syncTradePosts]);
 
   const handleLoadMore = () => {
     if (isLoadingMore || page >= totalPages) return;
@@ -492,10 +485,10 @@ function TradePage() {
                     key={post.id}
                     role="button"
                     tabIndex={0}
-                    onClick={() => navigate(`/trade/${post.slug || post.id}`)}
+                    onClick={() => navigate(`/trade/${encodeURIComponent(post.slug)}`)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
-                        navigate(`/trade/${post.slug || post.id}`);
+                        navigate(`/trade/${encodeURIComponent(post.slug)}`);
                       }
                     }}
                   >

@@ -1,3 +1,5 @@
+import ContentRating from "@/components/content-reviews/content-rating";
+import { useContentRatings } from "@/hooks/use-content-ratings";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
@@ -47,6 +49,8 @@ function CraftVillagesPage() {
       isActive = false;
     };
   }, [activeFilter]);
+
+  const ratings = useContentRatings("craft-villages", villages);
 
   return (
     <Page className="craft-villages-page">
@@ -121,6 +125,7 @@ function CraftVillagesPage() {
                     {village.category}
                   </span>
                   <h2>{village.name}</h2>
+                  <ContentRating rating={ratings[village.id]} />
                   <p className="craft-village-card__address">
                     <Icon icon="zi-location" />
                     <span>{village.address}</span>

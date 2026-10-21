@@ -1,9 +1,16 @@
+import ContentSourceTabs, {
+  type ContentSource,
+} from "@/components/trade/content-source-tabs";
+import SectionTradePosts from "@/components/trade/section-trade-posts";
+import ContentRating from "@/components/content-reviews/content-rating";
+import { useContentRatings } from "@/hooks/use-content-ratings";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
 import { AgricultureCategory, AgricultureItem } from "@/data/agriculture";
 import { getAgricultureItems } from "@/services/agriculture";
 import "../css/pages/agriculture.css";
+import "@/css/pages/section-directory.css";
 
 type AgricultureFilter = "Tất cả" | AgricultureCategory;
 
@@ -17,8 +24,8 @@ const filters: AgricultureFilter[] = [
 
 function AgriculturePage() {
   const navigate = useNavigate();
-  const [activeFilter, setActiveFilter] =
-    useState<AgricultureFilter>("Tất cả");
+  const [contentSource, setContentSource] = useState<ContentSource>("all");
+  const [activeFilter, setActiveFilter] = useState<AgricultureFilter>("Tất cả");
   const [items, setItems] = useState<AgricultureItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -48,8 +55,10 @@ function AgriculturePage() {
     };
   }, [activeFilter]);
 
+  const ratings = useContentRatings("agriculture", items);
+
   return (
-    <Page className="agriculture-page">
+    <Page className="agriculture-page section-directory-page">
       <header className="agriculture-header">
         <button
           className="agriculture-back"
@@ -73,66 +82,79 @@ function AgriculturePage() {
           </p>
         </section>
 
-        <div className="agriculture-filters">
-          {filters.map((filter) => (
-            <button
-              className={`agriculture-filter${
-                filter === activeFilter ? " agriculture-filter--active" : ""
-              }`}
-              key={filter}
-              type="button"
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
-
-        {isLoading && (
-          <p className="agriculture-status">Đang tải dữ liệu...</p>
-        )}
-        {!isLoading && error && (
-          <p className="agriculture-status agriculture-status--error">
-            {error}
-          </p>
-        )}
-        {!isLoading && !error && items.length === 0 && (
-          <p className="agriculture-status">
-            Chưa có dữ liệu trong nhóm này.
-          </p>
-        )}
-
-        {!isLoading && !error && (
-          <section className="agriculture-list">
-            {items.map((item) => (
+        <ContentSourceTabs value={contentSource} onChange={setContentSource} />
+        <div
+          className="section-directory__editorial"
+          hidden={contentSource === "trade"}
+        >
+          <div className="agriculture-filters">
+            {filters.map((filter) => (
               <button
-                className="agriculture-card"
-                key={item.id}
+                className={`agriculture-filter${
+                  filter === activeFilter ? " agriculture-filter--active" : ""
+                }`}
+                key={filter}
                 type="button"
-                onClick={() => navigate(`/agriculture/${item.id}`)}
+                onClick={() => setActiveFilter(filter)}
               >
-                <div className="agriculture-card__image">
-                  <img src={item.image} alt="" />
-                </div>
-                <div className="agriculture-card__body">
-                  <span className="agriculture-card__category">
-                    {item.category}
-                  </span>
-                  <h2>{item.name}</h2>
-                  <p className="agriculture-card__location">
-                    <Icon icon="zi-location" />
-                    <span>{item.location}</span>
-                  </p>
-                  <p className="agriculture-card__summary">{item.summary}</p>
-                </div>
-                <Icon
-                  className="agriculture-card__arrow"
-                  icon="zi-chevron-right"
-                />
+                {filter}
               </button>
             ))}
-          </section>
-        )}
+          </div>
+
+          {isLoading && (
+            <p className="agriculture-status">Đang tải dữ liệu...</p>
+          )}
+          {!isLoading && error && (
+            <p className="agriculture-status agriculture-status--error">
+              {error}
+            </p>
+          )}
+          {!isLoading && !error && items.length === 0 && (
+            <p className="agriculture-status">
+              Chưa có dữ liệu trong nhóm này.
+            </p>
+          )}
+
+          {!isLoading && !error && (
+            <section className="agriculture-list">
+              {items.map((item) => (
+                <button
+                  className="agriculture-card"
+                  key={item.id}
+                  type="button"
+                  onClick={() => navigate(`/agriculture/${item.id}`)}
+                >
+                  <div className="agriculture-card__image">
+                    <img src={item.image} alt="" />
+                  </div>
+                  <div className="agriculture-card__body">
+                    <span className="agriculture-card__category">
+                      {item.category}
+                    </span>
+                    <h2>{item.name}</h2>
+                    <ContentRating rating={ratings[item.id]} />
+                    <p className="agriculture-card__location">
+                      <Icon icon="zi-location" />
+                      <span>{item.location}</span>
+                    </p>
+                    <p className="agriculture-card__summary">{item.summary}</p>
+                  </div>
+                  <Icon
+                    className="agriculture-card__arrow"
+                    icon="zi-chevron-right"
+                  />
+                </button>
+              ))}
+            </section>
+          )}
+        </div>
+        <div
+          className="section-directory__market"
+          hidden={contentSource === "editorial"}
+        >
+          <SectionTradePosts section="agriculture" />
+        </div>
       </main>
     </Page>
   );

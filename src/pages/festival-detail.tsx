@@ -1,3 +1,4 @@
+import ContentReviews from "@/components/content-reviews";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
@@ -140,6 +141,7 @@ function FestivalDetailPage() {
           <h2>Lưu ý</h2>
           <p className="festival-detail__paragraph">{festival.note}</p>
         </section>
+        <ContentReviews targetType="festivals" targetId={festival.id} title={festival.name} />
       </main>
     </Page>
   );

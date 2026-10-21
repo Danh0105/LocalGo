@@ -153,7 +153,7 @@ function TradeMessagesPage() {
             <h1>{conversation?.counterpart.displayName || "Tin nhắn"}</h1>
           </div>
           {conversation && (
-            <button className="trade-manager__create" type="button" onClick={() => navigate(`/trade/${conversation.tradePost.slug}`)}>
+            <button className="trade-manager__create" type="button" onClick={() => navigate(`/trade/${encodeURIComponent(conversation.tradePost.slug)}`)}>
               Xem tin
             </button>
           )}

@@ -8,13 +8,41 @@
 html,
 body,
 #app {
-  min-height: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Keep the native WebView shell still; each Page owns its content scroll. */
+html {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.zaui-routes {
+  height: 100%;
+  min-height: 0;
+}
+
+.zaui-routes .zaui-routes-item {
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.zaui-routes .zaui-page {
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overscroll-behavior-y: contain;
 }
 
 body {
   margin: 0;
   color: #132f3f;
   background: #ffffff;
+  overscroll-behavior-y: none;
 }
 
 #app {

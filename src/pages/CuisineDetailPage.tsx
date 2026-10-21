@@ -1,3 +1,4 @@
+import ContentReviews from "@/components/content-reviews";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 import { PhoneCall, MapPinned } from "lucide-react";
@@ -398,7 +399,7 @@ function CuisineDetailPage() {
         =================================== */}
         {item.reviews.length > 0 && (
           <section className="cuisine-detail__card">
-            <h2>Đánh giá &amp; phản hồi</h2>
+            <h2>Đánh giá được giới thiệu</h2>
 
             <ul className="cuisine-detail__reviews">
               {item.reviews.map((review) => (
@@ -434,6 +435,7 @@ function CuisineDetailPage() {
             <p className="cuisine-detail__paragraph">{item.tip}</p>
           </section>
         )}
+        <ContentReviews targetType="cuisine" targetId={item.id} title={item.name} />
       </main>
     </Page>
   );

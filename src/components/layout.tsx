@@ -1,3 +1,4 @@
+import MyContentReviewsPage from "@/pages/my-content-reviews";
 import { getSystemInfo } from "zmp-sdk";
 import {
   AnimationRoutes,
@@ -11,7 +12,9 @@ import AgricultureDetailPage from "@/pages/agriculture-detail";
 import AgriculturePage from "@/pages/agriculture";
 import AboutPage from "@/pages/about";
 import BusinessRegisterPage from "@/pages/business-register";
-import ChatPage from "@/pages/chat";
+import BusinessProfileManagePage from "@/pages/business-profile-manage";
+import BusinessProfilesPage from "@/pages/business-profiles";
+import BusinessProfileDetailPage from "@/pages/business-profile-detail";
 import AttractionDetailPage from "@/pages/attraction-detail";
 import AttractionsPage from "@/pages/attractions";
 import ContactDetailPage from "@/pages/contact-detail";
@@ -69,6 +72,9 @@ const Layout = () => {
               <TradeSaveProvider>
                 <AppBackHandler />
                 <AnimationRoutes>
+                  <Route path="/business/profile" element={<BusinessProfileManagePage />} />
+                  <Route path="/business-profiles" element={<BusinessProfilesPage />} />
+                  <Route path="/business-profiles/:id" element={<BusinessProfileDetailPage />} />
                   <Route path="/" element={<HomePage />}></Route>
                   <Route
                     path="/agriculture"
@@ -79,7 +85,6 @@ const Layout = () => {
                     element={<AgricultureDetailPage />}
                   ></Route>
                   <Route path="/about" element={<AboutPage />}></Route>
-                  <Route path="/chat" element={<ChatPage />}></Route>
                   <Route path="/temples" element={<TemplesPage />}></Route>
                   <Route
                     path="/temples/:id"
@@ -156,9 +161,9 @@ const Layout = () => {
                     path="/notifications"
                     element={<NotificationsPage />}
                   ></Route>
+                  <Route path="/reviews/me" element={<MyContentReviewsPage />} />
                   <Route path="/ocop" element={<OcopPage />}></Route>
-                  {/*                   <Route path="/ocop/:id" element={<OcopDetailPage />}></Route>
-                   */}{" "}
+                  <Route path="/ocop/:id" element={<OcopDetailPage />} />
                   <Route
                     path="/specialties"
                     element={<SpecialtiesPage />}

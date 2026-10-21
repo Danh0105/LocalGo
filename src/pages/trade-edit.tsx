@@ -1,3 +1,5 @@
+import TradePostPricingFields from "@/components/trade/trade-post-pricing-fields";
+import { getTradePostPurpose } from "@/lib/trade-post-presentation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Icon, Page, useLocation, useNavigate, useParams } from "zmp-ui";
 
@@ -56,6 +58,8 @@ function TradeEditPage() {
   const { categories, isLoading: isLoadingCategories } =
     useTradePostCategories();
   const [post, setPost] = useState<TradePostResponse | null>(null);
+  const purpose = getTradePostPurpose(user?.businessType, post?.purpose);
+  const isNonProfit = purpose === "NON_PROFIT";
   const [category, setCategory] = useState("");
   const [priceType, setPriceType] =
     useState<TradePostPriceType>("CONTACT");
@@ -83,7 +87,7 @@ function TradeEditPage() {
     [categories, category]
   );
   const requiresPromotion =
-    selectedCategory?.requiresPromotionDetails === true;
+    !isNonProfit && selectedCategory?.requiresPromotionDetails === true;
 
   useEffect(() => {
     if (status === "idle" || status === "error") setLoginOpen(true);
@@ -154,12 +158,18 @@ function TradeEditPage() {
     const promotionStartAt = toIsoDate(text(formData, "promotionStartAt"));
     const promotionEndAt = toIsoDate(text(formData, "promotionEndAt"));
     const expiresAtInput = text(formData, "expiresAt");
+    const eventEndAtInput = isNonProfit ? text(formData, "eventEndAt") : "";
+    const eventEndAt = toIsoDate(eventEndAtInput);
     const expiresAt = expiresAtInput
       ? expiryDateInputToIso(expiresAtInput)
       : null;
 
     setSaveError("");
     setExpiresAtError("");
+    if (eventEndAtInput && !eventEndAt) {
+      setSaveError("Thời gian kết thúc sự kiện không hợp lệ.");
+      return;
+    }
     if (
       expiresAtInput &&
       (!expiresAt || new Date(expiresAt).getTime() <= Date.now())
@@ -180,7 +190,7 @@ function TradeEditPage() {
       return;
     }
     const price = rawPrice ? Number(rawPrice) : null;
-    if (priceType === "FIXED" && (!price || price <= 0)) {
+    if (!isNonProfit && priceType === "FIXED" && (!price || price <= 0)) {
       setSaveError("Giá cố định phải lớn hơn 0.");
       return;
     }
@@ -208,9 +218,14 @@ function TradeEditPage() {
       title,
       summary,
       description,
-      priceType,
-      price: priceType === "FIXED" ? price : null,
-      priceLabel: text(formData, "priceLabel") || null,
+      purpose,
+      ...(isNonProfit
+        ? { eventEndAt }
+        : {
+            priceType,
+            price: priceType === "FIXED" ? price : null,
+            priceLabel: text(formData, "priceLabel") || null,
+          }),
       address,
       contactName,
       contactPhone,
@@ -332,17 +347,15 @@ function TradeEditPage() {
             </section>
 
             <section className="trade-flow__form-card trade-create__form-card">
-              <h2>Giá và địa điểm</h2>
-              <label>
-                <span className="trade-flow__label-text">Hình thức giá <i>*</i></span>
-                <select value={priceType} onChange={(event) => setPriceType(event.target.value as TradePostPriceType)}>
-                  <option value="CONTACT">Liên hệ báo giá</option>
-                  <option value="NEGOTIABLE">Thỏa thuận</option>
-                  <option value="FIXED">Giá cố định</option>
-                </select>
-              </label>
-              {priceType === "FIXED" && <label><span className="trade-flow__label-text">Giá (VNĐ) <i>*</i></span><input name="price" type="number" min="1" step="1000" defaultValue={post.price ?? ""} required /></label>}
-              <label><span className="trade-flow__label-text">Nhãn giá</span><input name="priceLabel" maxLength={100} defaultValue={post.priceLabel ?? ""} /></label>
+              <h2>{isNonProfit ? "Hoạt động và địa điểm" : "Giá và địa điểm"}</h2>
+              <TradePostPricingFields
+                nonProfit={isNonProfit}
+                priceType={priceType}
+                onPriceTypeChange={setPriceType}
+                price={post.price}
+                priceLabel={post.priceLabel}
+                eventEndAt={post.eventEndAt}
+              />
               <label><span className="trade-flow__label-text">Địa chỉ <i>*</i></span><textarea name="address" maxLength={300} rows={3} defaultValue={post.address} required /></label>
               <label>
                 <span className="trade-flow__label-text">Ngày hết hạn</span>

@@ -14,6 +14,13 @@ export interface AppNotification {
   createdAt: string;
 }
 
+export const TRADE_POST_UNAVAILABLE_MESSAGE =
+  "Tin đăng không còn tồn tại hoặc đã được gỡ.";
+
+export function isNotificationTradePostUnavailable(notification: AppNotification): boolean {
+  return notification.data?.tradePostAvailable === false;
+}
+
 export interface NotificationMeta {
   page: number;
   limit: number;
@@ -145,6 +152,17 @@ export function markNotificationRead(
     `/notifications/${encodeURIComponent(notificationId)}/read`,
     accessToken,
     { method: "PATCH" }
+  );
+}
+
+export function getNotification(
+  accessToken: string,
+  notificationId: string
+): Promise<AppNotification> {
+  return request<AppNotification>(
+    `/notifications/${encodeURIComponent(notificationId)}`,
+    accessToken,
+    { method: "GET" }
   );
 }
 

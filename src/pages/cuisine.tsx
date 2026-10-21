@@ -1,9 +1,16 @@
+import ContentSourceTabs, {
+  type ContentSource,
+} from "@/components/trade/content-source-tabs";
+import SectionTradePosts from "@/components/trade/section-trade-posts";
+import ContentRating from "@/components/content-reviews/content-rating";
+import { useContentRatings } from "@/hooks/use-content-ratings";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
 import { CuisineCategory, CuisineItem } from "@/data/cuisine";
 import { getCuisineItems } from "@/services/cuisine";
 import "../css/pages/cuisine.css";
+import "@/css/pages/section-directory.css";
 
 type CuisineFilter = "Tất cả" | CuisineCategory;
 
@@ -18,6 +25,7 @@ const filters: CuisineFilter[] = [
 
 function CuisinePage() {
   const navigate = useNavigate();
+  const [contentSource, setContentSource] = useState<ContentSource>("all");
   const [activeFilter, setActiveFilter] = useState<CuisineFilter>("Tất cả");
   const [items, setItems] = useState<CuisineItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,8 +56,10 @@ function CuisinePage() {
     };
   }, [activeFilter]);
 
+  const ratings = useContentRatings("cuisine", items);
+
   return (
-    <Page className="cuisine-page">
+    <Page className="cuisine-page section-directory-page">
       <header className="cuisine-header">
         <button
           className="cuisine-back"
@@ -73,57 +83,73 @@ function CuisinePage() {
           </p>
         </section>
 
-        <div className="cuisine-filters">
-          {filters.map((filter) => (
-            <button
-              className={`cuisine-filter${
-                filter === activeFilter ? " cuisine-filter--active" : ""
-              }`}
-              key={filter}
-              type="button"
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
-
-        {isLoading && <p className="cuisine-status">Đang tải dữ liệu...</p>}
-        {!isLoading && error && (
-          <p className="cuisine-status cuisine-status--error">{error}</p>
-        )}
-        {!isLoading && !error && items.length === 0 && (
-          <p className="cuisine-status">Chưa có món ăn trong nhóm này.</p>
-        )}
-
-        {!isLoading && !error && (
-          <section className="cuisine-list">
-            {items.map((item) => (
+        <ContentSourceTabs value={contentSource} onChange={setContentSource} />
+        <div
+          className="section-directory__editorial"
+          hidden={contentSource === "trade"}
+        >
+          <div className="cuisine-filters">
+            {filters.map((filter) => (
               <button
-                className="cuisine-card"
-                key={item.id}
+                className={`cuisine-filter${
+                  filter === activeFilter ? " cuisine-filter--active" : ""
+                }`}
+                key={filter}
                 type="button"
-                onClick={() => navigate(`/cuisine/${item.id}`)}
+                onClick={() => setActiveFilter(filter)}
               >
-                <div className="cuisine-card__image">
-                  <img src={item.image} alt="" />
-                </div>
-                <div className="cuisine-card__body">
-                  <span className="cuisine-card__category">
-                    {item.category}
-                  </span>
-                  <h2>{item.name}</h2>
-                  <p className="cuisine-card__price">
-                    <Icon icon="zi-note" />
-                    <span>{item.priceRange}</span>
-                  </p>
-                  <p className="cuisine-card__summary">{item.summary}</p>
-                </div>
-                <Icon className="cuisine-card__arrow" icon="zi-chevron-right" />
+                {filter}
               </button>
             ))}
-          </section>
-        )}
+          </div>
+
+          {isLoading && <p className="cuisine-status">Đang tải dữ liệu...</p>}
+          {!isLoading && error && (
+            <p className="cuisine-status cuisine-status--error">{error}</p>
+          )}
+          {!isLoading && !error && items.length === 0 && (
+            <p className="cuisine-status">Chưa có món ăn trong nhóm này.</p>
+          )}
+
+          {!isLoading && !error && (
+            <section className="cuisine-list">
+              {items.map((item) => (
+                <button
+                  className="cuisine-card"
+                  key={item.id}
+                  type="button"
+                  onClick={() => navigate(`/cuisine/${item.id}`)}
+                >
+                  <div className="cuisine-card__image">
+                    <img src={item.image} alt="" />
+                  </div>
+                  <div className="cuisine-card__body">
+                    <span className="cuisine-card__category">
+                      {item.category}
+                    </span>
+                    <h2>{item.name}</h2>
+                    <ContentRating rating={ratings[item.id]} />
+                    <p className="cuisine-card__price">
+                      <Icon icon="zi-note" />
+                      <span>{item.priceRange}</span>
+                    </p>
+                    <p className="cuisine-card__summary">{item.summary}</p>
+                  </div>
+                  <Icon
+                    className="cuisine-card__arrow"
+                    icon="zi-chevron-right"
+                  />
+                </button>
+              ))}
+            </section>
+          )}
+        </div>
+        <div
+          className="section-directory__market"
+          hidden={contentSource === "editorial"}
+        >
+          <SectionTradePosts section="cuisine" />
+        </div>
       </main>
     </Page>
   );

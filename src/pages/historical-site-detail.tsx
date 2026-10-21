@@ -1,3 +1,4 @@
+import ContentReviews from "@/components/content-reviews";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
@@ -131,6 +132,7 @@ function HistoricalSiteDetailPage() {
             ))}
           </ul>
         </section>
+        <ContentReviews targetType="historical-sites" targetId={site.id} title={site.name} />
       </main>
     </Page>
   );

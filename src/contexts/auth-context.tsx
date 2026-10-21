@@ -11,6 +11,7 @@ import {
   authorize,
   getAccessToken as getZaloAccessToken,
 } from "zmp-sdk";
+import { clearBusinessProfileCache } from "@/lib/business-profile-cache";
 
 import {
   AuthRequestError,
@@ -66,6 +67,7 @@ function writeSession(tokens: AuthTokens): void {
 }
 
 function clearSession(): void {
+  clearBusinessProfileCache();
   try {
     window.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
     window.sessionStorage.removeItem(REFRESH_TOKEN_KEY);

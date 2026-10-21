@@ -13,7 +13,7 @@ export interface SpecialtyBuyPlace {
   email?: string | null;
 }
 
-export interface Specialty {
+export interface Specialty extends ContentImageFields {
   id: string;
   name: string;
   category: SpecialtyCategory;

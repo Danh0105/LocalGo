@@ -1,3 +1,5 @@
+import ContentRating from "@/components/content-reviews/content-rating";
+import { useContentRatings } from "@/hooks/use-content-ratings";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
@@ -48,6 +50,8 @@ function HistoricalSitesPage() {
       isActive = false;
     };
   }, [activeFilter]);
+
+  const ratings = useContentRatings("historical-sites", sites);
 
   return (
     <Page className="historical-sites-page">
@@ -115,6 +119,7 @@ function HistoricalSitesPage() {
                     {site.rank}
                   </span>
                   <h2>{site.name}</h2>
+                  <ContentRating rating={ratings[site.id]} />
                   <p className="historical-site-card__address">
                     <Icon icon="zi-location" />
                     <span>{site.address}</span>

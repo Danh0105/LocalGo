@@ -1,3 +1,5 @@
+import ContentRating from "@/components/content-reviews/content-rating";
+import { useContentRatings } from "@/hooks/use-content-ratings";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
@@ -51,6 +53,8 @@ function ExperienceToursPage() {
       isActive = false;
     };
   }, [activeFilter]);
+
+  const ratings = useContentRatings("experience-tours", tours);
 
   return (
     <Page className="experience-tours-page">
@@ -125,6 +129,7 @@ function ExperienceToursPage() {
                     {tour.category}
                   </span>
                   <h2>{tour.name}</h2>
+                  <ContentRating rating={ratings[tour.id]} />
                   <p className="experience-tour-card__duration">
                     <Icon icon="zi-clock-1" />
                     <span>{tour.duration}</span>

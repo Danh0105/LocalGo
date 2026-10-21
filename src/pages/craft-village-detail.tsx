@@ -1,3 +1,4 @@
+import ContentReviews from "@/components/content-reviews";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
@@ -144,6 +145,7 @@ function CraftVillageDetailPage() {
             {village.visitorNote}
           </p>
         </section>
+        <ContentReviews targetType="craft-villages" targetId={village.id} title={village.name} />
       </main>
     </Page>
   );

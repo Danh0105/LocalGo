@@ -1,3 +1,4 @@
+import ContentReviews from "@/components/content-reviews";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 import { callPhone, composeEmail } from "@/utils/contact";
@@ -301,6 +302,7 @@ function SpecialtyDetailPage() {
             </ul>
           )}
         </section>
+        <ContentReviews targetType="specialties" targetId={specialty.id} title={specialty.name} />
       </main>
     </Page>
   );

@@ -1,3 +1,5 @@
+import { useTradeListLifecycle } from "@/hooks/use-trade-list-lifecycle";
+import { formatTradePostPrice as postPrice } from "@/lib/trade-post-presentation";
 import { TouchEvent, useEffect, useRef, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
@@ -22,20 +24,6 @@ function postImage(post: SavedTradePostResponse): string {
   );
 }
 
-function postPrice(post: SavedTradePostResponse): string {
-  const extra = post as SavedTradePostResponse & { isNonProfit?: boolean };
-  if (extra.isNonProfit || post.priceType === ("NON_PROFIT" as never)) {
-    return "Phi lợi nhuận";
-  }
-  if (post.priceLabel) return post.priceLabel;
-  if (post.priceType === "NEGOTIABLE") return "Thỏa thuận";
-  if (post.priceType === "CONTACT") return "Liên hệ báo giá";
-  if (!post.price) return "Liên hệ";
-  const price = Number(post.price);
-  return Number.isFinite(price)
-    ? `${new Intl.NumberFormat("vi-VN").format(price)}đ`
-    : "Liên hệ";
-}
 
 function savedAgo(value: string): string {
   const timestamp = new Date(value).getTime();
@@ -70,6 +58,7 @@ function SavedTradePostsPage() {
   const [loadError, setLoadError] = useState("");
   const [loginError, setLoginError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
+  const listPathname = useTradeListLifecycle(setPosts);
   const touchStartY = useRef<number | null>(null);
   const loadMoreTarget = useRef<HTMLDivElement | null>(null);
 
@@ -110,7 +99,7 @@ function SavedTradePostsPage() {
       active = false;
       controller.abort();
     };
-  }, [accessToken, reloadKey, status, syncTradePosts]);
+  }, [listPathname, accessToken, reloadKey, status, syncTradePosts]);
 
   const loadMore = async () => {
     if (!accessToken || isLoading || isLoadingMore || page >= totalPages) return;
@@ -322,7 +311,7 @@ function SavedTradePostsPage() {
                     className="trade-saved-card__open"
                     type="button"
                     disabled={!post.isAvailable}
-                    onClick={() => navigate(`/trade/${post.slug || post.id}`)}
+                    onClick={() => navigate(`/trade/${encodeURIComponent(post.slug)}`)}
                   >
                     <span className="trade-saved-card__media">
                       <img

@@ -1,6 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { useState } from "react";
+import { useAuthenticatedRequest } from "@/hooks/use-authenticated-request";
+import { getMyBusinessProfile } from "@/services/business-profiles";
 
 import { AuthProvider, useCurrentUser } from "./auth-context";
 
@@ -72,7 +75,14 @@ function AuthProbe({ requestPermission }: { requestPermission?: boolean }) {
   );
 }
 
+function AuthenticatedProfileProbe() {
+  const request = useAuthenticatedRequest();
+  const [message, setMessage] = useState("");
+  return <><button type="button" onClick={() => void request((token) => getMyBusinessProfile(token, "localgo-user-1")).then((result) => setMessage(result.businessName)).catch(() => setMessage("Tải hồ sơ thất bại"))}>Tải hồ sơ</button><p>{message}</p></>;
+}
+
 describe("AuthProvider Zalo login", () => {
+  afterEach(() => vi.unstubAllGlobals());
   beforeEach(() => {
     window.sessionStorage.clear();
     vi.clearAllMocks();
@@ -137,5 +147,26 @@ describe("AuthProvider Zalo login", () => {
     await waitFor(() => expect(screen.getByText("authenticated")).toBeInTheDocument());
     expect(authorizeMock).not.toHaveBeenCalled();
     expect(getZaloAccessTokenMock).toHaveBeenCalledOnce();
+  });
+
+  it("refreshes an expired profile API token with the existing auth session and stays authenticated", async () => {
+    window.sessionStorage.setItem("localgo.auth.access-token", "test-only-old");
+    window.sessionStorage.setItem("localgo.auth.refresh-token", "test-only-refresh");
+    refreshAuthTokenMock.mockResolvedValue({ accessToken: "test-only-new", refreshToken: "test-only-rotated", expiresAt: "2026-11-20T00:00:00Z" });
+    const fetch = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ success: false, error: { code: "UNAUTHORIZED", message: "Expired" } }), { status: 401, headers: { "Content-Type": "application/json" } }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ success: true, data: { businessName: "Cơ sở" } }), { headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetch);
+    render(<AuthProvider><AuthProbe /><AuthenticatedProfileProbe /></AuthProvider>);
+    await userEvent.setup().click(screen.getByRole("button", { name: "Đăng nhập" }));
+    await screen.findByText("authenticated");
+    await userEvent.setup().click(screen.getByRole("button", { name: "Tải hồ sơ" }));
+    await screen.findByText("Cơ sở");
+    expect(refreshAuthTokenMock).toHaveBeenCalledWith("test-only-refresh");
+    expect(fetch.mock.calls[1][1].headers.Authorization).toBe("Bearer test-only-new");
+    expect(window.sessionStorage.getItem("localgo.auth.access-token")).toBe("test-only-new");
+    expect(screen.getByText("authenticated")).toBeInTheDocument();
+    expect(loginWithZaloMock).not.toHaveBeenCalled();
+    expect(authorizeMock).not.toHaveBeenCalled();
   });
 });

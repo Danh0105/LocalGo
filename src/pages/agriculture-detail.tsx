@@ -1,3 +1,4 @@
+import ContentReviews from "@/components/content-reviews";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
@@ -140,6 +141,7 @@ function AgricultureDetailPage() {
           <h2>Hỗ trợ người dân</h2>
           <p className="agriculture-detail__paragraph">{item.support}</p>
         </section>
+        <ContentReviews targetType="agriculture" targetId={item.id} title={item.name} />
       </main>
     </Page>
   );

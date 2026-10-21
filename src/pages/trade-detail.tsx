@@ -1,8 +1,10 @@
+import { formatTradePostPrice as postPrice } from "@/lib/trade-post-presentation";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Icon, Page, useLocation, useNavigate, useParams } from "zmp-ui";
 
 import PreviewableImage from "@/components/previewable-image";
+import TradeReviewCustomerReplies from "@/components/trade/trade-review-customer-replies";
 import { useCurrentUser } from "@/contexts/auth-context";
 import { useTradeSaves } from "@/contexts/trade-save-context";
 import { AuthRequestError } from "@/services/auth";
@@ -38,16 +40,6 @@ const emptyReviewSummary: TradeReviewSummary = {
   counts: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 },
 };
 
-function postPrice(post: TradePostResponse): string {
-  if (post.priceLabel) return post.priceLabel;
-  if (post.priceType === "NEGOTIABLE") return "Thỏa thuận";
-  if (post.priceType === "CONTACT") return "Liên hệ báo giá";
-  if (!post.price) return "Liên hệ";
-  const price = Number(post.price);
-  return Number.isFinite(price)
-    ? `${new Intl.NumberFormat("vi-VN").format(price)}đ`
-    : "Liên hệ";
-}
 
 function publishedDate(post: TradePostResponse): string {
   const value = post.publishedAt || post.createdAt;
@@ -70,6 +62,7 @@ function TradeDetailPage() {
     useState<TradeReviewSummary>(emptyReviewSummary);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const [notFound, setNotFound] = useState(false);
   const [reviewLoadError, setReviewLoadError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
   const [reviewOpen, setReviewOpen] = useState(false);
@@ -122,6 +115,8 @@ function TradeDetailPage() {
     }
 
     setIsLoading(true);
+    setNotFound(false);
+    setPost(null);
     setImageViewerOpen(false);
     setLoadError("");
     setReviewLoadError("");
@@ -160,6 +155,7 @@ function TradeDetailPage() {
       } catch (error: unknown) {
         if (!active) return;
         setPost(null);
+        setNotFound(error instanceof TradePostRequestError && error.status === 404);
         setLoadError(
           error instanceof TradePostRequestError
             ? error.message
@@ -366,11 +362,17 @@ function TradeDetailPage() {
           <Icon icon="zi-note" />
           <strong>Không thể hiển thị tin giao thương</strong>
           <span>
-            {loadError || "Tin có thể đã hết hạn hoặc được người đăng gỡ bỏ."}
+            {notFound ? "Tin đăng không còn tồn tại hoặc đã được gỡ." : loadError || "Không thể tải tin giao thương."}
           </span>
-          <button type="button" onClick={() => setReloadKey((value) => value + 1)}>
-            Thử lại
-          </button>
+          {notFound ? (
+            <button type="button" onClick={() => navigate("/trade", { replace: true })}>
+              Quay lại danh sách
+            </button>
+          ) : (
+            <button type="button" onClick={() => setReloadKey((value) => value + 1)}>
+              Thử lại
+            </button>
+          )}
         </div>
       </Page>
     );
@@ -551,10 +553,14 @@ function TradeDetailPage() {
               <Icon icon="zi-bookmark" />
               {saveState.saveCount} người đã lưu
             </span>
-            <span>
+            {post.purpose !== "NON_PROFIT" && <span>
               <Icon icon="zi-note" />
               {priceTypeLabels[post.priceType]}
-            </span>
+            </span>}
+            {post.purpose === "NON_PROFIT" && post.eventEndAt && <span>
+              <Icon icon="zi-calendar" />
+              Kết thúc sự kiện: {new Date(post.eventEndAt).toLocaleString("vi-VN")}
+            </span>}
           </div>
         </section>
 
@@ -691,6 +697,19 @@ function TradeDetailPage() {
                       <p>{review.replyContent}</p>
                     </div>
                   )}
+                  <TradeReviewCustomerReplies
+                    key={review.id}
+                    review={review}
+                    ownerId={post.ownerId}
+                    onReply={(reply) => setReviews((current) => current.map((item) =>
+                      item.id === review.id
+                        ? { ...item, customerReplies: [
+                            ...(item.customerReplies ?? []).filter((existing) => existing.id !== reply.id),
+                            reply,
+                          ] }
+                        : item
+                    ))}
+                  />
                 </div>
               </article>
             ))}

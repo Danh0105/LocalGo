@@ -1,3 +1,4 @@
+import { isTradePostAvailable, subscribeTradePostInvalidation } from "@/lib/trade-post-availability";
 import {
   ReactNode,
   createContext,
@@ -32,7 +33,7 @@ export interface TradeSaveState {
 
 interface TradeSaveContextValue {
   getSaveState: (post: Pick<TradePostResponse, "id" | "isSaved" | "saveCount">) => TradeSaveState;
-  syncTradePosts: (posts: Array<Pick<TradePostResponse, "id" | "isSaved" | "saveCount">>) => void;
+  syncTradePosts: (posts: Array<Pick<TradePostResponse, "id" | "slug" | "isSaved" | "saveCount">>) => void;
   toggleSave: (
     post: Pick<TradePostResponse, "id" | "slug" | "isSaved" | "saveCount">,
     accessTokenOverride?: string
@@ -58,6 +59,21 @@ export function TradeSaveProvider({ children }: { children: ReactNode }) {
   const { openSnackbar } = useSnackbar();
   const [states, setStates] = useState<Record<string, TradeSaveState>>({});
   const statesRef = useRef(states);
+  const knownPosts = useRef(new Map<string, { slug: string }>());
+
+  useEffect(() => subscribeTradePostInvalidation(() => {
+    setStates((current) => {
+      const next = { ...current };
+      for (const [id, post] of knownPosts.current) {
+        if (!isTradePostAvailable(post)) {
+          delete next[id];
+          knownPosts.current.delete(id);
+        }
+      }
+      statesRef.current = next;
+      return next;
+    });
+  }), []);
 
   useEffect(() => {
     statesRef.current = states;
@@ -75,10 +91,12 @@ export function TradeSaveProvider({ children }: { children: ReactNode }) {
   );
 
   const syncTradePosts = useCallback(
-    (posts: Array<Pick<TradePostResponse, "id" | "isSaved" | "saveCount">>) => {
+    (posts: Array<Pick<TradePostResponse, "id" | "slug" | "isSaved" | "saveCount">>) => {
       setStates((current) => {
         let next = current;
         for (const post of posts) {
+          if (!isTradePostAvailable(post)) continue;
+          knownPosts.current.set(post.id, { slug: post.slug });
           const known = current[post.id];
           if (known?.isSaving) continue;
           const incoming = fromPost(post);

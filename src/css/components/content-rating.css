@@ -1,0 +1,19 @@
+.content-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 7px 0;
+  color: #47738a;
+  font-size: 12px;
+}
+.content-rating > span {
+  color: #f5af25;
+  font-size: 15px;
+}
+.content-rating strong {
+  color: #1e668f;
+  font-weight: 800;
+}
+.content-rating small {
+  font-size: 11px;
+}

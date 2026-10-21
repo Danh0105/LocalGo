@@ -8,7 +8,7 @@ import HistoricalSiteDetailPage from "./historical-site-detail";
 import AgricultureDetailPage from "./agriculture-detail";
 import OcopDetailPage from "./ocop-detail";
 import CraftVillageDetailPage from "./craft-village-detail";
-import CuisineDetailPage from "./cuisine-detail";
+import CuisineDetailPage from "./CuisineDetailPage";
 import FestivalDetailPage from "./festival-detail";
 import ExperienceTourDetailPage from "./experience-tour-detail";
 import MapPlaceDetailPage from "./map-place-detail";
@@ -16,6 +16,7 @@ import ContactDetailPage from "./contact-detail";
 import NewsDetailPage from "./news-detail";
 
 const { openOutAppMock } = vi.hoisted(() => ({ openOutAppMock: vi.fn() }));
+vi.mock("@/components/content-reviews", () => ({ default: () => null }));
 vi.mock("zmp-sdk/apis", () => ({ openOutApp: openOutAppMock, openWebview: vi.fn() }));
 vi.mock("zmp-ui", () => ({
   Page: ({ children }: { children: ReactNode }) => <div>{children}</div>,

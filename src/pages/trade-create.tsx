@@ -1,3 +1,5 @@
+import TradePostPricingFields from "@/components/trade/trade-post-pricing-fields";
+import { getTradePostPurpose } from "@/lib/trade-post-presentation";
 import {
   ChangeEvent,
   FormEvent,
@@ -75,6 +77,8 @@ function TradeCreatePage() {
   } = useTradePostCategories();
   const [category, setCategory] = useState("");
   const [priceType, setPriceType] = useState<TradePostPriceType>("CONTACT");
+  const purpose = getTradePostPurpose(user?.businessType);
+  const isNonProfit = purpose === "NON_PROFIT";
   const [promotionPercentValue, setPromotionPercentValue] = useState("");
   const [promotionStartAtValue, setPromotionStartAtValue] = useState("");
   const [promotionEndAtValue, setPromotionEndAtValue] = useState("");
@@ -101,7 +105,7 @@ function TradeCreatePage() {
     [categories, category]
   );
   const requiresPromotionDetails =
-    selectedCategory?.requiresPromotionDetails === true;
+    !isNonProfit && selectedCategory?.requiresPromotionDetails === true;
 
   useEffect(() => {
     if (authStatus === "idle") {
@@ -287,6 +291,8 @@ function TradeCreatePage() {
     const promotionStartAt = toIsoDate(promotionStartAtValue);
     const promotionEndAt = toIsoDate(promotionEndAtValue);
     const expiresAtInput = text(formData, "expiresAt");
+    const eventEndAtInput = isNonProfit ? text(formData, "eventEndAt") : "";
+    const eventEndAt = toIsoDate(eventEndAtInput);
     const expiresAt = expiresAtInput
       ? expiryDateInputToIso(expiresAtInput)
       : null;
@@ -294,6 +300,11 @@ function TradeCreatePage() {
 
     setSubmitError("");
     setExpiresAtError("");
+
+    if (eventEndAtInput && !eventEndAt) {
+      setSubmitError("Thời gian kết thúc sự kiện không hợp lệ.");
+      return;
+    }
 
     if (expiresAtInput && (!expiresAt || new Date(expiresAt).getTime() <= Date.now())) {
       setExpiresAtError("Ngày hết hạn phải là một ngày trong tương lai.");
@@ -335,7 +346,7 @@ function TradeCreatePage() {
     }
 
     const price = rawPrice ? Number(rawPrice) : undefined;
-    if (priceType === "FIXED" && (!price || price <= 0)) {
+    if (!isNonProfit && priceType === "FIXED" && (!price || price <= 0)) {
       setSubmitError("Giá cố định phải lớn hơn 0.");
       return;
     }
@@ -387,9 +398,14 @@ function TradeCreatePage() {
         title,
         summary,
         description,
-        priceType,
-        ...(priceType === "FIXED" && price !== undefined ? { price } : {}),
-        ...(priceLabel ? { priceLabel } : {}),
+        purpose,
+        ...(isNonProfit
+          ? (eventEndAt ? { eventEndAt } : {})
+          : {
+              priceType,
+              ...(priceType === "FIXED" && price !== undefined ? { price } : {}),
+              ...(priceLabel ? { priceLabel } : {}),
+            }),
         address,
         contactName,
         contactPhone,
@@ -749,34 +765,15 @@ function TradeCreatePage() {
             </section>
 
             <section className="trade-flow__form-card trade-create__form-card">
-              <h2>Giá và địa điểm</h2>
+              <h2>{isNonProfit ? "Hoạt động và địa điểm" : "Giá và địa điểm"}</h2>
               <p className="trade-create__section-description">
-                Cung cấp mức giá và địa chỉ để người xem dễ ra quyết định.
+                {isNonProfit ? "Thông tin địa điểm và thời gian của hoạt động cộng đồng." : "Cung cấp mức giá và địa chỉ để người xem dễ ra quyết định."}
               </p>
-              <label>
-                <span className="trade-flow__label-text">
-                  Hình thức giá <i aria-hidden="true">*</i>
-                </span>
-                <select name="priceType" value={priceType} onChange={(event) => setPriceType(event.target.value as TradePostPriceType)}>
-                  <option value="CONTACT">Liên hệ báo giá</option>
-                  <option value="NEGOTIABLE">Thỏa thuận</option>
-                  <option value="FIXED">Giá cố định</option>
-                </select>
-              </label>
-              {priceType === "FIXED" && (
-                <label>
-                  <span className="trade-flow__label-text">
-                    Giá (VNĐ) <i aria-hidden="true">*</i>
-                  </span>
-                  <input name="price" type="number" min="1" step="1000" inputMode="numeric" placeholder="Ví dụ: 500000" required />
-                </label>
-              )}
-              <label>
-                <span className="trade-flow__label-text">
-                  Nhãn giá <small>Không bắt buộc</small>
-                </span>
-                <input name="priceLabel" maxLength={100} placeholder="Ví dụ: Liên hệ báo giá" />
-              </label>
+              <TradePostPricingFields
+                nonProfit={isNonProfit}
+                priceType={priceType}
+                onPriceTypeChange={setPriceType}
+              />
               <label>
                 <span className="trade-flow__label-text">
                   Địa chỉ <i aria-hidden="true">*</i>

@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
 import SearchPopup from "@/components/search-popup";
+import BusinessProfileMenu from "@/components/business-profile-menu";
 import NotificationBell from "@/components/notification-bell";
 import ZaloAuthDialog from "@/components/zalo-auth-dialog";
 import { requestAppBack } from "@/components/app-back-handler";
@@ -22,7 +23,6 @@ import map from "@/static/map.png";
 import phone from "@/static/phone.png";
 import pottery from "@/static/pottery.png";
 import restaurant from "@/static/restaurant.png";
-import robot from "@/static/robot.png";
 import temple from "@/static/temple.png";
 import tractor from "@/static/tractor.png";
 import gps from "@/static/gps.png";
@@ -37,6 +37,7 @@ const featuredItems = [
 ];
 
 const menuItems = [
+  { label: "Cơ sở địa phương", image: restaurant, path: "/business-profiles" },
   { label: "Di tích lịch sử", image: historical, path: "/historical-sites" },
   { label: "Nông nghiệp", image: tractor, path: "/agriculture" },
   { label: "Làng nghề", image: pottery, path: "/craft-villages" },
@@ -44,7 +45,6 @@ const menuItems = [
   { label: "Lễ hội", image: dragonBoat, path: "/festivals" },
   { label: "Tour\ntrải nghiệm", image: tourism, path: "/experience-tours" },
   { label: "Bản đồ", image: map, path: "/map" },
-  { label: "AI\nHướng dẫn viên", image: robot, path: "/chat" },
   { label: "Tin tức", image: news, path: "/news" },
   { label: "Liên hệ", image: phone, path: "/contacts" },
   { label: "Phản hồi", image: customerService, path: "/feedback" },
@@ -99,6 +99,13 @@ function HomePage() {
   };
 
   const requireAuthentication = (action: PendingHomeAction) => {
+    // TEMP: Skip the Zalo login gate for browser testing in development.
+    // Remove this block to require login again during local development.
+    if (import.meta.env.DEV) {
+      completeAction(action);
+      return;
+    }
+
     if (status === "authenticated" && user && accessToken) {
       completeAction(action);
       return;
@@ -151,7 +158,7 @@ function HomePage() {
             className="search-pill"
             type="button"
             aria-label="Tìm kiếm"
-            onClick={() => requireAuthentication({ type: "search" })}
+            onClick={() => setSearchOpen(true)}
           >
             <span>Tìm kiếm</span>
             <Icon icon="zi-search" />
@@ -181,6 +188,7 @@ function HomePage() {
           aria-label="Danh mục tiện ích"
           style={{ "--menu-watermark": `url(${emblem})` } as CSSProperties}
         >
+          <BusinessProfileMenu />
           {menuItems.map((item) => (
             <button
               className="menu-item"
@@ -189,7 +197,7 @@ function HomePage() {
               onClick={() =>
                 "path" in item &&
                 item.path &&
-                requireAuthentication({ type: "navigate", path: item.path })
+                (item.path === "/business-profiles" ? navigate(item.path) : requireAuthentication({ type: "navigate", path: item.path }))
               }
             >
               <div className="menu-item__image">

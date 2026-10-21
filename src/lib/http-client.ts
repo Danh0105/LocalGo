@@ -1,5 +1,10 @@
 import { API_CONFIG, getApiBaseUrl } from "@/config/api";
-import type { ApiError, ApiResponse } from "@/types/api";
+import type {
+  ApiError,
+  ApiResponse,
+  ApiSuccess,
+  PaginationMeta,
+} from "@/types/api";
 
 export class ApiRequestError extends Error {
   readonly status: number;
@@ -45,17 +50,19 @@ async function readJson(response: Response): Promise<unknown> {
   }
 }
 
-export async function apiRequest<T>(
+async function requestEnvelope<T>(
   path: string,
   options: ApiRequestOptions = {},
-): Promise<T> {
+): Promise<ApiSuccess<T> & { meta?: PaginationMeta }> {
   const controller = new AbortController();
   const timeoutMs = options.timeoutMs ?? API_CONFIG.requestTimeoutMs;
   let didTimeout = false;
 
   const handleExternalAbort = () => controller.abort();
   if (options.signal?.aborted) controller.abort();
-  options.signal?.addEventListener("abort", handleExternalAbort, { once: true });
+  options.signal?.addEventListener("abort", handleExternalAbort, {
+    once: true,
+  });
 
   const timeoutId = window.setTimeout(() => {
     didTimeout = true;
@@ -76,7 +83,7 @@ export async function apiRequest<T>(
       signal: controller.signal,
     });
 
-    if (response.status === 204) return undefined as T;
+    if (response.status === 204) return { success: true, data: undefined as T };
 
     const body = await readJson(response);
     if (!response.ok || isApiError(body)) {
@@ -102,7 +109,7 @@ export async function apiRequest<T>(
       });
     }
 
-    return envelope.data;
+    return envelope;
   } catch (error) {
     if (error instanceof ApiRequestError) throw error;
     if (controller.signal.aborted) {
@@ -125,6 +132,26 @@ export async function apiRequest<T>(
     window.clearTimeout(timeoutId);
     options.signal?.removeEventListener("abort", handleExternalAbort);
   }
+}
+
+export async function apiRequest<T>(
+  path: string,
+  options: ApiRequestOptions = {},
+): Promise<T> {
+  return (await requestEnvelope<T>(path, options)).data;
+}
+
+export async function apiPaginatedRequest<T>(
+  path: string,
+  options: ApiRequestOptions = {},
+): Promise<{ items: T[]; meta: PaginationMeta }> {
+  const response = await requestEnvelope<T[]>(path, options);
+  if (!Array.isArray(response.data) || !response.meta) {
+    throw new ApiRequestError("Dữ liệu phân trang từ máy chủ không hợp lệ.", {
+      code: "INVALID_RESPONSE",
+    });
+  }
+  return { items: response.data, meta: response.meta };
 }
 
 export function getApiErrorMessage(error: unknown): string {

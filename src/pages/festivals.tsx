@@ -1,3 +1,5 @@
+import ContentRating from "@/components/content-reviews/content-rating";
+import { useContentRatings } from "@/hooks/use-content-ratings";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
@@ -46,6 +48,8 @@ function FestivalsPage() {
       isActive = false;
     };
   }, [activeFilter]);
+
+  const ratings = useContentRatings("festivals", festivals);
 
   return (
     <Page className="festivals-page">
@@ -112,6 +116,7 @@ function FestivalsPage() {
                     {festival.category}
                   </span>
                   <h2>{festival.name}</h2>
+                  <ContentRating rating={ratings[festival.id]} />
                   <p className="festival-card__time">
                     <Icon icon="zi-calendar" />
                     <span>{festival.time}</span>

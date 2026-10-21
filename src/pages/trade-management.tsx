@@ -6,6 +6,7 @@ import {
   TradeLoginRequiredDialog,
 } from "@/components/trade-access-dialogs";
 import NotificationBell from "@/components/notification-bell";
+import TradeReviewCustomerReplies from "@/components/trade/trade-review-customer-replies";
 import { useCurrentUser } from "@/contexts/auth-context";
 import { useNotifications } from "@/contexts/notification-context";
 import {
@@ -509,6 +510,7 @@ function TradeManagementPage() {
           <h1>Quản lý giao thương</h1>
         </div>
         <NotificationBell className="trade-manager__notification-bell" />
+        {user?.role === "BUSINESS" && <button className="trade-manager__create" type="button" onClick={() => navigate("/business/profile")}>Hồ sơ cơ sở</button>}
         <button
           className="trade-manager__create"
           type="button"
@@ -682,7 +684,7 @@ function TradeManagementPage() {
                 <button
                   type="button"
                   key={post.tradePostId}
-                  onClick={() => navigate(`/trade/${post.slug}`)}
+                  onClick={() => navigate(`/trade/${encodeURIComponent(post.slug)}`)}
                 >
                   <b>{index + 1}</b>
                   <img src={post.thumbnailUrl || restaurant} alt="" />
@@ -751,7 +753,7 @@ function TradeManagementPage() {
                     )}
                     <div className="trade-manager__post-actions">
                       {post.status === "PUBLISHED" && (
-                        <button type="button" onClick={() => navigate(`/trade/${post.slug}`)}>Xem tin</button>
+                        <button type="button" onClick={() => navigate(`/trade/${encodeURIComponent(post.slug)}`)}>Xem tin</button>
                       )}
                       {post.status !== "PENDING" && post.status !== "ARCHIVED" && (
                         <button type="button" onClick={() => navigate(`/trade/manage/posts/${post.id}/edit`)}>Chỉnh sửa</button>
@@ -822,6 +824,7 @@ function TradeManagementPage() {
                       Phản hồi đánh giá
                     </button>
                   )}
+                  <TradeReviewCustomerReplies review={review} readOnly />
                   {replyingReviewId === review.id && (
                     <form className="trade-manager__reply-form" onSubmit={saveReply}>
                       <textarea
@@ -897,7 +900,7 @@ function TradeManagementPage() {
                         <strong>{selectedConversation.counterpart.displayName}</strong>
                         <span>{selectedConversation.tradePost.title}</span>
                       </div>
-                      <button type="button" onClick={() => navigate(`/trade/${selectedConversation.tradePost.slug}`)}>Xem tin</button>
+                      <button type="button" onClick={() => navigate(`/trade/${encodeURIComponent(selectedConversation.tradePost.slug)}`)}>Xem tin</button>
                     </header>
                     <div className="trade-manager__message-list">
                       {isMessagesLoading && <p>Đang tải tin nhắn...</p>}

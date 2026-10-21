@@ -1,4 +1,8 @@
+import { invalidateTradePost, isTradePostAvailable } from "@/lib/trade-post-availability";
+import type { TradePostPurpose } from "@/services/business-applications";
+
 export type TradePostCategory = string;
+export type TradePostSection = "cuisine" | "temples" | "specialties" | "agriculture";
 export type TradePostPriceType = "FIXED" | "NEGOTIABLE" | "CONTACT";
 export type TradePostStatus =
   | "DRAFT"
@@ -10,11 +14,13 @@ export type TradePostStatus =
   | "ARCHIVED";
 
 export interface TradePostPayload {
+  purpose?: TradePostPurpose;
+  eventEndAt?: string | null;
   category: TradePostCategory;
   title: string;
   summary: string;
   description: string;
-  priceType: TradePostPriceType;
+  priceType?: TradePostPriceType;
   price?: number | null;
   priceLabel?: string | null;
   address: string;
@@ -57,6 +63,8 @@ export interface TradePostOwner {
 }
 
 export interface TradePostResponse {
+  purpose?: TradePostPurpose;
+  eventEndAt?: string | null;
   id: string;
   slug: string;
   ownerId: string;
@@ -116,6 +124,7 @@ export type TradePostSortBy =
   | "popular";
 
 export interface TradePostQuery {
+  section?: TradePostSection;
   page?: number;
   limit?: number;
   category?: TradePostCategory;
@@ -147,6 +156,19 @@ export interface TradeReviewImage {
   sortOrder: number;
 }
 
+export interface TradeReviewCustomerReply {
+  id: string;
+  reviewId: string;
+  userId: string;
+  content: string;
+  createdAt: string;
+  author: {
+    id: string;
+    displayName: string;
+    avatarUrl: string | null;
+  } | null;
+}
+
 export interface TradeReviewResponse {
   id: string;
   tradePostId: string;
@@ -156,6 +178,7 @@ export interface TradeReviewResponse {
   status: "PENDING" | "PUBLISHED" | "HIDDEN";
   replyContent: string | null;
   repliedAt: string | null;
+  customerReplies?: TradeReviewCustomerReply[];
   createdAt: string;
   updatedAt: string;
   images: TradeReviewImage[];
@@ -392,6 +415,7 @@ function normalizeTradePost(post: TradePostResponse): TradePostResponse {
 function normalizeTradeReview(review: TradeReviewResponse): TradeReviewResponse {
   return {
     ...review,
+    customerReplies: review.customerReplies?.map(normalizeTradeReviewCustomerReply),
     images: review.images.map((image) => ({
       ...image,
       url: resolveTradeMediaUrl(image.url) ?? image.url,
@@ -402,6 +426,17 @@ function normalizeTradeReview(review: TradeReviewResponse): TradeReviewResponse 
           ...review.reviewer,
           avatarUrl: resolveTradeMediaUrl(review.reviewer.avatarUrl),
         }
+      : null,
+  };
+}
+
+function normalizeTradeReviewCustomerReply(
+  reply: TradeReviewCustomerReply
+): TradeReviewCustomerReply {
+  return {
+    ...reply,
+    author: reply.author
+      ? { ...reply.author, avatarUrl: resolveTradeMediaUrl(reply.author.avatarUrl) }
       : null,
   };
 }
@@ -519,6 +554,7 @@ export async function getTradePosts(
   accessToken?: string | null
 ): Promise<TradePostsPage> {
   const searchParams = new URLSearchParams();
+  if (query.section) searchParams.set("section", query.section);
   if (query.page !== undefined) searchParams.set("page", String(query.page));
   if (query.limit !== undefined) searchParams.set("limit", String(query.limit));
   if (query.category) searchParams.set("category", query.category);
@@ -543,7 +579,7 @@ export async function getTradePosts(
   const fallbackPage = query.page ?? 1;
   const fallbackLimit = query.limit ?? 20;
   return {
-    items: body.data.map(normalizeTradePost),
+    items: body.data.filter(isTradePostAvailable).map(normalizeTradePost),
     meta: body.meta ?? {
       page: fallbackPage,
       limit: fallbackLimit,
@@ -649,16 +685,23 @@ export function getMyTradeAnalytics(
 }
 
 export async function getTradePostDetail(
-  idOrSlug: string,
+  slug: string,
   signal?: AbortSignal,
   accessToken?: string | null
 ): Promise<TradePostResponse> {
-  const post = await publicRequest<TradePostResponse>(
-    `/trade-posts/${encodeURIComponent(idOrSlug)}`,
-    signal,
-    accessToken
-  );
-  return normalizeTradePost(post);
+  try {
+    const post = await publicRequest<TradePostResponse>(
+      `/trade-posts/${encodeURIComponent(slug)}`,
+      signal,
+      accessToken
+    );
+    return normalizeTradePost(post);
+  } catch (error) {
+    if (error instanceof TradePostRequestError && error.status === 404) {
+      invalidateTradePost(slug);
+    }
+    throw error;
+  }
 }
 
 export function saveTradePost(
@@ -715,7 +758,7 @@ export async function getSavedTradePosts(
   }
 
   return {
-    items: body.data.map((post) => normalizeTradePost(post) as SavedTradePostResponse),
+    items: body.data.filter(isTradePostAvailable).map((post) => normalizeTradePost(post) as SavedTradePostResponse),
     meta: body.meta ?? {
       page,
       limit,
@@ -791,6 +834,23 @@ export function replyToTradeReview(
       body: JSON.stringify({ content }),
     }
   ).then(normalizeTradeReview);
+}
+
+export function replyToTradeReviewOwner(
+  accessToken: string,
+  tradePostId: string,
+  reviewId: string,
+  content: string
+): Promise<TradeReviewCustomerReply> {
+  return request<TradeReviewCustomerReply>(
+    `/trade-posts/${encodeURIComponent(tradePostId)}/reviews/${encodeURIComponent(reviewId)}/replies`,
+    accessToken,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    }
+  ).then(normalizeTradeReviewCustomerReply);
 }
 
 export function removeTradeReviewReply(

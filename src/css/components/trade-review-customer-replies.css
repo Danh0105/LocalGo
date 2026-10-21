@@ -1,0 +1,70 @@
+.trade-customer-replies {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.trade-customer-replies__item {
+  margin: 8px 0;
+  padding: 10px 12px;
+  border-left: 3px solid #d9e6eb;
+  border-radius: 6px;
+  background: #f7fafb;
+}
+
+.trade-customer-replies__item p {
+  margin: 6px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.trade-customer-replies__item time,
+.trade-customer-replies small {
+  display: block;
+  color: #647780;
+  font-size: 11px;
+}
+
+.trade-customer-replies button {
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid #cce5ed;
+  border-radius: 8px;
+  color: #167d99;
+  background: #fff;
+  font: inherit;
+}
+
+.trade-customer-replies button:disabled {
+  opacity: 0.55;
+}
+
+.trade-customer-replies form {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.trade-customer-replies textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cce5ed;
+  border-radius: 8px;
+  font: inherit;
+  resize: vertical;
+}
+
+.trade-customer-replies__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.trade-customer-replies__actions button[type="submit"] {
+  color: #fff;
+  background: #167d99;
+}
+
+.trade-customer-replies .trade-customer-replies__error {
+  color: #c53030;
+}

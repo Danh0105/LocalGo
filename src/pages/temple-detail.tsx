@@ -1,3 +1,4 @@
+import ContentReviews from "@/components/content-reviews";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
@@ -148,6 +149,7 @@ function TempleDetailPage() {
             </ul>
           )}
         </section>
+        <ContentReviews targetType="temples" targetId={temple.id} title={temple.name} />
       </main>
     </Page>
   );

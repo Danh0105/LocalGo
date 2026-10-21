@@ -1,6 +1,10 @@
 import { Icon } from "zmp-ui";
 
 import type { AppNotification } from "@/services/notifications";
+import {
+  isNotificationTradePostUnavailable,
+  TRADE_POST_UNAVAILABLE_MESSAGE,
+} from "@/services/notifications";
 import "@/css/components/notification-alert.css";
 
 interface NotificationAlertProps {
@@ -31,6 +35,9 @@ export default function NotificationAlert({
             <small>THÔNG BÁO MỚI</small>
             <strong>{notification.title || "Bạn có thông báo mới"}</strong>
             {notification.body && <span>{notification.body}</span>}
+            {isNotificationTradePostUnavailable(notification) && (
+              <span>{TRADE_POST_UNAVAILABLE_MESSAGE}</span>
+            )}
           </span>
           <span className="notification-alert__open" aria-hidden="true">
             <Icon icon="zi-arrow-right" />

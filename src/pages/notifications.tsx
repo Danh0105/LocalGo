@@ -6,8 +6,10 @@ import { useNotifications } from "@/contexts/notification-context";
 import {
   AppNotification,
   getNotifications,
+  isNotificationTradePostUnavailable,
   NotificationMeta,
   NotificationRequestError,
+  TRADE_POST_UNAVAILABLE_MESSAGE,
 } from "@/services/notifications";
 import "../css/pages/notifications.css";
 
@@ -69,6 +71,7 @@ export default function NotificationsPage() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isMarkingAll, setIsMarkingAll] = useState(false);
+  const [openingId, setOpeningId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [loginError, setLoginError] = useState("");
   const touchStartY = useRef<number | null>(null);
@@ -129,21 +132,24 @@ export default function NotificationsPage() {
   };
 
   const handleOpen = async (notification: AppNotification) => {
+    if (openingId) return;
+    setOpeningId(notification.id);
     setError("");
     try {
       if (!notification.readAt) {
-        await markAsRead(notification.id);
-        setItems((current) =>
+        void markAsRead(notification.id).then(() => setItems((current) =>
           current.map((item) =>
             item.id === notification.id
               ? { ...item, readAt: new Date().toISOString() }
               : item
           )
-        );
+        )).catch(() => undefined);
       }
       await openNotification(notification);
     } catch (requestError) {
       setError(notificationError(requestError));
+    } finally {
+      setOpeningId(null);
     }
   };
 
@@ -267,11 +273,16 @@ export default function NotificationsPage() {
               type="button"
               key={notification.id}
               onClick={() => void handleOpen(notification)}
+              aria-busy={openingId === notification.id}
             >
               <span className="notification-row__icon"><Icon icon="zi-notif" /></span>
               <span className="notification-row__content">
                 <strong>{notification.title}</strong>
                 <span>{notification.body}</span>
+                {openingId === notification.id && <span>Đang mở thông báo...</span>}
+                {isNotificationTradePostUnavailable(notification) && (
+                  <span>{TRADE_POST_UNAVAILABLE_MESSAGE}</span>
+                )}
                 <time>{relativeTime(notification.createdAt)}</time>
               </span>
               {!notification.readAt && <i aria-label="Chưa đọc" />}

@@ -1,3 +1,4 @@
+import ContentReviews from "@/components/content-reviews";
 import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate, useParams } from "zmp-ui";
 
@@ -166,6 +167,7 @@ function ExperienceTourDetailPage() {
           <h2>Lưu ý đặt tour</h2>
           <p className="experience-tour-detail__paragraph">{tour.note}</p>
         </section>
+        <ContentReviews targetType="experience-tours" targetId={tour.id} title={tour.name} />
       </main>
     </Page>
   );
