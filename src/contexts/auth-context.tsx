@@ -3,14 +3,12 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import {
-  authorize,
-  getAccessToken as getZaloAccessToken,
-} from "zmp-sdk";
+import { authorize, getAccessToken as getZaloAccessToken } from "zmp-sdk";
 
 import {
   AuthRequestError,
@@ -30,6 +28,7 @@ interface AuthSession {
 
 interface AuthenticateOptions {
   requestUserInfoPermission?: boolean;
+  storedSessionOnly?: boolean;
 }
 
 interface AuthContextValue {
@@ -48,9 +47,34 @@ const REFRESH_TOKEN_KEY = "localgo.auth.refresh-token";
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-function readSessionValue(key: string): string | null {
+function readSessionAccessToken(): string | null {
   try {
-    return window.sessionStorage.getItem(key);
+    return window.sessionStorage.getItem(ACCESS_TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function readRefreshToken(): string | null {
+  try {
+    const persistedToken = window.localStorage.getItem(REFRESH_TOKEN_KEY);
+    if (persistedToken) return persistedToken;
+  } catch {
+    // Fall back to sessionStorage for restricted webviews.
+  }
+
+  try {
+    const legacyToken = window.sessionStorage.getItem(REFRESH_TOKEN_KEY);
+    if (!legacyToken) return null;
+
+    // Migrate sessions created before refresh tokens became persistent.
+    try {
+      window.localStorage.setItem(REFRESH_TOKEN_KEY, legacyToken);
+      window.sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+    } catch {
+      // Keep the legacy token in sessionStorage when persistence is unavailable.
+    }
+    return legacyToken;
   } catch {
     return null;
   }
@@ -59,9 +83,21 @@ function readSessionValue(key: string): string | null {
 function writeSession(tokens: AuthTokens): void {
   try {
     window.sessionStorage.setItem(ACCESS_TOKEN_KEY, tokens.accessToken);
-    window.sessionStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
   } catch {
-    // The in-memory state below still keeps the current Mini App session usable.
+    // The in-memory state below still keeps the access token usable.
+  }
+
+  try {
+    window.localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
+    window.sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+  } catch {
+    // Some restricted webviews disable persistent storage. Preserve the
+    // previous session-only behaviour as a safe fallback.
+    try {
+      window.sessionStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
+    } catch {
+      // The in-memory state still keeps the current Mini App session usable.
+    }
   }
 }
 
@@ -69,6 +105,12 @@ function clearSession(): void {
   try {
     window.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
     window.sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+  } catch {
+    // Storage may be unavailable in restricted webviews.
+  }
+
+  try {
+    window.localStorage.removeItem(REFRESH_TOKEN_KEY);
   } catch {
     // Storage may be unavailable in restricted webviews.
   }
@@ -89,7 +131,7 @@ async function requestZaloUserInfoPermission(): Promise<void> {
       throw new AuthRequestError(
         "Vui lòng cấp quyền truy cập thông tin Zalo để tiếp tục sử dụng LocalGo.",
         0,
-        "ZALO_USER_INFO_PERMISSION_REQUIRED"
+        "ZALO_USER_INFO_PERMISSION_REQUIRED",
       );
     }
   } catch (requestError) {
@@ -97,7 +139,7 @@ async function requestZaloUserInfoPermission(): Promise<void> {
     throw new AuthRequestError(
       "Vui lòng cấp quyền truy cập tên và ảnh đại diện Zalo để tiếp tục sử dụng LocalGo.",
       0,
-      "ZALO_USER_INFO_PERMISSION_REQUIRED"
+      "ZALO_USER_INFO_PERMISSION_REQUIRED",
     );
   }
 }
@@ -113,122 +155,129 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   } | null>(null);
   const refreshInFlightRef = useRef<Promise<AuthSession> | null>(null);
 
-  const authenticate = useCallback(
-    function authenticateUser(
-      options: AuthenticateOptions = {}
-    ): Promise<AuthSession> {
-      // ZMP SDK 2.35+ returns an ID-only access token unless scope.userInfo
-      // is granted first. The backend requires the Zalo display name, so a
-      // normal LocalGo login must request this scope by default.
-      const requestUserInfo = options.requestUserInfoPermission !== false;
-      const currentTask = inFlightRef.current;
-      if (currentTask) {
-        if (!requestUserInfo || currentTask.requestsUserInfoPermission) {
-          return currentTask.promise;
-        }
-
-        return currentTask.promise.catch(() => {
-          if (inFlightRef.current?.promise === currentTask.promise) {
-            inFlightRef.current = null;
-          }
-          return authenticateUser(options);
-        });
+  const authenticate = useCallback(function authenticateUser(
+    options: AuthenticateOptions = {},
+  ): Promise<AuthSession> {
+    // ZMP SDK 2.35+ returns an ID-only access token unless scope.userInfo
+    // is granted first. The backend requires the Zalo display name, so a
+    // normal LocalGo login must request this scope by default.
+    const requestUserInfo = options.requestUserInfoPermission !== false;
+    const currentTask = inFlightRef.current;
+    if (currentTask) {
+      if (!requestUserInfo || currentTask.requestsUserInfoPermission) {
+        return currentTask.promise;
       }
 
-      const task = (async () => {
-        setStatus("loading");
-        setError("");
-
-        let token = readSessionValue(ACCESS_TOKEN_KEY);
-        if (token) {
-          try {
-            const profile = await getCurrentUser(token);
-            setAccessToken(token);
-            setUser(profile);
-            setStatus("authenticated");
-            return { user: profile, accessToken: token };
-          } catch (requestError) {
-            const storedRefreshToken = readSessionValue(REFRESH_TOKEN_KEY);
-            if (
-              requestError instanceof AuthRequestError &&
-              requestError.status === 401 &&
-              storedRefreshToken
-            ) {
-              try {
-                const refreshed = await refreshAuthToken(storedRefreshToken);
-                writeSession(refreshed);
-                token = refreshed.accessToken;
-                const profile = await getCurrentUser(token);
-                setAccessToken(token);
-                setUser(profile);
-                setStatus("authenticated");
-                return { user: profile, accessToken: token };
-              } catch {
-                clearSession();
-              }
-            } else if (
-              !(requestError instanceof AuthRequestError) ||
-              requestError.status !== 401
-            ) {
-              throw requestError;
-            } else {
-              clearSession();
-            }
-          }
-        }
-
-        if (requestUserInfo) {
-          await requestZaloUserInfoPermission();
-        }
-
-        const zaloAccessToken = await getZaloAccessToken();
-        if (!zaloAccessToken) {
-          throw new AuthRequestError(
-            "Không lấy được mã đăng nhập từ Zalo. Vui lòng mở Mini App trong ứng dụng Zalo và thử lại.",
-            0
-          );
-        }
-
-        const tokens = await loginWithZalo(zaloAccessToken);
-        writeSession(tokens);
-        const profile = await getCurrentUser(tokens.accessToken);
-        setAccessToken(tokens.accessToken);
-        setUser(profile);
-        setStatus("authenticated");
-        return { user: profile, accessToken: tokens.accessToken };
-      })().catch((requestError: unknown) => {
-        setUser(null);
-        setAccessToken(null);
-        setStatus("error");
-        setError(authMessage(requestError));
-        throw requestError;
-      });
-
-      const clearInFlight = () => {
-        if (inFlightRef.current?.promise === task) {
+      return currentTask.promise.catch(() => {
+        if (inFlightRef.current?.promise === currentTask.promise) {
           inFlightRef.current = null;
         }
-      };
+        return authenticateUser(options);
+      });
+    }
 
-      inFlightRef.current = {
-        promise: task,
-        requestsUserInfoPermission: requestUserInfo,
-      };
-      void task.then(clearInFlight, clearInFlight);
-      return task;
-    },
-    []
-  );
+    const task = (async () => {
+      setStatus("loading");
+      setError("");
+
+      let token = readSessionAccessToken();
+      if (token) {
+        try {
+          const profile = await getCurrentUser(token);
+          setAccessToken(token);
+          setUser(profile);
+          setStatus("authenticated");
+          return { user: profile, accessToken: token };
+        } catch (requestError) {
+          if (
+            !(requestError instanceof AuthRequestError) ||
+            requestError.status !== 401
+          ) {
+            throw requestError;
+          }
+        }
+      }
+
+      const storedRefreshToken = readRefreshToken();
+      if (storedRefreshToken) {
+        try {
+          const refreshed = await refreshAuthToken(storedRefreshToken);
+          writeSession(refreshed);
+          token = refreshed.accessToken;
+          const profile = await getCurrentUser(token);
+          setAccessToken(token);
+          setUser(profile);
+          setStatus("authenticated");
+          return { user: profile, accessToken: token };
+        } catch (requestError) {
+          if (
+            !(requestError instanceof AuthRequestError) ||
+            requestError.status !== 401
+          ) {
+            throw requestError;
+          }
+          clearSession();
+        }
+      }
+
+      if (options.storedSessionOnly) {
+        throw new AuthRequestError(
+          "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại bằng Zalo.",
+          401,
+          "UNAUTHORIZED",
+        );
+      }
+
+      if (requestUserInfo) {
+        await requestZaloUserInfoPermission();
+      }
+
+      const zaloAccessToken = await getZaloAccessToken();
+      if (!zaloAccessToken) {
+        throw new AuthRequestError(
+          "Không lấy được mã đăng nhập từ Zalo. Vui lòng mở Mini App trong ứng dụng Zalo và thử lại.",
+          0,
+        );
+      }
+
+      const tokens = await loginWithZalo(zaloAccessToken);
+      writeSession(tokens);
+      const profile = await getCurrentUser(tokens.accessToken);
+      setAccessToken(tokens.accessToken);
+      setUser(profile);
+      setStatus("authenticated");
+      return { user: profile, accessToken: tokens.accessToken };
+    })().catch((requestError: unknown) => {
+      setUser(null);
+      setAccessToken(null);
+      setStatus("error");
+      setError(authMessage(requestError));
+      throw requestError;
+    });
+
+    const clearInFlight = () => {
+      if (inFlightRef.current?.promise === task) {
+        inFlightRef.current = null;
+      }
+    };
+
+    inFlightRef.current = {
+      promise: task,
+      requestsUserInfoPermission: requestUserInfo,
+    };
+    void task.then(clearInFlight, clearInFlight);
+    return task;
+  }, []);
 
   const refreshSession = useCallback((): Promise<AuthSession> => {
     if (refreshInFlightRef.current) return refreshInFlightRef.current;
 
-    const storedRefreshToken = readSessionValue(REFRESH_TOKEN_KEY);
+    const storedRefreshToken = readRefreshToken();
     if (!storedRefreshToken) {
       const requestError = new AuthRequestError(
         "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại bằng Zalo.",
         401,
-        "UNAUTHORIZED"
+        "UNAUTHORIZED",
       );
       clearSession();
       setUser(null);
@@ -239,6 +288,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const task = (async () => {
+      setStatus("loading");
+      setError("");
       const tokens = await refreshAuthToken(storedRefreshToken);
       writeSession(tokens);
       const profile = await getCurrentUser(tokens.accessToken);
@@ -248,9 +299,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError("");
       return { user: profile, accessToken: tokens.accessToken };
     })().catch((requestError: unknown) => {
-      clearSession();
-      setUser(null);
-      setAccessToken(null);
+      if (
+        requestError instanceof AuthRequestError &&
+        requestError.status === 401
+      ) {
+        clearSession();
+        setUser(null);
+        setAccessToken(null);
+      }
       setStatus("error");
       setError(authMessage(requestError));
       throw requestError;
@@ -265,6 +321,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void task.then(clearRefreshInFlight, clearRefreshInFlight);
     return task;
   }, []);
+
+  useEffect(() => {
+    if (!readSessionAccessToken() && !readRefreshToken()) return;
+
+    // Restore an existing LocalGo session without opening Zalo's permission
+    // dialog. authenticate() also de-duplicates a simultaneous manual login.
+    void authenticate({
+      requestUserInfoPermission: false,
+      storedSessionOnly: true,
+    }).catch(() => undefined);
+  }, [authenticate]);
 
   const refreshUser = useCallback(async (): Promise<CurrentUser> => {
     if (!accessToken) return (await authenticate()).user;
@@ -314,7 +381,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshSession,
       refreshUser,
       logout,
-    ]
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

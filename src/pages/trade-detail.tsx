@@ -18,8 +18,8 @@ import {
   getTradeReviewSummary,
   recordTradePostInteraction,
   startTradeConversation,
-  uploadTradePostImage,
 } from "@/services/trade-posts";
+import { uploadContentImages } from "@/services/media";
 import phone from "@/static/phone.png";
 import gps from "@/static/gps.png";
 import restaurant from "@/static/restaurant.png";
@@ -254,9 +254,12 @@ function TradeDetailPage() {
     setReviewSubmitMessage("");
     try {
       const token = accessToken ?? (await authenticate()).accessToken;
-      const uploadedImages = await Promise.all(
-        reviewImages.map(({ file }) => uploadTradePostImage(token, file))
-      );
+      const uploadedImages = reviewImages.length
+        ? await uploadContentImages(
+            token,
+            reviewImages.map(({ file }) => file)
+          )
+        : [];
       const created = await createTradeReview(token, post.id, {
         rating: selectedRating,
         content,

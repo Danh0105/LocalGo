@@ -29,8 +29,8 @@ import {
   isTradePostCategoryInvalidError,
   isTradePostExpiredError,
   submitTradePost,
-  uploadTradePostImage,
 } from "@/services/trade-posts";
+import { uploadContentImages } from "@/services/media";
 import "../css/pages/trade.css";
 
 type SubmitIntent = "draft" | "submit";
@@ -379,9 +379,9 @@ function TradeCreatePage() {
 
     setIsSubmitting(true);
     try {
-      const uploadedImages = await Promise.all(
-        images.map((file) => uploadTradePostImage(accessToken, file))
-      );
+      const uploadedImages = images.length
+        ? await uploadContentImages(accessToken, images)
+        : [];
       const payload: TradePostPayload = {
         category,
         title,

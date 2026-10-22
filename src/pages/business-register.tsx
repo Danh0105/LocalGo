@@ -15,8 +15,8 @@ import {
   getBusinessTypes,
   getMyBusinessApplication,
   resubmitBusinessApplication,
-  uploadBusinessDocument,
 } from "@/services/business-applications";
+import { uploadContentImages } from "@/services/media";
 import "../css/pages/trade.css";
 
 interface ZaloProfile {
@@ -398,13 +398,17 @@ function BusinessRegisterPage() {
 
     try {
       setIsSubmitting(true);
-      const uploaded = await Promise.all(
-        documentsToUpload.map(async ({ doc, file }) => ({
-          media: await uploadBusinessDocument(accessToken, file),
-          file,
-          type: doc.type,
-        }))
-      );
+      const uploadedMedia = documentsToUpload.length
+        ? await uploadContentImages(
+            accessToken,
+            documentsToUpload.map(({ file }) => file)
+          )
+        : [];
+      const uploaded = documentsToUpload.map(({ doc, file }, index) => ({
+        media: uploadedMedia[index],
+        file,
+        type: doc.type,
+      }));
 
       const seatingCapacity = dynamicValues.seatingCapacity
         ? Number(dynamicValues.seatingCapacity)

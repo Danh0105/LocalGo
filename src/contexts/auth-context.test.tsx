@@ -24,9 +24,8 @@ vi.mock("zmp-sdk", () => ({
 }));
 
 vi.mock("@/services/auth", async () => {
-  const actual = await vi.importActual<typeof import("@/services/auth")>(
-    "@/services/auth"
-  );
+  const actual =
+    await vi.importActual<typeof import("@/services/auth")>("@/services/auth");
   return {
     ...actual,
     getCurrentUser: getCurrentUserMock,
@@ -60,7 +59,7 @@ function AuthProbe({ requestPermission }: { requestPermission?: boolean }) {
           void authenticate(
             requestPermission === undefined
               ? undefined
-              : { requestUserInfoPermission: requestPermission }
+              : { requestUserInfoPermission: requestPermission },
           ).catch(() => undefined)
         }
       >
@@ -75,6 +74,7 @@ function AuthProbe({ requestPermission }: { requestPermission?: boolean }) {
 describe("AuthProvider Zalo login", () => {
   beforeEach(() => {
     window.sessionStorage.clear();
+    window.localStorage.clear();
     vi.clearAllMocks();
     authorizeMock.mockResolvedValue({ "scope.userInfo": true });
     getZaloAccessTokenMock.mockResolvedValue("zalo-access-token");
@@ -91,18 +91,62 @@ describe("AuthProvider Zalo login", () => {
     render(
       <AuthProvider>
         <AuthProbe />
-      </AuthProvider>
+      </AuthProvider>,
     );
 
-    await userEvent.setup().click(screen.getByRole("button", { name: "Đăng nhập" }));
+    await userEvent
+      .setup()
+      .click(screen.getByRole("button", { name: "Đăng nhập" }));
 
-    await waitFor(() => expect(screen.getByText("authenticated")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText("authenticated")).toBeInTheDocument(),
+    );
     expect(authorizeMock).toHaveBeenCalledWith({ scopes: ["scope.userInfo"] });
     expect(getZaloAccessTokenMock).toHaveBeenCalledOnce();
     expect(authorizeMock.mock.invocationCallOrder[0]).toBeLessThan(
-      getZaloAccessTokenMock.mock.invocationCallOrder[0]
+      getZaloAccessTokenMock.mock.invocationCallOrder[0],
     );
     expect(loginWithZaloMock).toHaveBeenCalledWith("zalo-access-token");
+    expect(window.sessionStorage.getItem("localgo.auth.access-token")).toBe(
+      "localgo-access-token",
+    );
+    expect(window.localStorage.getItem("localgo.auth.refresh-token")).toBe(
+      "localgo-refresh-token",
+    );
+    expect(
+      window.sessionStorage.getItem("localgo.auth.refresh-token"),
+    ).toBeNull();
+  });
+
+  it("restores a persisted session on the next app launch without asking Zalo again", async () => {
+    window.localStorage.setItem(
+      "localgo.auth.refresh-token",
+      "persisted-refresh-token",
+    );
+    refreshAuthTokenMock.mockResolvedValue({
+      accessToken: "restored-access-token",
+      refreshToken: "rotated-refresh-token",
+      expiresAt: "2026-11-20T00:00:00.000Z",
+    });
+
+    render(
+      <AuthProvider>
+        <AuthProbe />
+      </AuthProvider>,
+    );
+
+    await waitFor(() =>
+      expect(screen.getByText("authenticated")).toBeInTheDocument(),
+    );
+    expect(refreshAuthTokenMock).toHaveBeenCalledWith(
+      "persisted-refresh-token",
+    );
+    expect(window.localStorage.getItem("localgo.auth.refresh-token")).toBe(
+      "rotated-refresh-token",
+    );
+    expect(authorizeMock).not.toHaveBeenCalled();
+    expect(getZaloAccessTokenMock).not.toHaveBeenCalled();
+    expect(loginWithZaloMock).not.toHaveBeenCalled();
   });
 
   it("stops login when the user does not grant profile access", async () => {
@@ -110,16 +154,18 @@ describe("AuthProvider Zalo login", () => {
     render(
       <AuthProvider>
         <AuthProbe />
-      </AuthProvider>
+      </AuthProvider>,
     );
 
-    await userEvent.setup().click(screen.getByRole("button", { name: "Đăng nhập" }));
+    await userEvent
+      .setup()
+      .click(screen.getByRole("button", { name: "Đăng nhập" }));
 
     await waitFor(() => expect(screen.getByText("error")).toBeInTheDocument());
     expect(
       screen.getByText(
-        "Vui lòng cấp quyền truy cập thông tin Zalo để tiếp tục sử dụng LocalGo."
-      )
+        "Vui lòng cấp quyền truy cập thông tin Zalo để tiếp tục sử dụng LocalGo.",
+      ),
     ).toBeInTheDocument();
     expect(getZaloAccessTokenMock).not.toHaveBeenCalled();
     expect(loginWithZaloMock).not.toHaveBeenCalled();
@@ -129,12 +175,16 @@ describe("AuthProvider Zalo login", () => {
     render(
       <AuthProvider>
         <AuthProbe requestPermission={false} />
-      </AuthProvider>
+      </AuthProvider>,
     );
 
-    await userEvent.setup().click(screen.getByRole("button", { name: "Đăng nhập" }));
+    await userEvent
+      .setup()
+      .click(screen.getByRole("button", { name: "Đăng nhập" }));
 
-    await waitFor(() => expect(screen.getByText("authenticated")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText("authenticated")).toBeInTheDocument(),
+    );
     expect(authorizeMock).not.toHaveBeenCalled();
     expect(getZaloAccessTokenMock).toHaveBeenCalledOnce();
   });
