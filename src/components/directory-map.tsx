@@ -382,8 +382,11 @@ export default function DirectoryMap({
       label.textContent = place.name;
 
       marker.bindTooltip(label, {
+        permanent: true,
         direction: "top",
-        offset: [0, -20],
+        offset: [0, -32],
+        opacity: 1,
+        className: "directory-map-place-label",
       });
 
       marker.on("click", (event) => {

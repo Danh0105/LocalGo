@@ -8,9 +8,9 @@
   top: auto;
   z-index: auto;
   display: flex;
-  min-height: 100px;
+  min-height: calc(var(--app-status-bar-safe-top, env(safe-area-inset-top, 0px)) + var(--app-toolbar-height, 64px));
   align-items: center;
-  padding: calc(env(safe-area-inset-top, 0px) + 26px) 22px 24px;
+  padding: calc(var(--app-status-bar-safe-top, env(safe-area-inset-top, 0px)) + var(--app-toolbar-padding, 10px)) 18px var(--app-toolbar-padding, 10px);
   border-bottom: 1px solid rgb(255 255 255 / 16%);
   background: linear-gradient(125deg, #1478c8 0%, #35c3ef 100%);
   color: #fff;
@@ -19,7 +19,7 @@
 }
 .section-directory-page > header h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.2;
   text-transform: none;
@@ -28,7 +28,8 @@
 }
 .section-directory-page > header div > span {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
+  line-height: 14px;
   color: rgb(255 255 255 / 85%);
   font-size: 9px;
   font-weight: 500;
@@ -235,7 +236,7 @@
     padding-inline: 16px;
   }
   .section-directory-page > header h1 {
-    font-size: 25px;
+    font-size: 20px;
   }
   .directory-source-tabs button {
     font-size: 11px;

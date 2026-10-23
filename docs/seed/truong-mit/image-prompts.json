@@ -1,0 +1,17 @@
+{
+  "tool": "built-in imagegen",
+  "prompts": [
+    {
+      "file": "images/nhan-truong-mit.png",
+      "prompt": "Create one photorealistic editorial product photograph for a Vietnamese local trade demo app. Subject: freshly harvested longan fruit (nhãn), abundant golden brown round longans attached to thin leafy branches in a woven bamboo harvesting basket, some longan peeled showing translucent white flesh. Setting inspired by the flat rural orchards of Truông Mít commune, Tây Ninh, southern Vietnam: green longan trees softly blurred behind, a simple timber sorting table, soft natural morning daylight. Wide landscape 3:2 composition, fruit sharply detailed and centered, warm natural colors, no text, no labels, no logos, no watermark, no certification seals. This is a fictional illustrative scene, not documentary evidence of any real farm."
+    },
+    {
+      "file": "images/sau-rieng-bau-don.png",
+      "prompt": "One landscape 3:2 photorealistic editorial photograph for a Vietnamese local commerce demo. Main subject: two whole green durians and one freshly opened durian with rich yellow creamy flesh on a clean bamboo tray, on a rustic orchard packing table. Background a modest durian orchard with flat terrain, lush tropical foliage typical of Bàu Đồn area within Truông Mít commune, Tây Ninh, southern Vietnam. Gentle natural daylight, realistic fruit skins, inviting honest rural produce photography, centered subject with room around edges for card cropping. No text, no labels, no logos, no watermark, no certificates. Fictional illustrative product scene, not a real named business."
+    },
+    {
+      "file": "images/com-que-truong-mit.png",
+      "prompt": "Create one photorealistic editorial food photograph, landscape 3:2, for a local community commerce demo in Truông Mít commune, Tây Ninh, southern Vietnam. Subject: a humble Vietnamese countryside lunch on a clean wooden table: white rice in a small ceramic bowl, braised freshwater fish in a small clay pot, a plate of boiled leafy vegetables, a light vegetable soup, a tiny dipping sauce bowl, bamboo chopsticks. Background softly blurred open-air family eatery with tropical garden and simple tiled floor. Natural midday light under porch shade, authentic affordable home cooking portions, appetizing realistic textures, central composition suitable for mobile commerce card crop. No text, no branding, no labels, no watermark, no people. Fictional illustrative scene; do not depict a particular real restaurant."
+    }
+  ]
+}

@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { Icon, Page, useNavigate, useParams } from "zmp-ui";
+import { Icon, Page, useNavigate, useParams, useSnackbar } from "zmp-ui";
 
 import DirectionsButton from "@/components/directions-button";
 import ContentGallery from "@/components/content-gallery";
 import { ContactItem } from "@/data/contacts";
 import { getContactById } from "@/services/contacts";
+import { callPhone, composeEmail } from "@/utils/contact";
 import "../css/pages/contacts.css";
 
 function ContactDetailPage() {
   const navigate = useNavigate();
+  const { openSnackbar } = useSnackbar();
   const { id } = useParams<{ id: string }>();
   const [contact, setContact] = useState<ContactItem>();
   const [isLoading, setIsLoading] = useState(true);
@@ -123,12 +125,30 @@ function ContactDetailPage() {
         </section>
 
         <section className="contact-detail__actions">
-          <a href={`tel:${contact.phone.replace(/\s/g, "")}`}>
+          <a
+            href={`tel:${contact.phone.replace(/\s/g, "")}`}
+            onClick={(event) => {
+              event.preventDefault();
+              void callPhone(contact.phone).catch(() => {
+                openSnackbar({ text: "Không thể mở cuộc gọi. Vui lòng kiểm tra số điện thoại.", type: "error" });
+              });
+            }}
+          >
             <Icon icon="zi-call-solid" />
             <span>Gọi ngay</span>
           </a>
           {contact.email && (
-            <a href={`mailto:${contact.email}`}>
+            <a
+              href={`mailto:${contact.email}`}
+              onClick={(event) => {
+                event.preventDefault();
+                try {
+                  composeEmail(contact.email!, contact.name);
+                } catch {
+                  openSnackbar({ text: "Email không hợp lệ.", type: "error" });
+                }
+              }}
+            >
               <Icon icon="zi-chat-solid" />
               <span>Gửi email</span>
             </a>

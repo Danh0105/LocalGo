@@ -1,4 +1,7 @@
 import MyContentReviewsPage from "@/pages/my-content-reviews";
+import LoginPage from "@/pages/login";
+import PasswordSecurityPage from "@/pages/password-security";
+import AuthNavigation from "@/components/auth-navigation";
 import { getSystemInfo } from "zmp-sdk";
 import {
   AnimationRoutes,
@@ -68,10 +71,14 @@ const Layout = () => {
       <AuthProvider>
         <SnackbarProvider>
           <ZMPRouter>
+            <AuthNavigation />
             <NotificationProvider>
               <TradeSaveProvider>
                 <AppBackHandler />
                 <AnimationRoutes>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/forgot-password" element={<PasswordSecurityPage key="forgot" mode="forgot" />} />
+                  <Route path="/reset-password" element={<PasswordSecurityPage key="reset" mode="reset" />} />
                   <Route path="/business/profile" element={<BusinessProfileManagePage />} />
                   <Route path="/business-profiles" element={<BusinessProfilesPage />} />
                   <Route path="/business-profiles/:id" element={<BusinessProfileDetailPage />} />

@@ -7,6 +7,7 @@ import type {
 } from "@/types/api";
 
 export class ApiRequestError extends Error {
+  authHandled = false;
   readonly status: number;
   readonly code: string;
   readonly details: unknown;
@@ -23,9 +24,15 @@ export class ApiRequestError extends Error {
   }
 }
 
+let authHandler: { refresh: (token: string) => Promise<{ accessToken: string }>; expire: () => void; authorize: (token: string) => string; generation?: () => number } | null = null;
+export function setApiAuthHandler(handler: typeof authHandler) { authHandler = handler; }
+export const noRefreshPaths = new Set(["/auth/login", "/auth/forgot-password", "/auth/reset-password", "/users/me/password", "/business-profiles/me/credentials/initial-password", "/business-profiles/me/credentials/initial-password/acknowledge"]);
+
 type ApiRequestOptions = Omit<RequestInit, "signal"> & {
   signal?: AbortSignal;
   timeoutMs?: number;
+  authRetried?: boolean;
+  requirePrivateNoStore?: boolean;
 };
 
 function isApiError(value: unknown): value is ApiError {
@@ -69,27 +76,62 @@ async function requestEnvelope<T>(
     controller.abort();
   }, timeoutMs);
 
-  const { timeoutMs: _timeoutMs, signal: _signal, ...requestInit } = options;
+  const { timeoutMs: _timeoutMs, signal: _signal, authRetried: _authRetried, requirePrivateNoStore: _requirePrivateNoStore, ...requestInit } = options;
   void _timeoutMs;
   void _signal;
+  void _authRetried;
+  void _requirePrivateNoStore;
 
   try {
+    const headers = new Headers(requestInit.headers);
+    const requestedToken = headers.get("Authorization")?.match(/^Bearer (.+)$/i)?.[1];
+    const startedGeneration = authHandler?.generation?.();
+    if (requestedToken && authHandler) headers.set("Authorization", `Bearer ${authHandler.authorize(requestedToken)}`);
+    if (!headers.has("Accept")) headers.set("Accept", "application/json");
+    const headerObject: Record<string, string> = {};
+    headers.forEach((value, key) => { headerObject[key === "authorization" ? "Authorization" : key === "accept" ? "Accept" : key === "content-type" ? "Content-Type" : key] = value; });
     const response = await fetch(`${getApiBaseUrl()}${path}`, {
       ...requestInit,
-      headers: {
-        Accept: "application/json",
-        ...requestInit.headers,
-      },
+      headers: headerObject,
       signal: controller.signal,
     });
+
+    if (requestedToken && startedGeneration !== authHandler?.generation?.()) {
+      const ended = new ApiRequestError("Phiên đăng nhập đã kết thúc.", { status: 401, code: "SESSION_ENDED" });
+      ended.authHandled = true;
+      throw ended;
+    }
+
+    if (response.ok && options.requirePrivateNoStore) {
+      const cacheControl = response.headers.get("Cache-Control")?.toLowerCase().split(",").map((part) => part.trim()) ?? [];
+      if (!cacheControl.includes("no-store") || !cacheControl.includes("private")) throw new ApiRequestError("Không thể nhận thông tin đăng nhập an toàn. Vui lòng thử lại sau.", { code: "PRIVATE_RESPONSE_REQUIRED" });
+    }
 
     if (response.status === 204) return { success: true, data: undefined as T };
 
     const body = await readJson(response);
+    const bearer = headers.get("Authorization")?.match(/^Bearer (.+)$/i)?.[1];
+    if (response.status === 401 && bearer && authHandler && !noRefreshPaths.has(path.split("?")[0])) {
+      if (!options.authRetried) {
+        try {
+          const session = await authHandler.refresh(bearer);
+          const headers = new Headers(requestInit.headers);
+          headers.set("Authorization", `Bearer ${session.accessToken}`);
+          return await requestEnvelope<T>(path, { ...options, headers, authRetried: true });
+        } catch (error) {
+          if (error instanceof ApiRequestError && error.status !== 401) throw error;
+          authHandler?.expire();
+          const expired = new ApiRequestError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", { status: 401, code: "UNAUTHORIZED" });
+          expired.authHandled = true;
+          throw expired;
+        }
+      }
+      authHandler.expire();
+    }
     if (!response.ok || isApiError(body)) {
       const apiError = isApiError(body) ? body.error : null;
       const isRateLimited = response.status === 429;
-      throw new ApiRequestError(
+      const requestError = new ApiRequestError(
         isRateLimited
           ? "Bạn gửi quá nhiều yêu cầu, vui lòng thử lại sau."
           : apiError?.message || "Không thể hoàn tất yêu cầu.",
@@ -99,6 +141,8 @@ async function requestEnvelope<T>(
           details: apiError?.details,
         },
       );
+      requestError.authHandled = Boolean(bearer && (options.authRetried || noRefreshPaths.has(path.split("?")[0])));
+      throw requestError;
     }
 
     const envelope = body as ApiResponse<T> | null;
@@ -126,7 +170,7 @@ async function requestEnvelope<T>(
 
     throw new ApiRequestError(
       "Không thể kết nối đến máy chủ. Vui lòng kiểm tra mạng và thử lại.",
-      { code: "NETWORK_ERROR", details: error },
+      { code: "NETWORK_ERROR" },
     );
   } finally {
     window.clearTimeout(timeoutId);

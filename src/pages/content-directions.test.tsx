@@ -23,6 +23,7 @@ vi.mock("zmp-ui", () => ({
   Icon: () => <span aria-hidden="true" />,
   useNavigate: () => vi.fn(),
   useParams: () => ({ id: "sample" }),
+  useSnackbar: () => ({ openSnackbar: vi.fn() }),
 }));
 
 const label = "Chỉ đường bằng Google Maps";

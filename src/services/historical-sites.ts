@@ -57,12 +57,14 @@ function toHistoricalSite(item: HistoricalSiteApiItem): HistoricalSite {
 }
 
 export async function getHistoricalSites(
-  query: HistoricalSiteQuery = {}
+  query: HistoricalSiteQuery = {},
+  signal?: AbortSignal
 ): Promise<HistoricalSite[]> {
   const { rank } = query;
   const search = rank ? `?rank=${encodeURIComponent(rank)}` : "";
   const items = await get<HistoricalSiteApiItem[]>(
-    `/historical-sites${search}`
+    `/historical-sites${search}`,
+    signal
   );
   return items.map(toHistoricalSite);
 }

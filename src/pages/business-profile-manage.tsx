@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Modal, useLocation, useNavigate, useSnackbar } from "zmp-ui";
 import BusinessProfileForm from "@/components/business-profile-form";
+import GardenCredentials from "@/components/garden-credentials";
 import BusinessProfileView, { BusinessProfileShell, ProfileState } from "@/components/business-profile-view";
 import { useCurrentUser } from "@/contexts/auth-context";
 import { useAuthenticatedRequest } from "@/hooks/use-authenticated-request";
@@ -118,7 +119,7 @@ export default function BusinessProfileManagePage() {
         {notice && <p role="status" className="business-profile-notice">{notice}</p>}
         {!isBusinessType(businessType) ? <ProfileState error="Chưa xác định được loại hình đã duyệt. Vui lòng tải lại thông tin tài khoản." onRetry={() => void auth.refreshUser().then(() => setRevision((value) => value + 1)).catch((e) => setError(getApiErrorMessage(e)))} /> : editing || !profile ?
           <BusinessProfileForm key={`${userId}:${businessType}:${profile?.id ?? "new"}:${profile?.version ?? 0}`} profile={profile} businessType={businessType} onSave={save} onCancel={profile ? () => setEditing(false) : undefined} /> : <>
-            <BusinessProfileView profile={profile} onEdit={() => setEditing(true)} onDelete={() => setConfirmDelete(true)} />
+            <BusinessProfileView profile={profile} onEdit={() => setEditing(true)} onDelete={() => setConfirmDelete(true)} ownerContent={<GardenCredentials key={`${userId}:${profile.id}`} profile={profile} />} />
           </>}
       </>}
     </main>

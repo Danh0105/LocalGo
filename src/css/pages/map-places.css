@@ -57,6 +57,20 @@
 .map-places-filter span { margin-left: 4px; opacity: .75; font-size: 11px; }
 .directory-map-panel { overflow: hidden; background: #fff; border: 1px solid #d2e3ec; border-radius: 18px; }
 .directory-map { height: 290px; z-index: 0; background: #e8f1ed; }
+.directory-map .directory-map-place-label {
+  max-width: 160px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  color: #1c3d2d;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  box-shadow: 0 2px 8px #153e5a26;
+}
 .directory-map-note { margin: 10px 14px; color: #637b89; font-size: 12px; line-height: 1.5; }
 .directory-map-note:first-of-type { color: #22526d; font-weight: 700; }
 .directory-map-pin { display: block; width: 27px; height: 27px; background: #1478c8; border: 3px solid #fff; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: 0 3px 8px #153e5a55; }

@@ -331,6 +331,10 @@ function TradePage() {
           />
         </div>
 
+      </header>
+
+      <main className="trade-content">
+        <div className="trade-intro">
         <p className="trade-header__description">
           Kết nối người dân, hộ kinh doanh, doanh nghiệp và du khách; cùng quảng
           bá sản phẩm địa phương và mở rộng cơ hội hợp tác.
@@ -345,9 +349,7 @@ function TradePage() {
             onChange={(event) => setKeyword(event.target.value)}
           />
         </label>
-      </header>
-
-      <main className="trade-content">
+        </div>
         {categoryLoadError && (
           <div className="trade-categories-error" role="alert">
             <span>{categoryLoadError}</span>

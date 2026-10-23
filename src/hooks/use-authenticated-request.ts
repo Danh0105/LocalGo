@@ -11,7 +11,7 @@ export async function requestWithSessionRetry<T>(
   try {
     return await operation(token);
   } catch (error) {
-    if (!(error instanceof ApiRequestError || error instanceof AuthRequestError) || error.status !== 401) throw error;
+    if (!(error instanceof ApiRequestError || error instanceof AuthRequestError) || error.status !== 401 || (error instanceof ApiRequestError && error.authHandled)) throw error;
     const session = await refreshSession();
     return operation(session.accessToken);
   }

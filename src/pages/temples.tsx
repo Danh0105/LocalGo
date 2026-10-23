@@ -8,18 +8,18 @@ import { useEffect, useState } from "react";
 import { Icon, Page, useNavigate } from "zmp-ui";
 
 import templePlaceholder from "@/static/temple.png";
-import { getTemples, TempleListItem, TempleType } from "@/services/temples";
+import { getHeritageDirectory, type HeritagePlace } from "@/services/heritage-directory";
 import "../css/pages/temples.css";
 import "@/css/pages/section-directory.css";
 
-const filters: ("Tất cả" | TempleType)[] = ["Tất cả", "Đình", "Chùa", "Miếu"];
+const filters = ["Tất cả", "Đình", "Chùa", "Miếu", "Di tích lịch sử", "Cấp quốc gia", "Cấp tỉnh", "Chưa xếp hạng"] as const;
 
 function TemplesPage() {
   const navigate = useNavigate();
   const [contentSource, setContentSource] = useState<ContentSource>("all");
   const [activeFilter, setActiveFilter] =
     useState<(typeof filters)[number]>("Tất cả");
-  const [temples, setTemples] = useState<TempleListItem[]>([]);
+  const [places, setPlaces] = useState<HeritagePlace[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [retryKey, setRetryKey] = useState(0);
@@ -30,17 +30,12 @@ function TemplesPage() {
     setError("");
     async function load(): Promise<void> {
       try {
-        const data = await getTemples(
-          activeFilter === "Tất cả" ? undefined : activeFilter,
-          controller.signal,
-        );
-        setTemples(data);
+        const data = await getHeritageDirectory(controller.signal);
+        if (controller.signal.aborted) return;
+        setPlaces(data.places);
+        setError(data.failedSources.length ? `Chưa tải được: ${data.failedSources.join(", ")}.` : "");
       } catch (requestError: unknown) {
-        if (
-          requestError instanceof DOMException &&
-          requestError.name === "AbortError"
-        )
-          return;
+        if (controller.signal.aborted || (requestError instanceof DOMException && requestError.name === "AbortError")) return;
         setError("Không thể tải danh sách địa điểm. Vui lòng thử lại.");
       } finally {
         if (!controller.signal.aborted) setIsLoading(false);
@@ -48,9 +43,11 @@ function TemplesPage() {
     }
     void load();
     return () => controller.abort();
-  }, [activeFilter, retryKey]);
+  }, [retryKey]);
 
-  const ratings = useContentRatings("temples", temples);
+  const templeRatings = useContentRatings("temples", places.flatMap((item) => item.sources.filter((source) => source.type === "temples")));
+  const historicalRatings = useContentRatings("historical-sites", places.flatMap((item) => item.sources.filter((source) => source.type === "historical-sites")));
+  const visiblePlaces = places.filter((item) => activeFilter === "Tất cả" || item.tags.includes(activeFilter));
 
   return (
     <Page className="temples-page section-directory-page">
@@ -63,7 +60,7 @@ function TemplesPage() {
         >
           <Icon icon="zi-arrow-left" />
         </button>
-        <h1>Đền, Chùa - Miếu</h1>
+        <h1>Đền - chùa - miếu & Di tích lịch sử</h1>
       </header>
 
       <main className="temples-content">
@@ -80,6 +77,7 @@ function TemplesPage() {
                 }`}
                 key={filter}
                 type="button"
+                aria-pressed={filter === activeFilter}
                 onClick={() => setActiveFilter(filter)}
               >
                 {filter}
@@ -89,7 +87,7 @@ function TemplesPage() {
 
           {isLoading && <p className="temples-status">Đang tải dữ liệu...</p>}
           {!isLoading && error && (
-            <div className="temples-status temples-status--error">
+            <div className="temples-status temples-status--error" role="alert">
               <p>{error}</p>
               <button
                 type="button"
@@ -99,30 +97,32 @@ function TemplesPage() {
               </button>
             </div>
           )}
-          {!isLoading && !error && temples.length === 0 && (
+          {!isLoading && visiblePlaces.length === 0 && (!error || places.length > 0) && (
             <p className="temples-status">Chưa có địa điểm trong nhóm này.</p>
           )}
 
-          {!isLoading && !error && (
+          {!isLoading && (
             <div className="temples-list">
-              {temples.map((item) => (
+              {visiblePlaces.map((item) => (
+                <div key={item.key}>
                 <button
                   className="temple-card"
-                  key={item.id}
                   type="button"
-                  onClick={() => navigate(`/temples/${item.id}`)}
+                  onClick={() => navigate(item.sources[0].detailPath)}
                 >
                   <div className="temple-card__image">
                     <img
-                      src={item.imageUrl || templePlaceholder}
+                      src={item.image || templePlaceholder}
                       alt={item.imageAlt || item.name}
                     />
                   </div>
 
                   <div className="temple-card__body">
-                    <span className="temple-card__type">{item.type}</span>
+                    <span className="temple-card__type">{item.tags.join(" · ")}</span>
                     <h2>{item.name}</h2>
-                    <ContentRating rating={ratings[item.id]} />
+                    <ContentRating rating={item.sources[0].type === "temples"
+                      ? templeRatings[item.sources[0].id]
+                      : historicalRatings[item.sources[0].id]} />
                     <p className="temple-card__address">
                       <Icon icon="zi-location" />
                       {item.address}
@@ -135,6 +135,19 @@ function TemplesPage() {
                     icon="zi-chevron-right"
                   />
                 </button>
+                {item.sources.slice(1).map((source) => (
+                  <button
+                    className="heritage-place__related"
+                    key={`${source.type}:${source.id}`}
+                    type="button"
+                    onClick={() => navigate(source.detailPath)}
+                    aria-label={`Xem hồ sơ ${source.type === "historical-sites" ? "di tích lịch sử" : "đền - chùa - miếu"}: ${item.name}`}
+                  >
+                    Xem hồ sơ {source.type === "historical-sites" ? "di tích lịch sử" : "đền - chùa - miếu"}
+                    <Icon icon="zi-chevron-right" />
+                  </button>
+                ))}
+                </div>
               ))}
             </div>
           )}

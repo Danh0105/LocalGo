@@ -59,6 +59,8 @@ async function request<T>(
     throw new AuthRequestError("Không thể kết nối tới máy chủ.", 0);
   }
 
+  if (response.status === 204) return undefined as T;
+
   let body: ApiEnvelope<T> | ApiErrorEnvelope | undefined;
   try {
     body = (await response.json()) as ApiEnvelope<T> | ApiErrorEnvelope;
@@ -87,6 +89,13 @@ export function loginWithZalo(accessToken: string): Promise<AuthTokens> {
     },
     "Không thể đăng nhập bằng Zalo."
   );
+}
+
+export function loginWithEmail(email: string, password: string): Promise<AuthTokens> {
+  return request<AuthTokens>("/auth/login", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  }, "Không thể đăng nhập. Vui lòng kiểm tra email và mật khẩu.");
 }
 
 export function refreshAuthToken(refreshToken: string): Promise<AuthTokens> {

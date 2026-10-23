@@ -79,7 +79,7 @@ export function BusinessProfileCard({ profile }: { profile: BusinessProfile }) {
     </div>
   </button>;
 }
-export default function BusinessProfileView({ profile, onEdit, onDelete }: { profile: BusinessProfile; onEdit?: () => void; onDelete?: () => void }) {
+export default function BusinessProfileView({ profile, onEdit, onDelete, ownerContent }: { profile: BusinessProfile; onEdit?: () => void; onDelete?: () => void; ownerContent?: ReactNode }) {
   const { openSnackbar } = useSnackbar();
   const [activeSection, setActiveSection] = useState("intro");
   const introRef = useRef<HTMLElement>(null);
@@ -135,6 +135,7 @@ export default function BusinessProfileView({ profile, onEdit, onDelete }: { pro
           {[["Website", profile.website], ["Facebook", profile.facebookUrl], ["Zalo OA", profile.zaloOaUrl]].map(([label, url]) => isHttpUrl(url) ? <a key={label} aria-label={label!} href={url} target="_blank" rel="noopener noreferrer"><span className="business-profile-contact-icon"><Globe2 size={19} /></span><span><small>{label}</small><strong>{new URL(url).hostname.replace(/^www\./, "")}</strong></span><ExternalLink size={16} /></a> : null)}
         </div>
       </section>
+      {ownerContent}
       {onDelete && <section className="business-profile-panel business-profile-owner-tools"><div><h3>Quản lý hồ sơ</h3><p>Quản lý sự hiện diện của cơ sở trên LocalGo.</p></div><button type="button" onClick={onDelete}><Trash2 size={16} />Xóa hồ sơ</button></section>}
     </div>
   </article>;

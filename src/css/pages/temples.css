@@ -73,6 +73,23 @@
   gap: 12px;
 }
 
+.temples-list .temple-card {
+  width: 100%;
+}
+
+.heritage-place__related {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 0 auto;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: #e4f2fb;
+  color: #125880;
+  font-size: 12px;
+}
+
 .temple-card {
   display: flex;
   gap: 12px;

@@ -296,10 +296,80 @@
   font-size: 18px;
 }
 
-.experience-tour-detail__meta a {
-  color: inherit;
+.experience-tour-detail__call {
+  display: flex;
+  width: 100%;
+  min-height: 68px;
+  margin-top: 18px;
+  padding: 12px 14px;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  background: linear-gradient(125deg, #0966ac 0%, #087eac 100%);
+  border: 1px solid rgb(255 255 255 / 20%);
+  border-radius: 16px;
+  box-shadow: 0 5px 14px rgb(6 102 148 / 20%);
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+}
+
+.experience-tour-detail__call-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  place-items: center;
+  background: rgb(255 255 255 / 18%);
+  border-radius: 13px;
+}
+
+.experience-tour-detail__call-text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  overflow-wrap: anywhere;
+}
+
+.experience-tour-detail__call-text strong {
+  font-size: 15px;
   font-weight: 800;
-  text-decoration: none;
+  line-height: 1.4;
+}
+
+.experience-tour-detail__call-text > span {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+@media (hover: hover) {
+  .experience-tour-detail__call:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 7px 18px rgb(6 102 148 / 28%);
+  }
+}
+
+.experience-tour-detail__call:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgb(6 102 148 / 18%);
+}
+
+.experience-tour-detail__call:focus-visible {
+  outline: 3px solid #08699d;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experience-tour-detail__call {
+    transition: none;
+  }
+
+  .experience-tour-detail__call:active {
+    transform: none;
+  }
 }
 
 .experience-tour-detail__paragraph {

@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "dataset": "truong-mit-demo",
+  "isDemo": true,
+  "notice": "Tên hội viên, giá, sản lượng và dịch vụ là dữ liệu giả lập. Hình ảnh được tạo bằng AI. Số 0000000000 chỉ là chỗ giữ chỗ, phải thay trước khi nhập API.",
+  "members": [
+    { "key": "vuon-nhan-demo", "displayName": "Vườn nhãn Truông Mít (mẫu)" },
+    { "key": "vuon-sau-rieng-demo", "displayName": "Vườn sầu riêng Bàu Đồn (mẫu)" },
+    { "key": "com-que-demo", "displayName": "Bếp quê Truông Mít (mẫu)" },
+    { "key": "dich-vu-vuon-demo", "displayName": "Dịch vụ nhà vườn Truông Mít (mẫu)" }
+  ],
+  "posts": [
+    {
+      "key": "nhan-tuoi-tai-vuon",
+      "ownerRef": "vuon-nhan-demo",
+      "images": ["images/nhan-truong-mit.png"],
+      "payload": {
+        "purpose": "COMMERCIAL", "category": "PRODUCT",
+        "title": "Nhãn tươi tại vườn Truông Mít (mẫu)",
+        "summary": "Nhãn nguyên cành, nhận đơn từ 2 kg; hẹn ngày hái và nhận tại vườn.",
+        "description": "Tin mẫu của hộ trồng nhãn tại xã Truông Mít, tỉnh Tây Ninh. Nhãn được tuyển lựa và đóng giỏ sau khi hái; người mua hẹn trước thời gian nhận. Giá minh họa 30.000 đồng/kg, đơn từ 2 kg. Sản lượng và lịch thu hoạch cần được hội viên xác nhận trước khi giao dịch. Tên hộ, giá và ảnh AI chỉ dùng để trình diễn.",
+        "priceType": "FIXED", "price": 30000, "priceLabel": "30.000đ/kg",
+        "address": "Xã Truông Mít, tỉnh Tây Ninh",
+        "contactName": "Vườn nhãn Truông Mít (mẫu)", "contactPhone": "0000000000", "contactZalo": null
+      }
+    },
+    {
+      "key": "nhan-si-cho-cua-hang",
+      "ownerRef": "vuon-nhan-demo",
+      "images": ["images/nhan-truong-mit.png"],
+      "payload": {
+        "purpose": "COMMERCIAL", "category": "PRODUCT",
+        "title": "Cung cấp nhãn sỉ cho cửa hàng trái cây (mẫu)",
+        "summary": "Nhận đơn dự kiến từ 20 kg, phân loại và đóng sọt theo yêu cầu.",
+        "description": "Bài đăng giả lập kết nối nhà vườn Truông Mít với cửa hàng trái cây. Quy cách dự kiến: nhãn nguyên cành hoặc cắt cuống, đóng sọt thoáng. Đơn minh họa từ 20 kg; giá, sản lượng, phí vận chuyển và thời gian giao được thỏa thuận theo từng đợt thu hoạch. Không cam kết có hàng quanh năm. Tên hộ và ảnh AI dùng để trình diễn.",
+        "priceType": "NEGOTIABLE", "price": null, "priceLabel": "Thỏa thuận theo số lượng",
+        "address": "Xã Truông Mít, tỉnh Tây Ninh",
+        "contactName": "Vườn nhãn Truông Mít (mẫu)", "contactPhone": "0000000000", "contactZalo": null
+      }
+    },
+    {
+      "key": "sau-rieng-bau-don",
+      "ownerRef": "vuon-sau-rieng-demo",
+      "images": ["images/sau-rieng-bau-don.png"],
+      "payload": {
+        "purpose": "COMMERCIAL", "category": "PRODUCT",
+        "title": "Sầu riêng nhà vườn khu vực Bàu Đồn (mẫu)",
+        "summary": "Sầu riêng nguyên trái, nhận đặt trước theo đợt thu hoạch tại Truông Mít.",
+        "description": "Tin minh họa của nhà vườn khu vực Bàu Đồn, xã Truông Mít, tỉnh Tây Ninh. Khách hẹn trước để chọn trái và nhận tại điểm tập kết. Giá tham khảo giả lập 75.000 đồng/kg, cân nguyên trái; giống, độ chín và điều kiện đổi trả phải xác nhận khi đặt. Không gán chứng nhận OCOP, VietGAP hoặc xuất khẩu cho hộ mẫu. Ảnh tạo bằng AI, không đại diện một vườn có thật.",
+        "priceType": "FIXED", "price": 75000, "priceLabel": "75.000đ/kg nguyên trái",
+        "address": "Khu vực Bàu Đồn, xã Truông Mít, tỉnh Tây Ninh",
+        "contactName": "Vườn sầu riêng Bàu Đồn (mẫu)", "contactPhone": "0000000000", "contactZalo": null
+      }
+    },
+    {
+      "key": "can-mua-sau-rieng",
+      "ownerRef": "vuon-sau-rieng-demo",
+      "images": ["images/sau-rieng-bau-don.png"],
+      "payload": {
+        "purpose": "COMMERCIAL", "category": "BUY_REQUEST",
+        "title": "Tìm nhà vườn liên kết thu mua sầu riêng (mẫu)",
+        "summary": "Kết nối hộ trồng sầu riêng tại Truông Mít, thỏa thuận sau khi xem vườn.",
+        "description": "Nhu cầu thu mua giả lập nhằm trình diễn danh mục Cần mua. Ưu tiên kết nối nhà vườn trong xã Truông Mít, gồm khu vực Bàu Đồn. Người bán cung cấp giống, thời gian thu hoạch dự kiến và sản lượng; hai bên thống nhất phân loại, giá, cân hàng và thanh toán trước khi giao dịch. Không có cam kết thu mua thực tế từ bài đăng mẫu này. Ảnh minh họa AI.",
+        "priceType": "NEGOTIABLE", "price": null, "priceLabel": "Thỏa thuận sau khi xem vườn",
+        "address": "Xã Truông Mít, tỉnh Tây Ninh",
+        "contactName": "Đầu mối liên kết nhà vườn (mẫu)", "contactPhone": "0000000000", "contactZalo": null
+      }
+    },
+    {
+      "key": "cham-soc-thu-hoach-vuon",
+      "ownerRef": "dich-vu-vuon-demo",
+      "images": ["images/nhan-truong-mit.png"],
+      "payload": {
+        "purpose": "COMMERCIAL", "category": "SERVICE",
+        "title": "Hỗ trợ thu hoạch và phân loại nhãn tại vườn (mẫu)",
+        "summary": "Nhận lịch theo buổi, hỗ trợ cắt cành nhãn và đóng sọt trong xã.",
+        "description": "Dịch vụ giả lập phục vụ nhà vườn tại xã Truông Mít: hỗ trợ thu hoạch nhãn, phân loại và đóng sọt tại điểm tập kết. Báo giá theo số người, thời gian và khối lượng sau khi khảo sát. Chủ vườn và nhóm làm việc thống nhất dụng cụ, điều kiện an toàn và lịch thực hiện. Không bao gồm phun thuốc bảo vệ thực vật. Tên nhóm và ảnh AI chỉ dùng để trình diễn.",
+        "priceType": "CONTACT", "price": null, "priceLabel": "Liên hệ theo khối lượng",
+        "address": "Xã Truông Mít, tỉnh Tây Ninh",
+        "contactName": "Dịch vụ nhà vườn Truông Mít (mẫu)", "contactPhone": "0000000000", "contactZalo": null
+      }
+    },
+    {
+      "key": "com-que-truong-mit",
+      "ownerRef": "com-que-demo",
+      "images": ["images/com-que-truong-mit.png"],
+      "payload": {
+        "purpose": "COMMERCIAL", "category": "SERVICE",
+        "title": "Cơm trưa vị quê tại Truông Mít (mẫu)",
+        "summary": "Cơm nhà với món kho, rau và canh; nhận đặt phần ăn trước buổi trưa.",
+        "description": "Bài đăng mẫu cho hộ kinh doanh ăn uống tại xã Truông Mít. Suất ăn minh họa gồm cơm trắng, cá kho, rau và canh; thực đơn có thể thay đổi theo nguyên liệu. Giá giả lập 35.000 đồng/phần. Cần xác nhận giờ phục vụ, địa chỉ cụ thể, thực đơn và phí giao trước khi đặt. Đây là mô hình quán mẫu, không đại diện một cơ sở có thật; hình minh họa tạo bằng AI.",
+        "priceType": "FIXED", "price": 35000, "priceLabel": "35.000đ/phần",
+        "address": "Xã Truông Mít, tỉnh Tây Ninh",
+        "contactName": "Bếp quê Truông Mít (mẫu)", "contactPhone": "0000000000", "contactZalo": null
+      }
+    }
+  ]
+}

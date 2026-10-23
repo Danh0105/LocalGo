@@ -1,6 +1,8 @@
 /* Shared iOS-inspired back button used by list and detail page headers. */
 :root {
   --app-status-bar-fallback: 24px;
+  --app-toolbar-height: 64px;
+  --app-toolbar-padding: 10px;
   --app-status-bar-safe-top: max(
     env(safe-area-inset-top, 0px),
     var(--app-status-bar-fallback)
@@ -47,13 +49,48 @@
   .ocop-header,
   .specialties-header,
   .temples-header,
-  .trade-header
+  .trade-header,
+  .trade-saved-header,
+  .notifications-header,
+  .my-reviews-header,
+  .security-header
 ) {
   position: sticky;
   top: 0;
   z-index: 40;
-  padding-top: calc(var(--app-status-bar-safe-top) + 14px);
+  min-height: calc(var(--app-status-bar-safe-top) + var(--app-toolbar-height));
+  padding-top: calc(var(--app-status-bar-safe-top) + var(--app-toolbar-padding));
+  padding-bottom: var(--app-toolbar-padding);
   box-shadow: 0 8px 20px rgb(9 61 94 / 10%);
+}
+
+:is(
+  .agriculture-header, .attractions-header, .contacts-header,
+  .craft-villages-header, .cuisine-header, .experience-tours-header,
+  .feedback-header, .festivals-header, .historical-sites-header,
+  .map-places-header, .news-header, .ocop-header, .specialties-header,
+  .temples-header, .trade-saved-header, .notifications-header,
+  .my-reviews-header, .security-header
+) h1 {
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+:is(
+  .agriculture-header, .contacts-header, .craft-villages-header,
+  .cuisine-header, .experience-tours-header, .feedback-header,
+  .festivals-header, .historical-sites-header, .map-places-header,
+  .news-header, .ocop-header, .specialties-header, .notifications-header,
+  .my-reviews-header, .trade-saved-header
+) > div > span {
+  display: block;
+  line-height: 14px;
+  margin-bottom: 2px;
+}
+
+.business-profile-topbar__inner {
+  min-height: var(--app-toolbar-height);
+  padding-block: var(--app-toolbar-padding);
 }
 
 /* Hero/detail buttons float independently so they remain visible after scroll. */

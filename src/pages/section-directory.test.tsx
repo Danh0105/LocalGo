@@ -29,6 +29,7 @@ vi.mock("@/services/agriculture", () => ({
 }));
 vi.mock("@/services/cuisine", () => ({ getCuisineItems: async () => [] }));
 vi.mock("@/services/temples", () => ({ getTemples: async () => [] }));
+vi.mock("@/services/historical-sites", () => ({ getHistoricalSites: async () => [] }));
 vi.mock("@/services/specialties", () => ({ getSpecialties: async () => [] }));
 vi.mock("@/hooks/use-content-ratings", () => ({
   useContentRatings: () => ({}),

@@ -1,15 +1,17 @@
 import ContentReviews from "@/components/content-reviews";
 import { useEffect, useState } from "react";
-import { Icon, Page, useNavigate, useParams } from "zmp-ui";
+import { Icon, Page, useNavigate, useParams, useSnackbar } from "zmp-ui";
 
 import DirectionsButton from "@/components/directions-button";
 import ContentGallery from "@/components/content-gallery";
 import { ExperienceTour } from "@/data/experience-tours";
 import { getExperienceTourById } from "@/services/experience-tours";
+import { callPhone } from "@/utils/contact";
 import "../css/pages/experience-tours.css";
 
 function ExperienceTourDetailPage() {
   const navigate = useNavigate();
+  const { openSnackbar } = useSnackbar();
   const { id } = useParams<{ id: string }>();
   const [tour, setTour] = useState<ExperienceTour>();
   const [isLoading, setIsLoading] = useState(true);
@@ -118,15 +120,28 @@ function ExperienceTourDetailPage() {
               <Icon icon="zi-location" />
               <span>{tour.meetingPoint}</span>
             </li>
-            {tour.contactPhone && (
-              <li>
-                <Icon icon="zi-call" />
-                <a href={`tel:${tour.contactPhone.replace(/[^\d+]/g, "")}`}>
-                  {tour.contactPhone}
-                </a>
-              </li>
-            )}
           </ul>
+          {tour.contactPhone && (
+            <button
+              className="experience-tour-detail__call"
+              type="button"
+              aria-label={`Gọi ngay tư vấn tour: ${tour.contactPhone}`}
+              onClick={() => {
+                void callPhone(tour.contactPhone!).catch(() => {
+                  openSnackbar({ text: "Không thể mở cuộc gọi. Vui lòng kiểm tra số điện thoại.", type: "error" });
+                });
+              }}
+            >
+              <span className="experience-tour-detail__call-icon" aria-hidden="true">
+                <Icon icon="zi-call-solid" />
+              </span>
+              <span className="experience-tour-detail__call-text">
+                <strong>Gọi ngay tư vấn tour</strong>
+                <span>{tour.contactPhone}</span>
+              </span>
+              <Icon icon="zi-chevron-right" aria-hidden="true" />
+            </button>
+          )}
           <DirectionsButton googleMapsUrl={tour.googleMapsUrl} />
         </section>
 

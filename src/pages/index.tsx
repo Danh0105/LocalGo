@@ -23,6 +23,7 @@ import map from "@/static/map.png";
 import phone from "@/static/phone.png";
 import pottery from "@/static/pottery.png";
 import restaurant from "@/static/restaurant.png";
+import localBusinesses from "@/static/local-businesses.png";
 import temple from "@/static/temple.png";
 import tractor from "@/static/tractor.png";
 import gps from "@/static/gps.png";
@@ -37,7 +38,7 @@ const featuredItems = [
 ];
 
 const menuItems = [
-  { label: "Cơ sở địa phương", image: restaurant, path: "/business-profiles" },
+  { label: "Cơ sở địa phương", image: localBusinesses, path: "/business-profiles" },
   { label: "Di tích lịch sử", image: historical, path: "/historical-sites" },
   { label: "Nông nghiệp", image: tractor, path: "/agriculture" },
   { label: "Làng nghề", image: pottery, path: "/craft-villages" },
